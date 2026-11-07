@@ -202,7 +202,7 @@ Działanie: strażnik pisze co minutę raport do `/etc/pve/mc-panel/straznik.jso
    systemctl enable --now var-lib-mcpanel-in.mount var-lib-mcpanel-out.mount
    ```
 
-3. Utwórz nieuprzywilejowany CT z Debianem w DMZ, zainstaluj stronę (patrz „Strona”) i podłącz katalogi, a potem zrestartuj CT:
+3. Utwórz nieuprzywilejowany CT z Debianem w DMZ na Proxmox-02, zainstaluj stronę (patrz „Strona”) i podłącz katalogi, a potem zrestartuj CT. Pełna procedura z prawdziwymi wartościami jest w dokumentacji homelaba („Strona Minecraft - Instalacja”) i w lokalnym `INSTALACJA_CT.local.md`, poza gitem:
 
    ```bash
    pct set <id> --mp0 /var/lib/mcpanel/in,mp=/panel/in --mp1 /var/lib/mcpanel/out,mp=/panel/out,ro=1

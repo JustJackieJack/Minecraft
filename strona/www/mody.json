@@ -1393,6 +1393,18 @@
    "zrodlo": "Modrinth"
   },
   {
+   "id": "mousetweaks",
+   "nazwa": "Mouse Tweaks",
+   "opis": [
+    "Wygodniejsze przenoszenie przedmiotów myszą w ekwipunku i skrzyniach, także przeciąganiem i kółkiem."
+   ],
+   "tagi": [
+    "Interfejs"
+   ],
+   "link": "https://modrinth.com/mod/mouse-tweaks",
+   "zrodlo": "Modrinth"
+  },
+  {
    "id": "mowziesmobs",
    "nazwa": "Mowzie's Mobs",
    "opis": [

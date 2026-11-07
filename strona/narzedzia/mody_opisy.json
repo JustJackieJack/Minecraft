@@ -113,6 +113,7 @@
   "villagernames": {"opis": "Nadaje osadnikom imiona."},
   "villagertradingplus": {"opis": "Pozwala zmieniać oferty handlowe osadników."},
   "xaeroworldmap": {"opis": "Pełnoekranowa mapa odkrytej części świata. Otwierasz ją klawiszem M."},
+  "mousetweaks": {"opis": "Wygodniejsze przenoszenie przedmiotów myszą w ekwipunku i skrzyniach, także przeciąganiem i kółkiem."},
   "medievalmusic": {"nazwa": "Medieval Music"},
   "yet_another_config_lib_v3": {"opis": "Biblioteka do ustawień innych modów."}
 }

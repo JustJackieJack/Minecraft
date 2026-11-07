@@ -12,7 +12,7 @@
   "Mechaniki gry": ["champions", "ci_panowie", "enhancedcelestials", "gravestone", "guardvillagers", "hardcorerevival", "hordes", "quark", "skilltree", "treeharvester", "villagernames", "villagertradingplus"],
   "Podróże i mapa": ["explorerscompass", "smallships", "waystones", "xaerominimap", "xaeroplus", "xaeroworldmap"],
   "Gra z innymi": ["hardcorerevival", "openpartiesandclaims", "pingwheel", "voicechat"],
-  "Interfejs": ["appleskin", "better_tab", "betteradvancements", "controlling", "enhanced_boss_bars", "fps_overlay", "inventoryhud", "jade", "jei", "justzoom", "overflowingbars", "pickupnotifier", "polymorph", "trashslot", "travelerstitles"],
+  "Interfejs": ["mousetweaks", "appleskin", "better_tab", "betteradvancements", "controlling", "enhanced_boss_bars", "fps_overlay", "inventoryhud", "jade", "jei", "justzoom", "overflowingbars", "pickupnotifier", "polymorph", "trashslot", "travelerstitles"],
   "Grafika i dźwięk": ["ambientenvironment", "ambientsounds", "betterclouds", "betterdogs_dtn", "biomemusic", "CustomSkinLoader_Universal-15.1.jar", "medievalmusic", "oculus", "skinlayers3d", "sound_physics_remastered"],
   "Wydajność": ["aiimprovements", "canary", "clumps", "embeddium", "entityculling", "ferritecore", "immediatelyfast", "ksyxis", "letmedespawn", "modernfix", "noisiumed", "packetfixer"],
   "Narzędzia admina": ["chunky", "incontrol", "neruina", "spark"],

@@ -232,6 +232,14 @@ class Strona(unittest.TestCase):
         for plik in ("windows.exe", "macos_arm", "macos_intel", "linux"):
             self.assertIn(f'releases/latest/download/ci_panowie_instalator_{plik}"', html)
         self.assertIn("Jak pobrać", html)
+        windows, reszta = html.split("<h3>Windows</h3>")[1].split("<h3>macOS</h3>")
+        macos, linux = reszta.split("<h3>Linux</h3>")
+        self.assertIn(".minecraft", windows)
+        self.assertIn("Application", macos)
+        self.assertIn("ci_panowie_instalator_macos_arm", macos)
+        self.assertNotIn("instalator_linux", macos)
+        self.assertIn("ci_panowie_instalator_linux", linux)
+        self.assertNotIn("macos", linux)
 
 
 class ListaModow(unittest.TestCase):

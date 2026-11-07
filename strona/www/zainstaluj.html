@@ -41,12 +41,18 @@
       </ol>
       <h3>Windows</h3>
       <p>Folder to zwykle <code>%appdata%\.minecraft</code>. Uruchom plik dwuklikiem. Jeśli pojawi się „System Windows ochronił ten komputer”, wybierz „Więcej informacji”, a potem „Uruchom mimo to”.</p>
-      <h3>macOS i Linux</h3>
-      <p>W terminalu przejdź do folderu minecraft i uruchom plik, np. na Linuksie:</p>
+      <h3>macOS</h3>
+      <p>Pobierz wersję zgodną z procesorem komputera: Apple M albo Intel. Folder gry to zwykle <code>~/Library/Application Support/minecraft</code>. W Terminalu wykonaj (poniżej przykład dla Apple M, dla procesora Intel nazwa pliku kończy się na <code>macos_intel</code>):</p>
+      <pre><code>cd ~/Library/Application\ Support/minecraft
+xattr -d com.apple.quarantine ci_panowie_instalator_macos_arm
+chmod +x ci_panowie_instalator_macos_arm
+./ci_panowie_instalator_macos_arm</code></pre>
+      <p>Polecenie <code>xattr</code> zdejmuje blokadę systemu dla pobranego pliku. Jeśli napisze, że nie ma takiego atrybutu, po prostu przejdź dalej.</p>
+      <h3>Linux</h3>
+      <p>Folder gry to zwykle <code>~/.minecraft</code>. W launcherze Prism otwórz folder <code>minecraft</code> wybranej instancji. W terminalu wykonaj:</p>
       <pre><code>cd ~/.minecraft
 chmod +x ci_panowie_instalator_linux
 ./ci_panowie_instalator_linux</code></pre>
-      <p>Na macOS folder to <code>~/Library/Application Support/minecraft</code>. Jeśli system zablokuje plik, wykonaj najpierw <code>xattr -d com.apple.quarantine ci_panowie_instalator_macos_*</code>.</p>
       <p class="uwaga">Zastępowane i usuwane pliki trafiają do folderu <code>.ci_panowie_kopia</code>, więc nic nie ginie.</p>
     </section>
   </main>
