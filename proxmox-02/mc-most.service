@@ -1,0 +1,12 @@
+[Unit]
+Description=Lacznik strony Minecrafta z Proxmoxem
+After=pve-cluster.service
+RequiresMountsFor=/var/lib/mcpanel/in /var/lib/mcpanel/out
+
+[Service]
+ExecStart=/usr/local/sbin/mc_most.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

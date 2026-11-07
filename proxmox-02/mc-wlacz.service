@@ -1,0 +1,10 @@
+[Unit]
+Description=Wlaczanie Proxmox-03 i Minecrafta
+After=pve-cluster.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/mc_wlacz.py
+# 3 = zablokowane, 5 = juz trwa: to nie sa awarie.
+SuccessExitStatus=3 5
+TimeoutStartSec=700

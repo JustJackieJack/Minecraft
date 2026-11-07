@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zainstaluj: Ci Panowie</title>
+  <meta name="theme-color" content="#0d0f24">
+  <link rel="preload" href="/font/jersey15-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="pasek">
+    <a class="logo" href="/">Ci Panowie</a>
+    <nav aria-label="Główne">
+      <a href="/">Status</a>
+      <a href="/mody">Mody</a>
+      <a href="/komendy">Komendy</a>
+      <a href="/zainstaluj" aria-current="page">Zainstaluj</a>
+      <a href="/mapa">Mapa</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h1>Zainstaluj</h1>
+      <p class="opis">Instalator sprawdza skiny, config i mody, a przed każdą zmianą pyta o zgodę.</p>
+      <div class="systemy">
+        <a class="przycisk" href="https://github.com/JustJackieJack/Minecraft/releases/latest/download/ci_panowie_instalator_windows.exe">Windows</a>
+        <a class="przycisk" href="https://github.com/JustJackieJack/Minecraft/releases/latest/download/ci_panowie_instalator_macos_arm">macOS (Apple M)</a>
+        <a class="przycisk" href="https://github.com/JustJackieJack/Minecraft/releases/latest/download/ci_panowie_instalator_macos_intel">macOS (Intel)</a>
+        <a class="przycisk" href="https://github.com/JustJackieJack/Minecraft/releases/latest/download/ci_panowie_instalator_linux">Linux</a>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Jak pobrać</h2>
+      <ol class="kroki">
+        <li>Zainstaluj Forge 1.20.1 i uruchom go raz. Zamknij grę.</li>
+        <li>Wrzuć pobrany plik do folderu minecraft, tam gdzie jest folder <code>mods</code>.</li>
+        <li>Uruchom go i odpowiadaj na pytania. Odmowa pomija tylko dany krok.</li>
+      </ol>
+      <h3>Windows</h3>
+      <p>Folder to zwykle <code>%appdata%\.minecraft</code>. Uruchom plik dwuklikiem. Jeśli pojawi się „System Windows ochronił ten komputer”, wybierz „Więcej informacji”, a potem „Uruchom mimo to”.</p>
+      <h3>macOS i Linux</h3>
+      <p>W terminalu przejdź do folderu minecraft i uruchom plik, np. na Linuksie:</p>
+      <pre><code>cd ~/.minecraft
+chmod +x ci_panowie_instalator_linux
+./ci_panowie_instalator_linux</code></pre>
+      <p>Na macOS folder to <code>~/Library/Application Support/minecraft</code>. Jeśli system zablokuje plik, wykonaj najpierw <code>xattr -d com.apple.quarantine ci_panowie_instalator_macos_*</code>.</p>
+      <p class="uwaga">Zastępowane i usuwane pliki trafiają do folderu <code>.ci_panowie_kopia</code>, więc nic nie ginie.</p>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Komendy: Ci Panowie</title>
+  <meta name="theme-color" content="#0d0f24">
+  <link rel="preload" href="/font/jersey15-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="pasek">
+    <a class="logo" href="/">Ci Panowie</a>
+    <nav aria-label="Główne">
+      <a href="/">Status</a>
+      <a href="/mody">Mody</a>
+      <a href="/komendy" aria-current="page">Komendy</a>
+      <a href="/zainstaluj">Zainstaluj</a>
+      <a href="/mapa">Mapa</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h1>Komendy</h1>
+      <p class="opis">Wpisz je na czacie w grze.</p>
+      <dl class="komendy">
+        <div>
+          <dt><code>/cipanowie help</code></dt>
+          <dd>Podstawowe informacje o serwerze.</dd>
+        </div>
+        <div>
+          <dt><code>/cipanowie modlist</code></dt>
+          <dd>Lista modów na serwerze. Kliknięcie nazwy pokazuje opis.</dd>
+        </div>
+        <div>
+          <dt><code>/cipanowie help &lt;mod&gt;</code></dt>
+          <dd>Opis wybranego moda. Tab podpowiada nazwy.</dd>
+        </div>
+        <div>
+          <dt><code>/cipanowie kompas</code></dt>
+          <dd>Nowy kompas odkrywcy, gdy nie masz go w ekwipunku. Można użyć co 5 min.</dd>
+        </div>
+        <div>
+          <dt><code>/cipanowie patyk</code></dt>
+          <dd>Kupuje Patyk Odrzutu za 1 diament.</dd>
+        </div>
+        <div>
+          <dt><code>/cipanowie claim</code></dt>
+          <dd>Pokazuje Twoje claimy i cennik.</dd>
+        </div>
+        <div>
+          <dt><code>/cipanowie claim kup [ile]</code></dt>
+          <dd>Kupuje dodatkowe chunki za surowce.</dd>
+        </div>
+        <div>
+          <dt><code>/cipanowie psy</code></dt>
+          <dd>Pokazuje, gdzie są Twoje psy i czemu nie idą za Tobą.</dd>
+        </div>
+        <div>
+          <dt><code>/cipanowie psy &lt;imię&gt;</code></dt>
+          <dd>Przywołuje wybranego psa.</dd>
+        </div>
+        <div>
+          <dt><code>/cipanowie psy wszystkie</code></dt>
+          <dd>Przywołuje wszystkie psy.</dd>
+        </div>
+        <div>
+          <dt><code>/enhancedcelestials lunarForecast</code></dt>
+          <dd>Plan księżyców na najbliższe dni.</dd>
+        </div>
+        <div>
+          <dt><code>/champions info &lt;cel&gt;</code></dt>
+          <dd>Informacje o wybranym championie.</dd>
+        </div>
+        <div>
+          <dt><code>/voicechat join &lt;grupa&gt;</code></dt>
+          <dd>Dołącza do grupy czatu głosowego. To samo zrobisz w menu pod klawiszem V.</dd>
+        </div>
+        <div>
+          <dt><code>/voicechat invite &lt;gracz&gt;</code></dt>
+          <dd>Zaprasza gracza do Twojej grupy.</dd>
+        </div>
+        <div>
+          <dt><code>/voicechat leave</code></dt>
+          <dd>Opuszcza grupę.</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="panel">
+      <h2>Dla admina</h2>
+      <p class="uwaga">Wymagają uprawnień operatora.</p>
+      <dl class="komendy">
+        <div>
+          <dt><code>/cipanowie island [max] [krok]</code></dt>
+          <dd>Sprawdza włącznik wyspy oraz teren i biomy w 4 kierunkach.</dd>
+        </div>
+        <div>
+          <dt><code>/cipanowie island mask</code></dt>
+          <dd>Zapisuje maskę chunków wyspy, potrzebną do późniejszych resetów.</dd>
+        </div>
+        <div>
+          <dt><code>/function ci_panowie:pregen_start</code></dt>
+          <dd>Zatrzymuje świat przed pregeneracją i zapisuje obecne ustawienia.</dd>
+        </div>
+        <div>
+          <dt><code>/function ci_panowie:pregen_end</code></dt>
+          <dd>Przywraca ustawienia po pregeneracji.</dd>
+        </div>
+        <div>
+          <dt><code>/chunky center &lt;x&gt; &lt;z&gt;</code></dt>
+          <dd>Ustawia środek pregeneracji.</dd>
+        </div>
+        <div>
+          <dt><code>/chunky radius &lt;promień&gt;</code></dt>
+          <dd>Ustawia promień pregeneracji.</dd>
+        </div>
+        <div>
+          <dt><code>/chunky start</code></dt>
+          <dd>Uruchamia pregenerację.</dd>
+        </div>
+        <div>
+          <dt><code>/chunky progress</code></dt>
+          <dd>Pokazuje postęp.</dd>
+        </div>
+        <div>
+          <dt><code>/chunky pause</code></dt>
+          <dd>Wstrzymuje pregenerację.</dd>
+        </div>
+        <div>
+          <dt><code>/chunky continue</code></dt>
+          <dd>Wznawia pregenerację.</dd>
+        </div>
+        <div>
+          <dt><code>/enhancedcelestials setLunarEvent &lt;księżyc&gt;</code></dt>
+          <dd>Wymusza księżyc, np. enhancedcelestials:blood_moon. Plan po chwili wraca, jeśli dzień się nie zgadza.</dd>
+        </div>
+        <div>
+          <dt><code>/skilltree points add|set &lt;gracz&gt; &lt;ile&gt;</code></dt>
+          <dd>Dodaje lub ustawia punkty umiejętności.</dd>
+        </div>
+        <div>
+          <dt><code>/skilltree reset &lt;gracz&gt;</code></dt>
+          <dd>Resetuje drzewko gracza.</dd>
+        </div>
+        <div>
+          <dt><code>/hordes start</code></dt>
+          <dd>Uruchamia hordę.</dd>
+        </div>
+        <div>
+          <dt><code>/hordes stop</code></dt>
+          <dd>Zatrzymuje hordę.</dd>
+        </div>
+        <div>
+          <dt><code>/revive &lt;gracz&gt;</code></dt>
+          <dd>Podnosi nieprzytomnego gracza.</dd>
+        </div>
+        <div>
+          <dt><code>/knockout &lt;gracz&gt;</code></dt>
+          <dd>Powala gracza.</dd>
+        </div>
+        <div>
+          <dt><code>/restore &lt;gracz&gt; &lt;id_śmierci&gt; replace|add</code></dt>
+          <dd>Przywraca ekwipunek gracza z zapisu śmierci.</dd>
+        </div>
+        <div>
+          <dt><code>/spark tps</code></dt>
+          <dd>Pokazuje obciążenie serwera.</dd>
+        </div>
+        <div>
+          <dt><code>/spark profiler</code></dt>
+          <dd>Szuka przyczyn lagów.</dd>
+        </div>
+      </dl>
+    </section>
+  </main>
+</body>
+</html>

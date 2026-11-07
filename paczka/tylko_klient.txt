@@ -1,0 +1,21 @@
+# Mody tylko dla gracza: nie trafiaja na serwer, czesc z nich go wywala. Wzorce nazw plikow.
+embeddium-*
+oculus-*
+better-clouds-*
+entityculling-*
+ImmediatelyFast-*
+fabric-api-*
+AmbientEnvironment-*
+AmbientSounds_*
+sound-physics-remastered-*
+Controlling-*
+Searchables-*
+inventoryhud.*
+enhanced_boss_bars-*
+better_tab-*
+craft_config-*
+skinlayers3d-*
+FpsOverlay-*
+justzoom_*
+BetterAdvancements-*
+CustomSkinLoader_*

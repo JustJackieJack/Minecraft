@@ -1,0 +1,38 @@
+name: Instalator
+
+on:
+  push:
+    branches: [main]
+    paths: ["instalator/**", ".github/workflows/instalator.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  wydanie:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: instalator/go.mod
+      - name: Testy
+        working-directory: instalator
+        run: go test ./...
+      - name: Kompilacja
+        working-directory: instalator
+        env:
+          CGO_ENABLED: "0"
+        run: |
+          mkdir dist
+          GOOS=windows GOARCH=amd64 go build -trimpath -ldflags "-s -w" -o dist/ci_panowie_instalator_windows.exe .
+          GOOS=darwin GOARCH=arm64 go build -trimpath -ldflags "-s -w" -o dist/ci_panowie_instalator_macos_arm .
+          GOOS=darwin GOARCH=amd64 go build -trimpath -ldflags "-s -w" -o dist/ci_panowie_instalator_macos_intel .
+          GOOS=linux GOARCH=amd64 go build -trimpath -ldflags "-s -w" -o dist/ci_panowie_instalator_linux .
+      - name: Wydanie
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="instalator-$(git rev-parse --short HEAD)"
+          gh release create "$tag" instalator/dist/* --title "Instalator $tag" --notes "Instalator paczki Ci_Panowie." --latest

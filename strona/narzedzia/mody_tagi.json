@@ -1,0 +1,20 @@
+{
+  "Potwory": ["alexscaves", "born_in_chaos_v1", "bygonenether", "cataclysm_betterfortresses", "cave_dweller", "champions", "creeperoverhaul", "endermanoverhaul", "enhancedai", "friendsandfoes", "graveyard", "hordes", "iceandfire", "incendium", "mowziesmobs", "rottencreatures", "watching"],
+  "Bossowie": ["cataclysm", "iceandfire", "mowziesmobs"],
+  "Zwierzęta": ["betterdogs_dtn", "doggytalents", "friendsandfoes"],
+  "Struktury": ["abridged", "awesomedungeon", "awesomedungeonend", "awesomedungeonnether", "awesomedungeonocean", "betterdeserttemples", "betterdungeons", "betterendisland", "betterfortresses", "betterjungletemples", "bettermineshafts", "betteroceanmonuments", "betterstrongholds", "betterwitchhuts", "bygonenether", "cataclysm", "cataclysm_betterfortresses", "dungeoncrawl", "dungeons_arise", "dungeons_plus", "explorify", "graveyard", "idas", "incendium", "mr_dungeons", "mr_dungeons_andtaverns", "mr_dungeons_andtavernsancientcityoverhaul", "mr_dungeons_andtavernspillageroutpostrework", "mr_dungeons_andtavernsstrongholdrework", "stalwart_dungeons", "t_and_t", "totw_modded", "yungsbridges", "yungsextras"],
+  "Świat i biomy": ["alexscaves", "bettercaves", "biomesoplenty", "geophilic_reforged", "incendium", "snowundertrees", "yungscavebiomes"],
+  "Magia": ["ebwizardry"],
+  "Technika": ["create", "create_new_age"],
+  "Broń i walka": ["advancednetherite", "dummmmmmy", "immersive_armors", "mace_port", "spartanshields", "spartanweaponry", "spears"],
+  "Przedmioty": ["advancednetherite", "alexscaves", "artifacts", "curios", "onlyhammersandexcavators", "supplementaries", "travelersbackpack"],
+  "Bloki i budowanie": ["amendments", "decorative_blocks", "morevanilladrawers", "quark", "storagedrawers", "supplementaries", "suppsquared"],
+  "Mechaniki gry": ["champions", "ci_panowie", "enhancedcelestials", "gravestone", "guardvillagers", "hardcorerevival", "hordes", "quark", "skilltree", "treeharvester", "villagernames", "villagertradingplus"],
+  "Podróże i mapa": ["explorerscompass", "smallships", "waystones", "xaerominimap", "xaeroplus", "xaeroworldmap"],
+  "Gra z innymi": ["hardcorerevival", "openpartiesandclaims", "pingwheel", "voicechat"],
+  "Interfejs": ["appleskin", "better_tab", "betteradvancements", "controlling", "enhanced_boss_bars", "fps_overlay", "inventoryhud", "jade", "jei", "justzoom", "overflowingbars", "pickupnotifier", "polymorph", "trashslot", "travelerstitles"],
+  "Grafika i dźwięk": ["ambientenvironment", "ambientsounds", "betterclouds", "betterdogs_dtn", "biomemusic", "CustomSkinLoader_Universal-15.1.jar", "medievalmusic", "oculus", "skinlayers3d", "sound_physics_remastered"],
+  "Wydajność": ["aiimprovements", "canary", "clumps", "embeddium", "entityculling", "ferritecore", "immediatelyfast", "ksyxis", "letmedespawn", "modernfix", "noisiumed", "packetfixer"],
+  "Narzędzia admina": ["chunky", "incontrol", "neruina", "spark"],
+  "Biblioteka": ["almanac", "architectury", "atlaslib", "attributefix", "balm", "citadel", "cloth_config", "collective", "corgilib", "craft_config", "creativecore", "cristellib", "cupboard", "dataanchor", "fabric_api", "geckolib", "glitchcore", "insanelib", "integrated_api", "itemproductionlib", "konkrete", "libraryferret", "lionfishapi", "lithostitched", "mezz_config", "moonlight", "platform", "puzzleslib", "resourcefulconfig", "resourcefullib", "searchables", "structure_gel", "terrablender", "yet_another_config_lib_v3", "yungsapi", "zeta"]
+}

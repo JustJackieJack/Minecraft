@@ -10,10 +10,11 @@ import html
 import json
 import os
 import pathlib
+import shutil
 import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from urllib.parse import urlsplit
+from urllib.parse import unquote, urlsplit
 
 STANY = {"wylaczony", "uruchamianie", "wlaczony", "zatrzymywanie", "zablokowany"}
 BRAK_DANYCH = "brak_danych"
@@ -28,13 +29,34 @@ TYPY = {
     ".svg": "image/svg+xml",
     ".woff2": "font/woff2",
     ".txt": "text/plain; charset=utf-8",
+    ".webp": "image/webp",
+    ".json": "application/json",
 }
 NAGLOWKI_BEZPIECZENSTWA = {
     "Content-Security-Policy": "default-src 'none'; script-src 'self'; style-src 'self'; "
                                "img-src 'self'; font-src 'self'; connect-src 'self'; "
-                               "base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
+                               "frame-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
     "X-Content-Type-Options": "nosniff",
     "Referrer-Policy": "no-referrer",
+}
+
+
+# BlueMap w ramce strony: bez unsafe-eval mapa sie nie laduje (sprawdzone). Wymaga tez stylow w atrybutach i blob:.
+CSP_MAPY = ("default-src 'none'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; "
+            "img-src 'self' data: blob:; font-src 'self'; connect-src 'self' blob:; worker-src 'self' blob:; "
+            "manifest-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'self'")
+ADRES_MAPY = "/mapa-dane/"
+TYPY_MAPY = {
+    ".html": "text/html; charset=utf-8",
+    ".js": "text/javascript; charset=utf-8",
+    ".css": "text/css; charset=utf-8",
+    ".json": "application/json",
+    ".conf": "text/plain; charset=utf-8",
+    ".png": "image/png",
+    ".svg": "image/svg+xml",
+    ".ttf": "font/ttf",
+    ".webmanifest": "application/manifest+json",
+    ".prbm": "application/octet-stream",
 }
 
 
@@ -93,16 +115,9 @@ class Panel:
             return 202, {"stan": "uruchamianie"}
 
 
-def link(wartosc):
-    """Bezpieczny adres do href; bez ustawienia link prowadzi donikad."""
-    return html.escape(wartosc) if wartosc.startswith(("https://", "http://")) else "#"
-
-
 def wstaw_ustawienia(tresc, ustawienia):
     wartosci = {
         "{{ADRES_GRY}}": html.escape(ustawienia.get("STRONA_ADRES_GRY") or "adres nieustawiony"),
-        "{{LINK_MODY}}": link(ustawienia.get("STRONA_LINK_MODY", "")),
-        "{{LINK_MAPA}}": link(ustawienia.get("STRONA_LINK_MAPA", "")),
     }
     for znacznik, wartosc in wartosci.items():
         tresc = tresc.replace(znacznik, wartosc)
@@ -114,14 +129,36 @@ def wczytaj_pliki(www, ustawienia):
     pliki = {}
     for plik in www.rglob("*"):
         if plik.is_file() and plik.suffix in TYPY:
+            tresc = plik.read_bytes()
             adres = "/" + plik.relative_to(www).as_posix()
-            pliki[adres] = (plik.read_bytes(), TYPY[plik.suffix])
-    tresc, typ = pliki.pop("/index.html")
-    pliki["/"] = (wstaw_ustawienia(tresc.decode(), ustawienia).encode(), typ)
+            if plik.suffix == ".html":      # /mody.html jest dostepne jako /mody
+                adres = "/" if plik.stem == "index" else "/" + plik.stem
+                tresc = wstaw_ustawienia(tresc.decode(), ustawienia).encode()
+            pliki[adres] = (tresc, TYPY[plik.suffix])
     return pliki
 
 
-def utworz_handler(panel, pliki):
+def znajdz_plik_mapy(korzen, adres):
+    """Zwraca (sciezka, typ, skompresowany) albo None. BlueMap prosi o z0.prbm, a na dysku jest z0.prbm.gz."""
+    wzgledny = unquote(adres[len(ADRES_MAPY):]) or "index.html"
+    czesci = wzgledny.split("/")
+    if "\0" in wzgledny or "\\" in wzgledny or any(c in ("", ".", "..") for c in czesci):
+        return None
+    typ = TYPY_MAPY.get(pathlib.PurePosixPath(wzgledny).suffix)
+    if typ is None:
+        return None
+    korzen = pathlib.Path(korzen)
+    for sciezka, skompresowany in ((korzen / wzgledny, False), (korzen / (wzgledny + ".gz"), True)):
+        try:
+            # Dowiazanie nie moze wyprowadzic poza katalog mapy.
+            if sciezka.is_file() and sciezka.resolve().is_relative_to(korzen.resolve()):
+                return sciezka, typ, skompresowany
+        except OSError:
+            return None
+    return None
+
+
+def utworz_handler(panel, pliki, mapa=None):
     class Handler(BaseHTTPRequestHandler):
         protocol_version = "HTTP/1.1"
         server_version = "mc-strona"
@@ -142,9 +179,34 @@ def utworz_handler(panel, pliki):
         def wyslij_json(self, kod, dane, tylko_naglowki=False):
             self.wyslij(kod, json.dumps(dane).encode(), "application/json", "no-store", tylko_naglowki)
 
+        def wyslij_mape(self, adres, tylko_naglowki):
+            znaleziony = znajdz_plik_mapy(mapa, adres) if mapa else None
+            if znaleziony is None:
+                # Brak kafelka to puste morze, a nie blad.
+                self.send_response(204 if "/tiles/" in adres and adres.endswith((".prbm", ".png")) else 404)
+                self.send_header("Content-Length", "0")
+                self.end_headers()
+                return
+            sciezka, typ, skompresowany = znaleziony
+            self.send_response(200)
+            self.send_header("Content-Type", typ)
+            self.send_header("Content-Length", str(sciezka.stat().st_size))
+            self.send_header("Cache-Control", "public, max-age=3600" if "/tiles/" in adres else "no-cache")
+            self.send_header("Content-Security-Policy", CSP_MAPY)
+            self.send_header("X-Content-Type-Options", "nosniff")
+            self.send_header("Referrer-Policy", "no-referrer")
+            if skompresowany:
+                self.send_header("Content-Encoding", "gzip")
+            self.end_headers()
+            if not tylko_naglowki:
+                with open(sciezka, "rb") as f:
+                    shutil.copyfileobj(f, self.wfile)
+
         def odpowiedz_get(self, tylko_naglowki):
             adres = urlsplit(self.path).path
-            if adres == "/api/status":
+            if adres.startswith(ADRES_MAPY):
+                self.wyslij_mape(adres, tylko_naglowki)
+            elif adres == "/api/status":
                 self.wyslij_json(200, panel.odczytaj(), tylko_naglowki)
             elif adres in pliki:
                 tresc, typ = pliki[adres]
@@ -189,9 +251,10 @@ def main():
     a.add_argument("--adres", default="0.0.0.0")
     a.add_argument("--port", type=int, default=8080)
     a.add_argument("--panel", default="/panel")
+    a.add_argument("--mapa", default="/srv/mc-mapa")
     a.add_argument("--www", default=str(pathlib.Path(__file__).parent / "www"))
     o = a.parse_args()
-    handler = utworz_handler(Panel(o.panel), wczytaj_pliki(o.www, os.environ))
+    handler = utworz_handler(Panel(o.panel), wczytaj_pliki(o.www, os.environ), o.mapa)
     ThreadingHTTPServer((o.adres, o.port), handler).serve_forever()
 
 

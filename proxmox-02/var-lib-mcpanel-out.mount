@@ -1,0 +1,13 @@
+[Unit]
+Description=Stan dla strony Minecrafta
+# W tmpfs, bo zapis co kilka sekund nie powinien trafiac na dysk.
+Before=pve-guests.service
+
+[Mount]
+What=tmpfs
+Where=/var/lib/mcpanel/out
+Type=tmpfs
+Options=size=1m,nr_inodes=32,mode=755,nosuid,nodev,noexec
+
+[Install]
+WantedBy=multi-user.target

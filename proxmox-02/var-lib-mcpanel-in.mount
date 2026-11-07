@@ -1,0 +1,13 @@
+[Unit]
+Description=Sygnaly od strony Minecrafta
+# Maly tmpfs: strona nie zapelni dysku hosta. UID 1500 w CT to 101500 na hoscie.
+Before=pve-guests.service
+
+[Mount]
+What=tmpfs
+Where=/var/lib/mcpanel/in
+Type=tmpfs
+Options=size=1m,nr_inodes=32,mode=700,uid=101500,gid=101500,nosuid,nodev,noexec
+
+[Install]
+WantedBy=multi-user.target

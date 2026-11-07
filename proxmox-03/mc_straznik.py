@@ -6,6 +6,7 @@ Zasada: przy kazdej watpliwosci nic nie wylaczamy.
     Plik SERWIS wstrzymuje wszystkie odliczania.
 Ustawienia: /etc/mc-panel/mc.env (wzor: .env.template).
 Logi: journalctl -t mc-straznik (zmiany stanu i akcje, nie kazda minuta).
+Co minute zapisuje raport dla lacznika na Proxmox-02 we wspolnym /etc/pve.
 """
 import json
 import os
@@ -28,6 +29,7 @@ START_CO_S = 2 * 60     # statystyki Crafty moga sie spozniac po wyslaniu startu
 STAN = "/run/mc-straznik/stan.json"
 SERWIS = "/etc/mc-panel/serwis"
 TOKEN = "/etc/mc-panel/crafty.token"
+RAPORT = "/etc/pve/mc-panel/straznik.json"
 
 WYLACZONY, NIEZNANE = "down", "unknown"
 
@@ -87,7 +89,8 @@ try:
         if not c:
             raise ValueError
         d += c
-    print(int(json.loads(d)["players"]["online"]))
+    g = json.loads(d)["players"]
+    print(int(g["online"]), int(g.get("max", 0)))
 except Exception:
     print("unknown")
 '''
@@ -162,6 +165,30 @@ def decyduj(st, o, teraz):
     return st, None
 
 
+def raport(st, o, akcja, teraz):
+    """Dane dla strony: tylko liczby, bez nazw gosci i zadan."""
+    gracze = o["gracze"] if type(o["gracze"]) is int else None
+    koniec = None
+    if gracze == 0 and "bez_graczy_od" in st and "stop_od" not in st:
+        koniec = st["bez_graczy_od"] + BEZ_GRACZY_S
+    return {
+        "czas": teraz,
+        "gracze": gracze,
+        "max_graczy": o.get("max_graczy") if gracze is not None else None,
+        "koniec_odliczania": koniec,
+        "wylaczanie": "stop_od" in st or akcja in ("stop_mc", "stop_ct"),
+    }
+
+
+def zapisz_raport(dane, sciezka=RAPORT):
+    """/etc/pve bez kworum jest tylko do odczytu, wiec wolajacy musi zniesc OSError."""
+    os.makedirs(os.path.dirname(sciezka), exist_ok=True)
+    tymczasowy = sciezka + ".tmp"
+    with open(tymczasowy, "w") as f:
+        json.dump(dane, f)
+    os.replace(tymczasowy, sciezka)
+
+
 def zdarzenia(stary, nowy, akcja):
     """Komunikaty o rozpoczetych i przerwanych odliczaniach."""
     wynik = []
@@ -197,13 +224,20 @@ def pvesh_json(*args):
     return json.loads(komenda("pvesh", "get", *args, "--output-format", "json"))
 
 
+def rozbierz_sonde(w):
+    """Zwraca (gracze, max_graczy). Gracze to liczba, WYLACZONY albo NIEZNANE."""
+    czesci = w.split()
+    if len(czesci) == 2 and all(c.isdigit() for c in czesci):
+        return int(czesci[0]), int(czesci[1]) or None
+    return (WYLACZONY if w == WYLACZONY else NIEZNANE), None
+
+
 def odczytaj_gracze():
     try:
-        w = komenda("pct", "exec", str(CT), "--", "python3", "-c", SONDA,
-                    ADRES_CT, str(PORT_MC), timeout=40).strip()
+        return rozbierz_sonde(komenda("pct", "exec", str(CT), "--", "python3", "-c", SONDA,
+                                      ADRES_CT, str(PORT_MC), timeout=40).strip())
     except (RuntimeError, subprocess.TimeoutExpired):
-        return NIEZNANE
-    return int(w) if w.isdigit() else (w if w == WYLACZONY else NIEZNANE)
+        return NIEZNANE, None
 
 
 def crafty(co):
@@ -229,7 +263,7 @@ def obserwuj():
                 ct_dziala = True
             else:
                 inni.append(z.get("name", str(z.get("vmid"))))
-    gracze = odczytaj_gracze() if ct_dziala else None
+    gracze, max_graczy = odczytaj_gracze() if ct_dziala else (None, None)
     return {
         "serwis": os.path.exists(SERWIS),
         "ct_dziala": ct_dziala,
@@ -237,6 +271,7 @@ def obserwuj():
         "zadania": [z.get("type", "?") for z in pvesh_json(f"/nodes/{WEZEL}/tasks", "--source", "active")],
         "sesje": bool(komenda("who").strip()),
         "gracze": gracze,
+        "max_graczy": max_graczy,
         "proces_mc": odczytaj_proces_mc() if gracze == WYLACZONY else None,
     }
 
@@ -285,6 +320,7 @@ def main():
     teraz = time.time()
     stary = wczytaj_stan()
     stary_opis = stary.pop("opis", None)
+    stary_blad_raportu = stary.pop("blad_raportu", None)
     st, akcja = decyduj(stary, obs, teraz)
     if proba:
         print("obserwacja:", obs)
@@ -298,19 +334,29 @@ def main():
     for komunikat in zdarzenia(stary, st, akcja):
         log(komunikat)
 
+    # Raport przed akcja: wylaczenie hosta moze przerwac ten proces. Jego blad niczego nie wstrzymuje.
+    blad_raportu = None
+    try:
+        zapisz_raport(raport(st, obs, akcja, teraz))
+    except OSError as e:
+        blad_raportu = str(e)
+        if blad_raportu != stary_blad_raportu:
+            log(f"blad raportu: {e}", blad=True)
+    st_zapis = dict(opis=obecny_opis, blad_raportu=blad_raportu)
+
     if akcja == "limit_stopu":
         log("serwer nie zatrzymal sie w limicie, ponowie probe", blad=True)
     elif akcja:
         log(OPIS_AKCJI[akcja])
         try:
             # Zapis przed wykonaniem: wylaczenie hosta moze przerwac ten proces.
-            zapisz_stan(dict(st, opis=obecny_opis))
+            zapisz_stan(dict(st, **st_zapis))
             wykonaj(akcja)
         except (OSError, RuntimeError, subprocess.TimeoutExpired) as e:
             log(f"blad ({akcja}): {e}", blad=True)
             st.pop("stop_od", None)
             st.pop("start_od", None)
-    zapisz_stan(dict(st, opis=obecny_opis))
+    zapisz_stan(dict(st, **st_zapis))
     return 0
 
 

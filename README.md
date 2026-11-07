@@ -5,7 +5,8 @@ Znajomi włączają Proxmox-03 i serwer Minecraft, a po bezczynności wszystko w
 | Plik | Gdzie działa | Co robi |
 |---|---|---|
 | `proxmox-02/mc_wlacz.py` | Proxmox-02, na żądanie | budzi host i uruchamia CT z Minecraftem, chyba że działa inny gość |
-| `proxmox-03/mc_straznik.py` | Proxmox-03, co minutę | po bezczynności zatrzymuje serwer, CT i host |
+| `proxmox-02/mc_most.py` | Proxmox-02, stale | łącznik: publikuje stan dla strony i odbiera sygnał włączenia |
+| `proxmox-03/mc_straznik.py` | Proxmox-03, co minutę | po bezczynności zatrzymuje serwer, CT i host; zapisuje raport dla łącznika |
 | `strona/` | osobny CT w DMZ | strona statusu z przyciskiem włączania |
 
 ## Ustawienia
@@ -58,7 +59,52 @@ python3 strona/dev.py
 Przycisk „Włącz serwer” przechodzi cały cykl: start, działanie, odliczanie przy 0 graczy, wyłączanie.
 Linie `STRONA_` są brane z `.env`, jeśli istnieje.
 
-Grafiki są własne (`strona/narzedzia/generuj_grafiki.py`), a font Pixelify Sans ma licencję OFL.
+Tekstura paneli jest własna (`strona/narzedzia/generuj_grafiki.py`), tło to `www/Dirt_background_JE1.webp`, a font Jersey 15 ma licencję OFL.
+
+Lista modów to `strona/www/mody.json`. Po zmianie paczki wygeneruj ją ponownie z instancji Prism:
+
+```bash
+python3 strona/narzedzia/generuj_mody.py
+```
+
+Linki bierze z Modrinth po sumie pliku, opisy z `info.json` moda Ci_Panowie i `strona/narzedzia/mody_opisy.json`, a tagi z `strona/narzedzia/mody_tagi.json`.
+Nowy mod bez opisu lub tagu przerywa generowanie: dopisz go w tych plikach.
+
+## Paczka i instalator
+
+`instalator/` to jeden program w Go, kompilowany na Windows, macOS i Linux. Nie wymaga niczego od gracza.
+Dane bierze z `paczka/` w tym repo, a wersje zapisuje w `.ci_panowie.json` w folderze minecraft.
+
+Po zmianie modów, configu albo skinów, w folderze minecraft swojej instancji:
+
+```bash
+python3 ~/WebstormProjects/Minecraft/paczka/przygotuj.py
+```
+
+Skrypt tworzy `paczka/paczka.json`, trzy archiwa i kopię naszego moda, odświeża listę modów na stronie i ostrzega przed prywatnymi danymi w configu.
+Mody są pobierane z Modrinth, a gdy ich tam nie ma, z CurseForge (lista w `paczka/curseforge.json`). Potem zacommituj i wypchnij `paczka/`.
+
+Instalator wydaje GitHub Actions po każdej zmianie w `instalator/`. Testy lokalne: `cd instalator && go test ./...`.
+
+Na serwerze, przy zatrzymanym serwerze, jako jego właściciel:
+
+```bash
+./ci_panowie_instalator_linux --serwer
+```
+
+Serwer dostaje config z `defaultconfigs`, bez skinów i modów z `paczka/tylko_klient.txt`. Kolejne flagi: `--tak` (bez pytań), `--folder X`.
+
+## Mapa
+
+Mapa jest generowana z góry na Twoim komputerze, z lokalnego świata, przez [BlueMap CLI](https://bluemap.bluecolored.de/). Wymaga Javy 21+ i ustawień `MAPA_*` oraz `MC_CT_STRONA` w `.env`.
+
+```bash
+./mapa/renderuj.sh   # pierwszy raz może trwać kilka godzin, później tylko zmiany
+./mapa/wyslij.sh     # wysyła wynik do CT strony
+```
+
+Zamknij wcześniej Minecrafta. BlueMap pracuje na kopii świata w `mapa/praca/` (poza repo) i używa pliku klienta z Twojej instalacji gry.
+Strona serwuje pliki z `/srv/mc-mapa` pod `/mapa-dane/`. Podgląd lokalny: `python3 strona/dev.py`, zakładka Mapa.
 
 ## Czasy
 
@@ -82,7 +128,7 @@ rm /etc/mc-panel/serwis      # wyłącz
 ## Testy lokalne
 
 ```bash
-python3 -B -m unittest testy/test_mc.py testy/test_strona.py testy/test_repo.py
+python3 -B -m unittest testy/test_mc.py testy/test_strona.py testy/test_paczka.py testy/test_repo.py
 ```
 
 ## Logi
@@ -95,6 +141,7 @@ journalctl -t mc-straznik -f            # Proxmox-03, na żywo
 journalctl -t mc-straznik --since today # Proxmox-03, dzisiaj
 journalctl -t mc-straznik -p err        # Proxmox-03, tylko błędy
 journalctl -t mc-wlacz --since today    # Proxmox-02
+journalctl -t mc-most -f                # Proxmox-02, łącznik strony
 ```
 
 ## Aktualizacja skryptów
@@ -141,6 +188,33 @@ Skrypt nie włącza timera, nie dotyka tokenu ani ustawień CT. Działający tim
    ```bash
    systemctl enable --now mc-straznik.timer
    journalctl -t mc-straznik -f
+   ```
+
+## Wdrożenie strony i łącznika
+
+Działanie: strażnik pisze co minutę raport do `/etc/pve/mc-panel/straznik.json` (wspólne dla klastra), a łącznik na Proxmox-02
+łączy go z danymi klastra i co 10 s zapisuje `status.json`. Zapisuje też stan po kliknięciu. Strona nie dostaje nazw gości.
+
+1. Wgraj pliki: `./aktualizuj.sh`.
+2. Na Proxmox-02 włącz katalogi wymiany:
+
+   ```bash
+   systemctl enable --now var-lib-mcpanel-in.mount var-lib-mcpanel-out.mount
+   ```
+
+3. Utwórz nieuprzywilejowany CT z Debianem w DMZ, zainstaluj stronę (patrz „Strona”) i podłącz katalogi, a potem zrestartuj CT:
+
+   ```bash
+   pct set <id> --mp0 /var/lib/mcpanel/in,mp=/panel/in --mp1 /var/lib/mcpanel/out,mp=/panel/out,ro=1
+   pct reboot <id>
+   ```
+
+4. Firewall CT: `tcp 8080` tylko z NPM DMZ i admina. W NPM DMZ dodaj proxy host na `http://<ip>:8080`.
+5. Na Proxmox-02 włącz łącznik:
+
+   ```bash
+   systemctl enable --now mc-most.service
+   journalctl -t mc-most -f
    ```
 
 ## Test na żywo

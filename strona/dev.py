@@ -160,7 +160,7 @@ def main():
         sym = Symulator(panel)
         blokada = threading.Lock()
         pliki = PlikiNaZywo(TU / "www", ustawienia_z_env(TU.parent / ".env"))
-        strona = ThreadingHTTPServer(("127.0.0.1", o.port), serwer.utworz_handler(panel, pliki))
+        strona = ThreadingHTTPServer(("127.0.0.1", o.port), serwer.utworz_handler(panel, pliki, TU.parent / "mapa" / "praca" / "web"))
         panelik = ThreadingHTTPServer(("127.0.0.1", o.port + 1), sterowanie(sym, blokada))
         threading.Thread(target=strona.serve_forever, daemon=True).start()
         threading.Thread(target=panelik.serve_forever, daemon=True).start()

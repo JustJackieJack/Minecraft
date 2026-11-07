@@ -44,6 +44,7 @@ main() {
   # Docelowo to punkty montowania z hosta. Na zamontowanych katalogach niczego nie zmieniamy.
   [ -d /panel/in ] || install -d -m 700 -o mc-strona -g mc-strona /panel/in
   [ -d /panel/out ] || install -d -m 755 /panel/out
+  install -d -m 755 /srv/mc-mapa   # pliki wgrywa mapa/wyslij.sh
 
   echo "== Ustawienia"
   local ustawienia=/etc/mc-strona/strona.env

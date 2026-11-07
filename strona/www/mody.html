@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mody: Ci Panowie</title>
+  <meta name="theme-color" content="#0d0f24">
+  <link rel="preload" href="/font/jersey15-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/mody.js" defer></script>
+</head>
+<body>
+  <header class="pasek">
+    <a class="logo" href="/">Ci Panowie</a>
+    <nav aria-label="Główne">
+      <a href="/">Status</a>
+      <a href="/mody" aria-current="page">Mody</a>
+      <a href="/komendy">Komendy</a>
+      <a href="/zainstaluj">Zainstaluj</a>
+      <a href="/mapa">Mapa</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h1>Mody</h1>
+      <label class="etykieta" for="szukaj">Szukaj po nazwie</label>
+      <input id="szukaj" class="pole" type="search" list="podpowiedzi" autocomplete="off" placeholder="np. Create">
+      <datalist id="podpowiedzi"></datalist>
+
+      <div id="filtry" class="filtry" role="group" aria-label="Filtruj po tagu"></div>
+      <p id="licznik" class="licznik" role="status">Wczytuję listę…</p>
+    </section>
+
+    <ul id="lista" class="mody"></ul>
+  </main>
+</body>
+</html>

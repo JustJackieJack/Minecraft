@@ -1,0 +1,2212 @@
+{
+ "tagi": [
+  "Potwory",
+  "Bossowie",
+  "Zwierzęta",
+  "Struktury",
+  "Świat i biomy",
+  "Magia",
+  "Technika",
+  "Broń i walka",
+  "Przedmioty",
+  "Bloki i budowanie",
+  "Mechaniki gry",
+  "Podróże i mapa",
+  "Gra z innymi",
+  "Interfejs",
+  "Grafika i dźwięk",
+  "Wydajność",
+  "Narzędzia admina",
+  "Biblioteka"
+ ],
+ "mody": [
+  {
+   "id": "skinlayers3d",
+   "nazwa": "3D Skin Layers",
+   "opis": [
+    "Rysuje zewnętrzną warstwę skina w 3D."
+   ],
+   "tagi": [
+    "Grafika i dźwięk"
+   ],
+   "link": "https://modrinth.com/mod/3dskinlayers",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "abridged",
+   "nazwa": "Abridged",
+   "opis": [
+    "Mosty, duże i małe, nad rzekami i dolinami."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/abridged",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "advancednetherite",
+   "nazwa": "Advanced Netherite",
+   "opis": [
+    "Ulepszony netherite.",
+    "Netherite można dalej ulepszać (żelazo, złoto, szmaragd, diament) – lepsze statystyki i bonusy, np. neutralne pigliny.",
+    "Samouczek: Ulepszenia w stole kowalskim – przepisy w JEI."
+   ],
+   "tagi": [
+    "Broń i walka",
+    "Przedmioty"
+   ],
+   "link": "https://modrinth.com/mod/advanced-netherite",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "aiimprovements",
+   "nazwa": "AI Improvements: Performance Tuning",
+   "opis": [
+    "Odciąża serwer, upraszczając sztuczną inteligencję prostych mobów."
+   ],
+   "tagi": [
+    "Wydajność"
+   ],
+   "link": "https://modrinth.com/mod/ai-improvements",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "alexscaves",
+   "nazwa": "Alex's Caves",
+   "opis": [
+    "5 wielkich biomów jaskiniowych.",
+    "Rzadkie, ogromne biomy pod ziemią: Magnetic Caves, Primordial Caves (dinozaury), Toxic Caves, Abyssal Chasm (pod oceanem), Forlorn Hollows.",
+    "Każdy ma własne stwory, bloki, przedmioty i zagrożenia."
+   ],
+   "tagi": [
+    "Potwory",
+    "Świat i biomy",
+    "Przedmioty"
+   ],
+   "link": "https://modrinth.com/mod/alexs-caves",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "almanac",
+   "nazwa": "Almanac",
+   "opis": [
+    "Biblioteka potrzebna innym modom. Sama nic nie dodaje."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/almanac",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "ambientenvironment",
+   "nazwa": "Ambient Environment",
+   "opis": [
+    "Dodaje światu więcej klimatu i drobnych szczegółów otoczenia."
+   ],
+   "tagi": [
+    "Grafika i dźwięk"
+   ],
+   "link": "https://modrinth.com/mod/ambient-environment",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "ambientsounds",
+   "nazwa": "AmbientSounds",
+   "opis": [
+    "Dodaje odgłosy otoczenia: wiatr, ptaki, świerszcze i szum jaskiń."
+   ],
+   "tagi": [
+    "Grafika i dźwięk"
+   ],
+   "link": "https://modrinth.com/mod/ambientsounds",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "amendments",
+   "nazwa": "Amendments",
+   "opis": [
+    "Wiele zmian w zwykłych blokach Minecrafta. Dodatek do Supplementaries."
+   ],
+   "tagi": [
+    "Bloki i budowanie"
+   ],
+   "link": "https://modrinth.com/mod/amendments",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "appleskin",
+   "nazwa": "AppleSkin",
+   "opis": [
+    "Nasycenie i wartości jedzenia.",
+    "Pokazuje przy pasku głodu nasycenie i ile da dane jedzenie."
+   ],
+   "tagi": [
+    "Interfejs"
+   ],
+   "link": "https://modrinth.com/mod/appleskin",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "architectury",
+   "nazwa": "Architectury API",
+   "opis": [
+    "Biblioteka potrzebna innym modom. Sama nic nie dodaje."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/architectury-api",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "artifacts",
+   "nazwa": "Artifacts",
+   "opis": [
+    "Rzadkie artefakty z bonusami.",
+    "Rzadkie artefakty ze skrzyń (i z mimików udających skrzynie!) – np. buty szybkości, pierścienie, amulety. Zakładasz je w slotach akcesoriów (Curios)."
+   ],
+   "tagi": [
+    "Przedmioty"
+   ],
+   "link": "https://modrinth.com/mod/artifacts",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "atlaslib",
+   "nazwa": "Atlas Lib",
+   "opis": [
+    "Biblioteka potrzebna innym modom. Sama nic nie dodaje."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/atlas-lib",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "attributefix",
+   "nazwa": "AttributeFix",
+   "opis": [
+    "Znosi limity atrybutów, np. zdrowia i pancerza, na których potykają się inne mody."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/attributefix",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "awesomedungeon",
+   "nazwa": "Awesome Dungeon",
+   "opis": [
+    "Lochy na lądzie, w oceanie, Netherze i Endzie.",
+    "Dodatkowe lochy i budowle z łupem w każdym wymiarze: na powierzchni, pod wodą (edycja ocean), w Netherze i w Endzie.",
+    "Samouczek: Kompas odkrywcy: wpisz 'awesomedungeon'."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/awesome-dungeon",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "awesomedungeonend",
+   "nazwa": "Awesome Dungeon End",
+   "opis": [
+    "Duża nowa struktura do zwiedzania w Endzie."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/awesome-dungeon-the-end",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "awesomedungeonnether",
+   "nazwa": "Awesome Dungeon Nether",
+   "opis": [
+    "Nowe lochy w Netherze."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/awesome-dungeon-nether",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "awesomedungeonocean",
+   "nazwa": "Awesome Dungeon Ocean",
+   "opis": [
+    "Lochy w oceanie: statki, ruiny i inne."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/awesome-dungeon-edition-ocean",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "spears",
+   "nazwa": "Backported Spears",
+   "opis": [
+    "Włócznie z nowszych wersji Minecrafta.",
+    "Włócznie z aktualizacji Mounts of Mayhem (1.21.11): pchnięcie i szarża pod prawym przyciskiem.",
+    "Zaklęcie Lunge wyrzuca Cię do przodu podczas ataku włócznią.",
+    "To inne przedmioty niż włócznie ze Spartan Weaponry.",
+    "Samouczek: Przepisy w JEI: wpisz @spears."
+   ],
+   "tagi": [
+    "Broń i walka"
+   ],
+   "link": "https://modrinth.com/mod/backported-spears",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "balm",
+   "nazwa": "Balm",
+   "opis": [
+    "Biblioteka potrzebna innym modom. Sama nic nie dodaje."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/balm",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "betteradvancements",
+   "nazwa": "Better Advancements",
+   "opis": [
+    "Czytelniejszy ekran osiągnięć, wygodny przy wielu modach."
+   ],
+   "tagi": [
+    "Interfejs"
+   ],
+   "link": "https://modrinth.com/mod/better-advancements",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "betterclouds",
+   "nazwa": "Better Clouds",
+   "opis": [
+    "Ładniejsze chmury w stylu Minecrafta."
+   ],
+   "tagi": [
+    "Grafika i dźwięk"
+   ],
+   "link": "https://modrinth.com/mod/better-clouds",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "betterdogs_dtn",
+   "nazwa": "Better Dogs X Doggy Talents Next",
+   "opis": [
+    "Ładniejsze modele psów z Doggy Talents Next."
+   ],
+   "tagi": [
+    "Zwierzęta",
+    "Grafika i dźwięk"
+   ],
+   "link": "https://modrinth.com/mod/better_dogs_x_doggy_talents_next",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "better_tab",
+   "nazwa": "Better Tab Info",
+   "opis": [
+    "Lepsza lista graczy pod klawiszem Tab: TPS, ping w liczbach, przewijanie."
+   ],
+   "tagi": [
+    "Interfejs"
+   ],
+   "link": "https://modrinth.com/mod/bettertabinfo",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "biomemusic",
+   "nazwa": "Biome Music",
+   "opis": [
+    "Dobiera muzykę w tle do biomu, w którym jesteś."
+   ],
+   "tagi": [
+    "Grafika i dźwięk"
+   ],
+   "link": "https://www.curseforge.com/minecraft/search?search=Biome%20Music",
+   "zrodlo": "CurseForge (szukaj)"
+  },
+  {
+   "id": "biomesoplenty",
+   "nazwa": "Biomes O' Plenty",
+   "opis": [
+    "Ponad 50 nowych biomów.",
+    "Nowe biomy na powierzchni, w Netherze i pod ziemią: lasy klonowe, sekwoje, wiśniowe sady, bagna, wulkany, pustkowia i wiele innych.",
+    "Dodaje nowe drewno, kwiaty i rośliny. U nas biomy są ok. 2× większe niż zwykle.",
+    "Geophilic Reforged dodatkowo upiększa biomy (roślinność, skały), a Traveler's Titles pokazuje nazwę biomu, gdy do niego wchodzisz."
+   ],
+   "tagi": [
+    "Świat i biomy"
+   ],
+   "link": "https://modrinth.com/mod/biomes-o-plenty",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "born_in_chaos_v1",
+   "nazwa": "Born in Chaos",
+   "opis": [
+    "Mroczne potwory nocy.",
+    "Nowe, groźne potwory: rozkładające się zombie, szkielety, dread houndy, upiory, Fallen Chaos Knight i inne.",
+    "U nas pojawiają się głównie podczas Krwawego Księżyca."
+   ],
+   "tagi": [
+    "Potwory"
+   ],
+   "link": "https://modrinth.com/mod/borninchaos",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "bygonenether",
+   "nazwa": "Bygone Nether",
+   "opis": [
+    "Nowe struktury dla każdego biomu Netheru i zamieszkujące je moby."
+   ],
+   "tagi": [
+    "Potwory",
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/bygone-nether",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "canary",
+   "nazwa": "Canary",
+   "opis": [
+    "Optymalizacja: ogólnie przyspiesza działanie gry i serwera."
+   ],
+   "tagi": [
+    "Wydajność"
+   ],
+   "link": "https://modrinth.com/mod/canary",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "cataclysm_betterfortresses",
+   "nazwa": "Cataclysm x YUNG's Better Nether Fortress",
+   "opis": [
+    "Sprawia, że moby z Cataclysm pojawiają się w fortach YUNG's w Netherze."
+   ],
+   "tagi": [
+    "Potwory",
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/cataclysm-x-yungs-better-nether-fortress",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "cave_dweller",
+   "nazwa": "Cave Dweller Evolved",
+   "opis": [
+    "Horror w jaskiniach.",
+    "W jaskiniach może zacząć Cię śledzić Cave Dweller. Gdy usłyszysz dziwne dźwięki – uciekaj na powierzchnię."
+   ],
+   "tagi": [
+    "Potwory"
+   ],
+   "link": "https://modrinth.com/mod/cave-dweller-evolved",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "champions",
+   "nazwa": "Champions-Unofficial",
+   "opis": [
+    "Silniejsze moby z lepszym łupem.",
+    "Co jakiś czas wrogi mob pojawia się jako champion rangi 1–5: kolorowa poświata, pasek z rangą i specjalne zdolności (ogień, paraliż, przyciąganie, odbijanie ciosów...).",
+    "Łup (tylko gdy zabije go gracz): kryształy magii za każdą rangę, od rangi 2 księga lub zwój zaklęcia (Novice → Master), od rangi 3 szansa na artefakt, ranga 5 daje też wielki kryształ.",
+    "Rangi: 1 – co ~40. mob, 2 – co ~100., 5 – co ~500. W pobliżu aktywnego beacona championy się nie pojawiają.",
+    "Sprawdź championa: /champions info <cel>."
+   ],
+   "tagi": [
+    "Potwory",
+    "Mechaniki gry"
+   ],
+   "link": "https://modrinth.com/mod/champions-unofficial",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "chunky",
+   "nazwa": "Chunky",
+   "opis": [
+    "Narzędzie administratora: generuje świat z wyprzedzeniem, żeby gra nie zacinała się przy zwiedzaniu."
+   ],
+   "tagi": [
+    "Narzędzia admina"
+   ],
+   "link": "https://modrinth.com/mod/chunky",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "ci_panowie",
+   "nazwa": "Ci_Panowie",
+   "opis": [
+    "Nasz własny mod: plan księżyców, wyspa, kupowanie claimów, komendy /cipanowie i pauza serwera bez graczy. W grze: /cipanowie help."
+   ],
+   "tagi": [
+    "Mechaniki gry"
+   ],
+   "link": null,
+   "zrodlo": null
+  },
+  {
+   "id": "citadel",
+   "nazwa": "Citadel",
+   "opis": [
+    "Biblioteka potrzebna innym modom. Sama nic nie dodaje."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/citadel",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "cloth_config",
+   "nazwa": "Cloth Config API",
+   "opis": [
+    "Biblioteka do ekranów ustawień innych modów."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/cloth-config",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "clumps",
+   "nazwa": "Clumps",
+   "opis": [
+    "Łączy kulki doświadczenia w jedną, żeby ograniczyć lagi."
+   ],
+   "tagi": [
+    "Wydajność"
+   ],
+   "link": "https://modrinth.com/mod/clumps",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "collective",
+   "nazwa": "Collective",
+   "opis": [
+    "Biblioteka potrzebna innym modom. Sama nic nie dodaje."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/collective",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "controlling",
+   "nazwa": "Controlling",
+   "opis": [
+    "Dodaje wyszukiwarkę w ustawieniach klawiszy."
+   ],
+   "tagi": [
+    "Interfejs"
+   ],
+   "link": "https://modrinth.com/mod/controlling",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "corgilib",
+   "nazwa": "CorgiLib",
+   "opis": [
+    "Biblioteka potrzebna innym modom. Sama nic nie dodaje."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/corgilib",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "craft_config",
+   "nazwa": "Craft Config Lib",
+   "opis": [
+    "Biblioteka do ustawień innych modów, działa u gracza."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/craft-config",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "create",
+   "nazwa": "Create",
+   "opis": [
+    "Maszyny, mechanizmy i automatyzacja.",
+    "Mechaniczna technika: wały, zębatki, młyny, prasy, taśmy, pociągi – automatyzacja wszystkiego.",
+    "Moc pochodzi z obrotu (koła wodne, wiatraki, silniki parowe).",
+    "Samouczek: Samouczki Ponder: najedź na blok Create i przytrzymaj W – pokaże animowaną instrukcję."
+   ],
+   "tagi": [
+    "Technika"
+   ],
+   "link": "https://modrinth.com/mod/create",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "create_new_age",
+   "nazwa": "Create: New Age",
+   "opis": [
+    "Elektryczność do Create.",
+    "Dodaje do Create prąd: generatory zamieniające obrót na energię, silniki elektryczne, kable i reaktor.",
+    "Samouczek: Tak jak w Create – przytrzymaj W na bloku (Ponder)."
+   ],
+   "tagi": [
+    "Technika"
+   ],
+   "link": "https://modrinth.com/mod/create-new-age",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "creativecore",
+   "nazwa": "CreativeCore",
+   "opis": [
+    "Biblioteka potrzebna innym modom. Sama nic nie dodaje."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/creativecore",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "creeperoverhaul",
+   "nazwa": "Creeper Overhaul",
+   "opis": [
+    "Creepery i endermani zależni od biomu.",
+    "Creepery i endermani wyglądają i zachowują się inaczej w zależności od biomu – niektóre warianty są groźniejsze."
+   ],
+   "tagi": [
+    "Potwory"
+   ],
+   "link": "https://modrinth.com/mod/creeper-overhaul",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "cristellib",
+   "nazwa": "Cristel Lib",
+   "opis": [
+    "Biblioteka do konfiguracji struktur."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/cristel-lib",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "cupboard",
+   "nazwa": "Cupboard",
+   "opis": [
+    "Biblioteka potrzebna innym modom. Sama nic nie dodaje."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://www.curseforge.com/minecraft/search?search=Cupboard",
+   "zrodlo": "CurseForge (szukaj)"
+  },
+  {
+   "id": "curios",
+   "nazwa": "Curios API",
+   "opis": [
+    "Sloty na akcesoria.",
+    "Dodatkowe sloty na akcesoria (pierścienie, amulety, pasy, plecaki) – przycisk w ekwipunku."
+   ],
+   "tagi": [
+    "Przedmioty"
+   ],
+   "link": "https://modrinth.com/mod/curios",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "CustomSkinLoader_Universal-15.1.jar",
+   "nazwa": "CustomSkinLoader",
+   "opis": [
+    "Wczytuje skiny także dla graczy bez oficjalnego konta i z innych źródeł."
+   ],
+   "tagi": [
+    "Grafika i dźwięk"
+   ],
+   "link": "https://modrinth.com/mod/customskinloader",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "dataanchor",
+   "nazwa": "Data Anchor",
+   "opis": [
+    "Biblioteka potrzebna innym modom. Sama nic nie dodaje."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/data-anchor",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "decorative_blocks",
+   "nazwa": "Decorative Blocks",
+   "opis": [
+    "Nowe bloki do budowania i ozdabiania."
+   ],
+   "tagi": [
+    "Bloki i budowanie"
+   ],
+   "link": "https://modrinth.com/mod/decorative-blocks",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "mr_dungeons",
+   "nazwa": "DeCubed Dungeons (Formerly Dungeons+)",
+   "opis": [
+    "Nowe wersje lochów, zależne od biomu, z nowymi spawnerami mobów."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/decubed-dungeons",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "doggytalents",
+   "nazwa": "Doggy Talents Next",
+   "opis": [
+    "Tresura psów: talenty, poziomy, akcesoria.",
+    "Wilka zamieniasz w psa, klikając go (PPM) smakołykiem Training Treat – nie musi być wcześniej oswojony.",
+    "Smakołyki podnoszą poziom, a punkty wydajesz na talenty: Training do 20, Super do 40, Master do 60, potem Kami.",
+    "Menu psa: Shift + PPM albo PPM patykiem (talenty, tryby, imię). Siad/wstań: PPM pustą ręką.",
+    "Tryby Aggressive, Berserker, Guard, Tactical, Docile idą za Tobą. Wandering i Patrol zostają na miejscu.",
+    "Dodaje legowiska, miski na jedzenie, gwizdek do wydawania komend i akcesoria dla psów.",
+    "Better Dogs dodaje wiele nowych wyglądów psów (rasy).",
+    "Pies zniknął? /cipanowie psy pokaże, gdzie są Twoje psy i czemu nie idą za Tobą. Przywołanie: kliknij [przywolaj], wpisz /cipanowie psy <imię> albo /cipanowie psy wszystkie.",
+    "Ranny pies nie teleportuje się sam. Psy siedzące oraz w trybie wędrowania i patrolu też za Tobą nie pójdą.",
+    "Samouczek: Ryż wypada z trawy (bez nożyc). Training Treat: nić + kość + proch + cukier + miska ryżu. Reszta przepisów w JEI: @doggytalents."
+   ],
+   "tagi": [
+    "Zwierzęta"
+   ],
+   "link": "https://modrinth.com/mod/doggy-talents-next",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "dungeoncrawl",
+   "nazwa": "Dungeon Crawl",
+   "opis": [
+    "Wielopoziomowe podziemne lochy.",
+    "Pod ziemią kryją się lochy z 5 poziomami – im głębiej, tym trudniej (katakumby, a na dnie piekielny poziom).",
+    "U nas są 2–3× bardziej rozbudowane niż normalnie i częstsze niż inne struktury. Wejście to mała budowla na powierzchni.",
+    "Znajdziesz je kompasem odkrywcy: wpisz dungeoncrawl."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/dungeoncrawl",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "mr_dungeons_andtaverns",
+   "nazwa": "Dungeons and Taverns",
+   "opis": [
+    "Lochy, tawerny i inne struktury do znalezienia w świecie."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/dungeons-and-taverns",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "mr_dungeons_andtavernsancientcityoverhaul",
+   "nazwa": "Dungeons and Taverns Ancient City Overhaul",
+   "opis": [
+    "Przebudowane Starożytne Miasto."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/dungeons-and-taverns-ancient-city-overhaul",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "mr_dungeons_andtavernspillageroutpostrework",
+   "nazwa": "Dungeons and Taverns Pillager Outpost Overhaul",
+   "opis": [
+    "Przebudowany posterunek rozbójników."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/dungeons-and-taverns-pillager-outpost-overhaul",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "mr_dungeons_andtavernsstrongholdrework",
+   "nazwa": "Dungeons and Taverns Stronghold Overhaul",
+   "opis": [
+    "Twierdza przebudowana od podstaw."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/dungeons-and-taverns-stronghold-overhaul",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "dungeons_plus",
+   "nazwa": "Dungeons Plus",
+   "opis": [
+    "Proste lochy w stylu zwykłego Minecrafta."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/dungeons-plus",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "ebwizardry",
+   "nazwa": "Electroblob's Wizardry Redux",
+   "opis": [
+    "Magia: różdżki i księgi zaklęć.",
+    "Magia oparta na różdżkach i księgach zaklęć 8 żywiołów. Podstawa: magiczne kryształy z rud.",
+    "Księgi zaklęć znajdziesz w skrzyniach i u czarodziejów (wieże czarodziejów).",
+    "U nas różdżki mają od razu pełną progresję – możesz je od razu ulepszać Tajemną Księgą (Arcane Tome).",
+    "Samouczek: Wizard's Handbook – księga-poradnik w grze; przepis w JEI."
+   ],
+   "tagi": [
+    "Magia"
+   ],
+   "link": "https://modrinth.com/mod/electroblobs-wizardry-redux",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "embeddium",
+   "nazwa": "Embeddium",
+   "opis": [
+    "Optymalizacja: znacznie zwiększa liczbę FPS."
+   ],
+   "tagi": [
+    "Wydajność"
+   ],
+   "link": "https://modrinth.com/mod/embeddium",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "endermanoverhaul",
+   "nazwa": "Enderman Overhaul",
+   "opis": [
+    "Ponad 20 wariantów endermanów z własnymi modelami, dźwiękami i animacjami."
+   ],
+   "tagi": [
+    "Potwory"
+   ],
+   "link": "https://modrinth.com/mod/enderman-overhaul",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "enhancedai",
+   "nazwa": "Enhanced AI",
+   "opis": [
+    "Mądrzejsze potwory.",
+    "Potwory są sprytniejsze: lepiej celują, omijają przeszkody, a niektóre zombie potrafią kopać bloki, żeby się do Ciebie dostać."
+   ],
+   "tagi": [
+    "Potwory"
+   ],
+   "link": "https://modrinth.com/mod/enhanced-ai",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "enhanced_boss_bars",
+   "nazwa": "Enhanced Boss Bars (Fabric/Forge/Neoforge)",
+   "opis": [
+    "Ładniejsze paski zdrowia bossów."
+   ],
+   "tagi": [
+    "Interfejs"
+   ],
+   "link": "https://modrinth.com/mod/enhanced-boss-bars-mod",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "enhancedcelestials",
+   "nazwa": "Enhanced Celestials",
+   "opis": [
+    "Krwawy Księżyc co 7 dni + inne księżyce.",
+    "Stały plan księżyców: Krwawy Księżyc co 7. noc (z szansą 10% Super Krwawy), a w środku tygodnia (4. noc) losowy dobry księżyc: żniwiarski, niebieski, super księżyc.",
+    "Krwawy: 3× więcej potworów (Super: 4,5×), groźniejsze moby (Born in Chaos, Rotten Creatures, The Graveyard), potwory z efektem Siły.",
+    "Spać można w każdy księżyc.",
+    "Plan sprawdzisz komendą /enhancedcelestials lunarForecast."
+   ],
+   "tagi": [
+    "Mechaniki gry"
+   ],
+   "link": "https://modrinth.com/mod/enhanced-celestials",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "entityculling",
+   "nazwa": "Entity Culling",
+   "opis": [
+    "Optymalizacja: nie rysuje mobów i bloków, których nie widać."
+   ],
+   "tagi": [
+    "Wydajność"
+   ],
+   "link": "https://modrinth.com/mod/entityculling",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "explorerscompass",
+   "nazwa": "Explorer's Compass",
+   "opis": [
+    "Kompas wskazujący struktury.",
+    "Kompas, który znajduje wybraną strukturę: wioski, lochy, siedziby bossów.",
+    "Kliknij PPM, wybierz strukturę z listy i kliknij Szukaj – kompas wskaże kierunek i odległość.",
+    "Na liście wpisz np. cataclysm, mowziesmobs, graveyard, dungeons_arise, aby znaleźć struktury modów.",
+    "Pierwszy kompas dostajesz na start. Zgubiłeś? /cipanowie kompas (gdy nie masz go w ekwipunku, co 5 min)."
+   ],
+   "tagi": [
+    "Podróże i mapa"
+   ],
+   "link": "https://modrinth.com/mod/explorers-compass",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "explorify",
+   "nazwa": "Explorify",
+   "opis": [
+    "Małe struktury w stylu zwykłego Minecrafta do znalezienia podczas zwiedzania."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/explorify",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "ferritecore",
+   "nazwa": "FerriteCore",
+   "opis": [
+    "Optymalizacja: zmniejsza zużycie pamięci."
+   ],
+   "tagi": [
+    "Wydajność"
+   ],
+   "link": "https://modrinth.com/mod/ferrite-core",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "fabric_api",
+   "nazwa": "Forgified Fabric API",
+   "opis": [
+    "Biblioteka pozwalająca uruchamiać część modów z Fabrica na Forge."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/forgified-fabric-api",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "fps_overlay",
+   "nazwa": "FPS Overlay",
+   "opis": [
+    "Pokazuje na ekranie FPS i inne dane o działaniu gry."
+   ],
+   "tagi": [
+    "Interfejs"
+   ],
+   "link": "https://modrinth.com/mod/fps-overlay",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "friendsandfoes",
+   "nazwa": "Friends&Foes (Forge/NeoForge)",
+   "opis": [
+    "Moby z głosowań Minecraft.",
+    "Dodaje moby, które przegrały głosowania Mojangu: Copper Golem, Glare, Moobloom, Iceologer, Illusioner i inne."
+   ],
+   "tagi": [
+    "Potwory",
+    "Zwierzęta"
+   ],
+   "link": "https://modrinth.com/mod/friends-and-foes-forge",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "watching",
+   "nazwa": "From The Fog",
+   "opis": [
+    "Tajemnicza istota obserwuje graczy.",
+    "Klimat horroru: w świecie może pojawiać się tajemnicza postać i dziać się dziwne rzeczy. Nie daj się zaskoczyć."
+   ],
+   "tagi": [
+    "Potwory"
+   ],
+   "link": "https://modrinth.com/mod/from-the-fog",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "geckolib",
+   "nazwa": "Geckolib",
+   "opis": [
+    "Biblioteka animacji 3D używana przez inne mody."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/geckolib",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "geophilic_reforged",
+   "nazwa": "Geophilic Reforged",
+   "opis": [
+    "Subtelnie upiększa biomy świata głównego."
+   ],
+   "tagi": [
+    "Świat i biomy"
+   ],
+   "link": "https://modrinth.com/mod/geophilic-reforged",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "glitchcore",
+   "nazwa": "GlitchCore",
+   "opis": [
+    "Biblioteka potrzebna innym modom. Sama nic nie dodaje."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/glitchcore",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "gravestone",
+   "nazwa": "GraveStone Mod",
+   "opis": [
+    "Po śmierci przedmioty zostają w grobie.",
+    "Gdy zginiesz, w miejscu śmierci powstaje grób z Twoimi przedmiotami – nic nie znika.",
+    "Wróć na miejsce śmierci i zniszcz grób lub kliknij go PPM, aby odzyskać rzeczy.",
+    "Współrzędne śmierci pokaże też mapa Xaero (punkt śmierci)."
+   ],
+   "tagi": [
+    "Mechaniki gry"
+   ],
+   "link": "https://modrinth.com/mod/gravestone-mod",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "guardvillagers",
+   "nazwa": "Guard Villagers",
+   "opis": [
+    "Strażnicy w wioskach.",
+    "Wioski pilnują strażnicy, którzy walczą z potworami i bronią wieśniaków."
+   ],
+   "tagi": [
+    "Mechaniki gry"
+   ],
+   "link": "https://modrinth.com/mod/guard-villagers",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "hardcorerevival",
+   "nazwa": "Hardcore Revival",
+   "opis": [
+    "Ranny gracz może zostać podniesiony.",
+    "Zamiast od razu zginąć, gracz pada nieprzytomny na pewien czas.",
+    "Inny gracz może go podnieść: podejdź i przytrzymaj PPM na leżącym graczu.",
+    "Nieprzytomny może też się poddać i zginąć od razu."
+   ],
+   "tagi": [
+    "Mechaniki gry",
+    "Gra z innymi"
+   ],
+   "link": "https://modrinth.com/mod/hardcore-revival",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "iceandfire",
+   "nazwa": "Ice and Fire",
+   "opis": [
+    "Smoki i mityczne stworzenia.",
+    "Smoki ognia, lodu i błyskawic (gniazda i jaskinie smoków), cyklopi, hydry, gorgony, syreny i inne.",
+    "Smoki można pokonać, a ich jaja wykluć i wychować własnego smoka.",
+    "Z łusek i kości smoków robi się najlepszy sprzęt.",
+    "Samouczek: Bestiariusz (Bestiary) – księga w grze z opisami stworzeń. Przepis sprawdź w JEI."
+   ],
+   "tagi": [
+    "Potwory",
+    "Bossowie"
+   ],
+   "link": "https://modrinth.com/mod/ice-and-fire-dragons",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "immediatelyfast",
+   "nazwa": "ImmediatelyFast",
+   "opis": [
+    "Optymalizacja: przyspiesza rysowanie grafiki, więc gra ma więcej FPS."
+   ],
+   "tagi": [
+    "Wydajność"
+   ],
+   "link": "https://modrinth.com/mod/immediatelyfast",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "immersive_armors",
+   "nazwa": "Immersive Armors",
+   "opis": [
+    "Nowe zbroje z efektami.",
+    "Kilkanaście zestawów zbroi o różnym wyglądzie i bonusach (np. kościana, wikingów, rycerska)."
+   ],
+   "tagi": [
+    "Broń i walka"
+   ],
+   "link": "https://modrinth.com/mod/immersive-armors",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "incontrol",
+   "nazwa": "In Control!",
+   "opis": [
+    "Narzędzie administratora: reguły pojawiania się mobów."
+   ],
+   "tagi": [
+    "Narzędzia admina"
+   ],
+   "link": "https://modrinth.com/mod/in-control",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "incendium",
+   "nazwa": "Incendium Legacy",
+   "opis": [
+    "Przebudowany Nether: nowe biomy, trudne struktury, unikalna broń i groźne moby."
+   ],
+   "tagi": [
+    "Potwory",
+    "Struktury",
+    "Świat i biomy"
+   ],
+   "link": "https://modrinth.com/mod/incendium",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "insanelib",
+   "nazwa": "InsaneLib",
+   "opis": [
+    "Biblioteka potrzebna modowi Enhanced AI. Sama nic nie dodaje."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/insanelib",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "integrated_api",
+   "nazwa": "Integrated API",
+   "opis": [
+    "Biblioteka potrzebna modom Integrated Structures."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/integrated-api",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "idas",
+   "nazwa": "Integrated Dungeons and Structures",
+   "opis": [
+    "Bardzo szczegółowe struktury korzystające z bloków i mobów innych modów."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/idas",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "inventoryhud",
+   "nazwa": "InventoryHUD+",
+   "opis": [
+    "Pokazuje na ekranie ekwipunek, efekty mikstur i założony sprzęt."
+   ],
+   "tagi": [
+    "Interfejs"
+   ],
+   "link": "https://modrinth.com/mod/inventoryhudplus",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "itemproductionlib",
+   "nazwa": "Item Production Lib",
+   "opis": [
+    "Biblioteka wymagana przez Passive Skill Tree. Sama nic nie dodaje."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://www.curseforge.com/minecraft/search?search=Item%20Production%20Lib",
+   "zrodlo": "CurseForge (szukaj)"
+  },
+  {
+   "id": "jade",
+   "nazwa": "Jade 🔍",
+   "opis": [
+    "Informacja o bloku/mobie pod kursorem.",
+    "Na górze ekranu pokazuje, na co patrzysz: nazwę bloku lub moba, mod, z którego pochodzi, zdrowie moba."
+   ],
+   "tagi": [
+    "Interfejs"
+   ],
+   "link": "https://modrinth.com/mod/jade",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "jei",
+   "nazwa": "Just Enough Items (JEI)",
+   "opis": [
+    "Przepisy wszystkich przedmiotów.",
+    "Lista wszystkich przedmiotów po prawej stronie ekwipunku.",
+    "Najedź na przedmiot: R – jak go zrobić, U – do czego służy. Pasek wyszukiwania na dole (@nazwa_moda filtruje po modzie)."
+   ],
+   "tagi": [
+    "Interfejs"
+   ],
+   "link": "https://modrinth.com/mod/jei",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "justzoom",
+   "nazwa": "Just Zoom",
+   "opis": [
+    "Przybliżenie widoku.",
+    "Przybliżenie widoku jak lunetą, bez przedmiotu.",
+    "Samouczek: Klawisz: Opcje → Sterowanie → Just Zoom."
+   ],
+   "tagi": [
+    "Interfejs"
+   ],
+   "link": "https://modrinth.com/mod/just-zoom",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "konkrete",
+   "nazwa": "Konkrete",
+   "opis": [
+    "Biblioteka potrzebna innym modom. Sama nic nie dodaje."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/konkrete",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "ksyxis",
+   "nazwa": "Ksyxis",
+   "opis": [
+    "Optymalizacja: przyspiesza wczytywanie świata."
+   ],
+   "tagi": [
+    "Wydajność"
+   ],
+   "link": "https://modrinth.com/mod/ksyxis",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "cataclysm",
+   "nazwa": "L_Ender's Cataclysm",
+   "opis": [
+    "Wielcy bossowie w strukturach.",
+    "Najtrudniejsi bossowie na serwerze, każdy w swojej strukturze (u nas struktury są ~2× gęściej):",
+    "Ignis – Burning Arena (Nether) • Netherite Monstrosity – Soul Blacksmith (Nether)",
+    "Ender Guardian – Ruined Citadel (End) • The Harbinger – Ancient Factory",
+    "The Leviathan – Sunken City (ocean) • Ancient Remnant – Cursed Pyramid (pustynia)",
+    "Maledictus – Frosted Prison (śnieg) • Scylla – Acropolis (ciepły ocean)",
+    "Z bossów wypadają unikalne bronie i materiały. Przygotuj się – to walki na wiele minut.",
+    "Samouczek: Struktury znajdziesz kompasem odkrywcy: wpisz 'cataclysm'."
+   ],
+   "tagi": [
+    "Bossowie",
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/l_enders-cataclysm",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "letmedespawn",
+   "nazwa": "Let Me Despawn",
+   "opis": [
+    "Optymalizacja: pozwala znikać mobom, które niepotrzebnie zostawałyby w świecie."
+   ],
+   "tagi": [
+    "Wydajność"
+   ],
+   "link": "https://modrinth.com/mod/lmd",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "libraryferret",
+   "nazwa": "Library Ferret",
+   "opis": [
+    "Biblioteka potrzebna innym modom. Sama nic nie dodaje."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/library-ferret",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "lionfishapi",
+   "nazwa": "Lionfish-API",
+   "opis": [
+    "Biblioteka animacji używana przez inne mody."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/lionfish-api",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "lithostitched",
+   "nazwa": "Lithostitched",
+   "opis": [
+    "Biblioteka poprawiająca zgodność modów generujących świat."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/lithostitched",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "mace_port",
+   "nazwa": "Mace Combat Backport",
+   "opis": [
+    "Buzdygan i ładunki wiatru z 1.21.",
+    "Buzdygan: im z większej wysokości spadasz na wroga, tym mocniej uderzasz (i nie dostajesz obrażeń od upadku).",
+    "Przepisy: ciężki rdzeń = gwiazda Netheru + obsydian + żelazo, breeze rod = blaze rod + pióro, buzdygan = rdzeń + breeze rod.",
+    "Ładunek wiatru (4 z breeze roda) – rzuć pod nogi, żeby wyskoczyć wysoko.",
+    "Samouczek: Przepisy w JEI: wpisz @mace_port."
+   ],
+   "tagi": [
+    "Broń i walka"
+   ],
+   "link": "https://modrinth.com/mod/mace-combat-backport",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "medievalmusic",
+   "nazwa": "Medieval Music",
+   "opis": [
+    "Średniowieczna muzyka w tle.",
+    "Medieval Music – 40 utworów średniowiecznej muzyki w tle; Biome Music dobiera muzykę do biomu.",
+    "Do tego Ambient Sounds i Sound Physics – odgłosy otoczenia i echo w jaskiniach."
+   ],
+   "tagi": [
+    "Grafika i dźwięk"
+   ],
+   "link": "https://www.curseforge.com/minecraft/search?search=Medieval%20Music",
+   "zrodlo": "CurseForge (szukaj)"
+  },
+  {
+   "id": "mezz_config",
+   "nazwa": "MezzConfig",
+   "opis": [
+    "Biblioteka do ustawień innych modów."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/mezzconfig",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "dummmmmmy",
+   "nazwa": "MmmMmmMmmMmm",
+   "opis": [
+    "Manekin treningowy.",
+    "Manekin do testowania broni – pokazuje zadawane obrażenia."
+   ],
+   "tagi": [
+    "Broń i walka"
+   ],
+   "link": "https://modrinth.com/mod/mmmmmmmmmmmm",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "modernfix",
+   "nazwa": "ModernFix",
+   "opis": [
+    "Optymalizacja: przyspiesza grę, oszczędza pamięć i poprawia wiele błędów."
+   ],
+   "tagi": [
+    "Wydajność"
+   ],
+   "link": "https://modrinth.com/mod/modernfix",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "moonlight",
+   "nazwa": "Moonlight Lib",
+   "opis": [
+    "Biblioteka potrzebna m.in. modowi Supplementaries."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/moonlight",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "morevanilladrawers",
+   "nazwa": "More Vanilla Drawers",
+   "opis": [
+    "Szuflady z pozostałych gatunków drewna do Storage Drawers."
+   ],
+   "tagi": [
+    "Bloki i budowanie"
+   ],
+   "link": "https://modrinth.com/mod/more-vanilla-drawers",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "mowziesmobs",
+   "nazwa": "Mowzie's Mobs",
+   "opis": [
+    "Bossowie i stwory z animowanymi walkami.",
+    "Bossowie z rozbudowanymi atakami: Ferrous Wroughtnaut (podziemna komnata), Frostmaw (śnieżne biomy), Umvuthi (wioska Umvuthana na sawannie).",
+    "Do tego stwory: Naga, Foliaath, Grottol, Lantern i inne.",
+    "Z bossów wypadają wyjątkowe przedmioty (np. topór Wroughtnauta, kryształ lodu).",
+    "Samouczek: Kompas odkrywcy: wpisz 'mowziesmobs'."
+   ],
+   "tagi": [
+    "Potwory",
+    "Bossowie"
+   ],
+   "link": "https://modrinth.com/mod/mowzies-mobs",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "neruina",
+   "nazwa": "Neruina - Ticking Entity Fixer",
+   "opis": [
+    "Zabezpieczenie: nie pozwala, by błąd moba lub bloku trwale zepsuł świat."
+   ],
+   "tagi": [
+    "Narzędzia admina"
+   ],
+   "link": "https://modrinth.com/mod/neruina",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "noisiumed",
+   "nazwa": "Noisiumed",
+   "opis": [
+    "Optymalizacja: przyspiesza generowanie terenu."
+   ],
+   "tagi": [
+    "Wydajność"
+   ],
+   "link": "https://modrinth.com/mod/noisiumed",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "oculus",
+   "nazwa": "Oculus",
+   "opis": [
+    "Pozwala używać shaderów, czyli ładniejszego oświetlenia i cieni."
+   ],
+   "tagi": [
+    "Grafika i dźwięk"
+   ],
+   "link": "https://modrinth.com/mod/oculus",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "onlyhammersandexcavators",
+   "nazwa": "Only Hammers And Excavators",
+   "opis": [
+    "Młoty i ekskawatory kopiące obszar 3x3x1.",
+    "Młot kopie jak kilof, a ekskawator jak łopata (ziemia, piasek, żwir), ale obszarem 3x3x1.",
+    "Z wciśniętym Shiftem kopiesz tylko jeden blok – przydatne przy budowaniu.",
+    "Materiały: od drewna po netheryt, a także szmaragd, lapis i obsydian.",
+    "Samouczek: Przepisy w JEI: wpisz @onlyhammersandexcavators."
+   ],
+   "tagi": [
+    "Przedmioty"
+   ],
+   "link": "https://modrinth.com/mod/only-hammers-and-excavators",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "openpartiesandclaims",
+   "nazwa": "Open Parties and Claims",
+   "opis": [
+    "Claimy: ochrona bazy przed mobami.",
+    "Zajmij chunki (16×16) wokół bazy: klawisz ' (apostrof) albo mapa Xaero (PPM na mapie). Claimy widać na mapie i minimapie.",
+    "W claimie moby nie niszczą bloków: zombie, creepery, smoki, górnicy Enhanced AI. Inni gracze mogą w nim budować i korzystać.",
+    "9 chunków za darmo. Więcej kupisz za surowce: /cipanowie claim (cennik), /cipanowie claim kup [ile].",
+    "Ceny rosną: żelazo do 128 m, złoto do 256 m, diamenty do ~500 m, netheryt do 1 km. Nie ma drużyn ani forceloadu. Claim wygasa po 60 dniach nieobecności."
+   ],
+   "tagi": [
+    "Gra z innymi"
+   ],
+   "link": "https://modrinth.com/mod/open-parties-and-claims",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "overflowingbars",
+   "nazwa": "Overflowing Bars",
+   "opis": [
+    "Czytelne paski zdrowia i pancerza, także powyżej zwykłego limitu."
+   ],
+   "tagi": [
+    "Interfejs"
+   ],
+   "link": "https://modrinth.com/mod/overflowing-bars",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "packetfixer",
+   "nazwa": "Packet Fixer",
+   "opis": [
+    "Naprawia problemy sieciowe i rozłączenia przy dużej liczbie modów."
+   ],
+   "tagi": [
+    "Wydajność"
+   ],
+   "link": "https://modrinth.com/mod/packet-fixer",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "skilltree",
+   "nazwa": "Passive Skill Tree",
+   "opis": [
+    "Wielkie drzewko umiejętności pasywnych.",
+    "Ogromne drzewko (ok. 590 umiejętności) z bonusami pasywnymi – coś jak w Path of Exile.",
+    "Drzewko otwierasz przyciskiem w ekwipunku. Punkty kupujesz w drzewku, płacąc punktami XP.",
+    "U nas: 5 darmowych punktów na start, potem 1. kupiony punkt kosztuje 1 poziom, 2. – 2 poziomy... aż do 30 poziomów; dalej każdy po 30 poziomów. Brak limitu punktów.",
+    "Umiejętności odblokowujesz od punktu startowego, po połączeniach – planuj ścieżkę!",
+    "Reset drzewka: Zwój amnezji (Amnesia Scroll) – wypada z Ender Dragona, zabiera 20% poziomów.",
+    "Samouczek: Najedź myszką na umiejętność w drzewku, aby zobaczyć bonus."
+   ],
+   "tagi": [
+    "Mechaniki gry"
+   ],
+   "link": "https://www.curseforge.com/minecraft/mc-mods/passive-skill-tree",
+   "zrodlo": "CurseForge"
+  },
+  {
+   "id": "pickupnotifier",
+   "nazwa": "Pick Up Notifier",
+   "opis": [
+    "Pokazuje na ekranie, co właśnie podniosłeś."
+   ],
+   "tagi": [
+    "Interfejs"
+   ],
+   "link": "https://modrinth.com/mod/pick-up-notifier",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "pingwheel",
+   "nazwa": "Ping Wheel",
+   "opis": [
+    "Oznaczanie miejsc dla drużyny.",
+    "Zaznacz punkt w świecie, a inni gracze zobaczą znacznik – przydatne przy walkach z bossami.",
+    "Samouczek: Klawisz: Opcje → Sterowanie → Ping Wheel."
+   ],
+   "tagi": [
+    "Gra z innymi"
+   ],
+   "link": "https://modrinth.com/mod/ping-wheel",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "platform",
+   "nazwa": "Platform",
+   "opis": [
+    "Biblioteka potrzebna innym modom. Sama nic nie dodaje."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/platform",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "polymorph",
+   "nazwa": "Polymorph",
+   "opis": [
+    "Wybór wyniku przy konflikcie przepisów.",
+    "Gdy ten sam układ w stole rzemieślniczym daje kilka różnych przedmiotów, obok pojawia się przycisk do wyboru wyniku."
+   ],
+   "tagi": [
+    "Interfejs"
+   ],
+   "link": "https://modrinth.com/mod/polymorph",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "puzzleslib",
+   "nazwa": "Puzzles Lib",
+   "opis": [
+    "Biblioteka potrzebna innym modom. Sama nic nie dodaje."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/puzzles-lib",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "quark",
+   "nazwa": "Quark",
+   "opis": [
+    "Setki drobnych ulepszeń gry.",
+    "Dziesiątki małych dodatków do zwykłego Minecrafta: nowe bloki budowlane, ulepszenia ekwipunku, zwierzęta, drobne mechaniki.",
+    "Co dokładnie zmienia, sprawdzisz w ustawieniach moda (lista modów → Quark)."
+   ],
+   "tagi": [
+    "Bloki i budowanie",
+    "Mechaniki gry"
+   ],
+   "link": "https://modrinth.com/mod/quark",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "resourcefulconfig",
+   "nazwa": "Resourceful Config",
+   "opis": [
+    "Biblioteka do ustawień innych modów."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/resourceful-config",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "resourcefullib",
+   "nazwa": "Resourceful Lib",
+   "opis": [
+    "Biblioteka potrzebna innym modom. Sama nic nie dodaje."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/resourceful-lib",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "rottencreatures",
+   "nazwa": "Rotten Creatures",
+   "opis": [
+    "Zombie i szkielety zależne od biomu.",
+    "Warianty nieumarłych dopasowane do biomu: mumie na pustyni, zamarznięci w śniegu, bagienne zombie, spaleni w Netherze i inne."
+   ],
+   "tagi": [
+    "Potwory"
+   ],
+   "link": "https://modrinth.com/mod/rottencreatures",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "searchables",
+   "nazwa": "Searchables",
+   "opis": [
+    "Biblioteka dodająca wyszukiwanie w ekranach innych modów."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/searchables",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "voicechat",
+   "nazwa": "Simple Voice Chat",
+   "opis": [
+    "Czat głosowy w grze.",
+    "Rozmowa głosowa z graczami w pobliżu (głos słychać z kierunku gracza).",
+    "Klawisz V – ustawienia (mikrofon, głośność, grupy). Domyślnie mówisz z przyciskiem (Caps Lock) – można zmienić w ustawieniach.",
+    "Grupy pozwalają rozmawiać z drużyną bez względu na odległość."
+   ],
+   "tagi": [
+    "Gra z innymi"
+   ],
+   "link": "https://modrinth.com/mod/simple-voice-chat",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "smallships",
+   "nazwa": "Small Ships",
+   "opis": [
+    "Statki z żaglami i armatami.",
+    "Drewniane statki (Cog, Brig, Galley, Drakkar): pływają szybciej niż łódki, mieszczą więcej osób i skrzynie, część może mieć armaty.",
+    "Samouczek: Przepisy statków w JEI."
+   ],
+   "tagi": [
+    "Podróże i mapa"
+   ],
+   "link": "https://modrinth.com/mod/small-ships",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "snowundertrees",
+   "nazwa": "Snow Under Trees",
+   "opis": [
+    "Śnieg leży też pod drzewami w zimnych biomach."
+   ],
+   "tagi": [
+    "Świat i biomy"
+   ],
+   "link": "https://modrinth.com/mod/snow-under-trees",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "sound_physics_remastered",
+   "nazwa": "Sound Physics Remastered",
+   "opis": [
+    "Realistyczny dźwięk: echo, wytłumienie i pochłanianie przez bloki."
+   ],
+   "tagi": [
+    "Grafika i dźwięk"
+   ],
+   "link": "https://modrinth.com/mod/sound-physics-remastered",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "spark",
+   "nazwa": "spark",
+   "opis": [
+    "Narzędzie administratora: pokazuje, co spowalnia serwer."
+   ],
+   "tagi": [
+    "Narzędzia admina"
+   ],
+   "link": "https://modrinth.com/mod/spark",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "spartanshields",
+   "nazwa": "Spartan Shields",
+   "opis": [
+    "Wiele nowych tarcz z różnych materiałów."
+   ],
+   "tagi": [
+    "Broń i walka"
+   ],
+   "link": "https://modrinth.com/mod/spartan-shields",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "spartanweaponry",
+   "nazwa": "Spartan Weaponry",
+   "opis": [
+    "Nowe rodzaje broni i tarcz.",
+    "Katany, rapiery, halabardy, włócznie, młoty, kusze, bumerangi i wiele tarcz – każda broń ma inne cechy (zasięg, szybkość, obrażenia)."
+   ],
+   "tagi": [
+    "Broń i walka"
+   ],
+   "link": "https://modrinth.com/mod/spartan-weaponry",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "stalwart_dungeons",
+   "nazwa": "Stalwart Dungeons",
+   "opis": [
+    "Trudne lochy dla szukających reliktów i artefaktów."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/stalwart-dungeons",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "storagedrawers",
+   "nazwa": "Storage Drawers",
+   "opis": [
+    "Szuflady na dużo sztuk jednego przedmiotu.",
+    "Każda szuflada trzyma dużo sztuk jednego przedmiotu i pokazuje go na froncie.",
+    "Storage Upgrade (I–VII) zwiększa pojemność, a Void Upgrade usuwa nadmiar. Compacting Drawers to szuflady kompresujące.",
+    "More Vanilla Drawers dodaje szuflady z pozostałych gatunków drewna.",
+    "Samouczek: Przepisy w JEI: wpisz @storagedrawers."
+   ],
+   "tagi": [
+    "Bloki i budowanie"
+   ],
+   "link": "https://modrinth.com/mod/storagedrawers",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "structure_gel",
+   "nazwa": "Structure Gel API",
+   "opis": [
+    "Biblioteka do tworzenia struktur używana przez inne mody."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/structure-gel-api",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "supplementaries",
+   "nazwa": "Supplementaries",
+   "opis": [
+    "Dziesiątki przydatnych bloków.",
+    "Słoiki, worki, liny, flagi, tabliczki, pułapki, procarka i wiele drobnych ulepszeń bloków z Minecrafta (Amendments)."
+   ],
+   "tagi": [
+    "Przedmioty",
+    "Bloki i budowanie"
+   ],
+   "link": "https://modrinth.com/mod/supplementaries",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "suppsquared",
+   "nazwa": "Supplementaries Squared",
+   "opis": [
+    "Dodatkowe bloki i przedmioty do Supplementaries."
+   ],
+   "tagi": [
+    "Bloki i budowanie"
+   ],
+   "link": "https://modrinth.com/mod/supplementaries-squared",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "terrablender",
+   "nazwa": "TerraBlender",
+   "opis": [
+    "Biblioteka pozwalająca modom dodawać biomy bez konfliktów."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/terrablender",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "graveyard",
+   "nazwa": "The Graveyard (Forge)",
+   "opis": [
+    "Cmentarze, krypty i nieumarli.",
+    "Cmentarze, krypty i ruiny pełne nieumarłych (Ghoul, Revenant, Reaper, Nightmare...).",
+    "Najsilniejszy przeciwnik: Lich.",
+    "Część tych potworów pojawia się u nas podczas Krwawego Księżyca.",
+    "Samouczek: Kompas odkrywcy: wpisz 'graveyard'."
+   ],
+   "tagi": [
+    "Potwory",
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/the-graveyard-forge",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "hordes",
+   "nazwa": "The Hordes",
+   "opis": [
+    "Nocne hordy zombie.",
+    "Co 10 dni w nocy przychodzi horda zombie, która poluje na graczy – kilka fal przez ok. 5 minut.",
+    "Zaczyna się od 10 mobów na falę, z każdą hordą trochę więcej (do 40 mobów z hordy naraz). Miej schronienie i dobry sprzęt."
+   ],
+   "tagi": [
+    "Potwory",
+    "Mechaniki gry"
+   ],
+   "link": "https://modrinth.com/mod/the-hordes",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "totw_modded",
+   "nazwa": "Towers of the Wild Modded",
+   "opis": [
+    "Wieże w dziczy, także w innych wymiarach."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/totw-modded",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "t_and_t",
+   "nazwa": "Towns and Towers",
+   "opis": [
+    "Nowe wioski, posterunki rozbójników i statki w świecie."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/towns-and-towers",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "trashslot",
+   "nazwa": "TrashSlot",
+   "opis": [
+    "Kosz na śmieci w ekwipunku.",
+    "W ekwipunku jest slot kosza: wrzuć tam przedmiot, aby go usunąć.",
+    "Ostatni wyrzucony przedmiot można jeszcze wyjąć z kosza, dopóki nie wrzucisz następnego."
+   ],
+   "tagi": [
+    "Interfejs"
+   ],
+   "link": "https://modrinth.com/mod/trashslot",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "travelersbackpack",
+   "nazwa": "Traveler's Backpack",
+   "opis": [
+    "Plecaki na plecy.",
+    "Plecak z dużym ekwipunkiem, zbiornikami na płyny i miejscem na narzędzia; nosisz go na plecach. Wiele wariantów wyglądu.",
+    "Samouczek: Klawisze plecaka: Opcje → Sterowanie → Traveler's Backpack. Przepis w JEI."
+   ],
+   "tagi": [
+    "Przedmioty"
+   ],
+   "link": "https://modrinth.com/mod/travelersbackpack",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "travelerstitles",
+   "nazwa": "Traveler's Titles",
+   "opis": [
+    "Duży napis z nazwą biomu lub wymiaru, gdy do niego wchodzisz."
+   ],
+   "tagi": [
+    "Interfejs"
+   ],
+   "link": "https://modrinth.com/mod/travelers-titles",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "treeharvester",
+   "nazwa": "Tree Harvester",
+   "opis": [
+    "Całe drzewo jednym cięciem.",
+    "Kucnij i zetnij pień siekierą – spada całe drzewo, a liście szybko znikają.",
+    "Bez kucania ścinasz zwykle, po jednym bloku."
+   ],
+   "tagi": [
+    "Mechaniki gry"
+   ],
+   "link": "https://modrinth.com/mod/tree-harvester",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "villagernames",
+   "nazwa": "Villager Names",
+   "opis": [
+    "Nadaje osadnikom imiona."
+   ],
+   "tagi": [
+    "Mechaniki gry"
+   ],
+   "link": "https://modrinth.com/mod/villager-names-serilum",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "villagertradingplus",
+   "nazwa": "VillagersTradingPlus",
+   "opis": [
+    "Pozwala zmieniać oferty handlowe osadników."
+   ],
+   "tagi": [
+    "Mechaniki gry"
+   ],
+   "link": "https://modrinth.com/mod/villagerstradingplus",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "waystones",
+   "nazwa": "Waystones",
+   "opis": [
+    "Kamienie teleportacji.",
+    "Kamienie teleportacji stoją m.in. w wioskach. Kliknij PPM, aby aktywować kamień.",
+    "Z aktywowanego kamienia możesz teleportować się do każdego innego, który aktywowałeś (teleport może kosztować XP).",
+    "Własny kamień możesz też wytworzyć – przepis w JEI."
+   ],
+   "tagi": [
+    "Podróże i mapa"
+   ],
+   "link": "https://modrinth.com/mod/waystones",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "dungeons_arise",
+   "nazwa": "When Dungeons Arise",
+   "opis": [
+    "Ogromne lochy i zamki z łupami.",
+    "Wielkie, wielopiętrowe struktury: zamki, wieże, statki, świątynie – pełne potworów i skrzyń z łupem.",
+    "Dobre miejsce na sprzęt i XP, ale nie wchodź bez przygotowania.",
+    "Samouczek: Kompas odkrywcy: wpisz 'dungeons_arise'."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/when-dungeons-arise",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "xaerominimap",
+   "nazwa": "Xaero's Minimap",
+   "opis": [
+    "Minimapa i mapa świata.",
+    "Minimapa w rogu ekranu i punkty nawigacyjne (waypointy), także automatyczny punkt śmierci.",
+    "M – pełna mapa świata. Pozostałe klawisze w Opcje → Sterowanie."
+   ],
+   "tagi": [
+    "Podróże i mapa"
+   ],
+   "link": "https://modrinth.com/mod/xaeros-minimap",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "xaeroworldmap",
+   "nazwa": "Xaero's World Map",
+   "opis": [
+    "Pełnoekranowa mapa odkrytej części świata. Otwierasz ją klawiszem M."
+   ],
+   "tagi": [
+    "Podróże i mapa"
+   ],
+   "link": "https://modrinth.com/mod/xaeros-world-map",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "xaeroplus",
+   "nazwa": "XaeroPlus",
+   "opis": [
+    "Dodatkowe funkcje minimapy i mapy świata Xaero."
+   ],
+   "tagi": [
+    "Podróże i mapa"
+   ],
+   "link": "https://modrinth.com/mod/xaeroplus",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "yet_another_config_lib_v3",
+   "nazwa": "YetAnotherConfigLib (YACL)",
+   "opis": [
+    "Biblioteka do ustawień innych modów."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/yacl",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "yungsapi",
+   "nazwa": "YUNG's API",
+   "opis": [
+    "Biblioteka potrzebna modom YUNG's. Sama nic nie dodaje."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/yungs-api",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "bettercaves",
+   "nazwa": "YUNG's Better Caves",
+   "opis": [
+    "Przebudowane jaskinie: podziemne jeziora, rzeki i oceany lawy."
+   ],
+   "tagi": [
+    "Świat i biomy"
+   ],
+   "link": "https://modrinth.com/mod/yungs-better-caves",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "betterdeserttemples",
+   "nazwa": "YUNG's Better Desert Temples",
+   "opis": [
+    "Całkowicie nowe świątynie na pustyni."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/yungs-better-desert-temples",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "betterdungeons",
+   "nazwa": "YUNG's Better Dungeons",
+   "opis": [
+    "Całkowicie nowe lochy."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/yungs-better-dungeons",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "betterendisland",
+   "nazwa": "YUNG's Better End Island",
+   "opis": [
+    "Przebudowana główna wyspa Endu, na której walczy się ze smokiem."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/yungs-better-end-island",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "betterjungletemples",
+   "nazwa": "YUNG's Better Jungle Temples",
+   "opis": [
+    "Całkowicie nowe świątynie w dżungli."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/yungs-better-jungle-temples",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "bettermineshafts",
+   "nazwa": "YUNG's Better Mineshafts",
+   "opis": [
+    "Przebudowane opuszczone kopalnie."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/yungs-better-mineshafts",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "betterfortresses",
+   "nazwa": "YUNG's Better Nether Fortresses",
+   "opis": [
+    "Całkowicie nowe forty w Netherze."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/yungs-better-nether-fortresses",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "betteroceanmonuments",
+   "nazwa": "YUNG's Better Ocean Monuments",
+   "opis": [
+    "Całkowicie nowe monumenty w oceanie."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/yungs-better-ocean-monuments",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "betterstrongholds",
+   "nazwa": "YUNG's Better Strongholds",
+   "opis": [
+    "Całkowicie nowe twierdze."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/yungs-better-strongholds",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "betterwitchhuts",
+   "nazwa": "YUNG's Better Witch Huts",
+   "opis": [
+    "Przebudowane chatki wiedźm na bagnach."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/yungs-better-witch-huts",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "yungsbridges",
+   "nazwa": "YUNG's Bridges",
+   "opis": [
+    "Naturalnie powstające mosty w świecie."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/yungs-bridges",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "yungscavebiomes",
+   "nazwa": "YUNG's Cave Biomes",
+   "opis": [
+    "Nowe biomy jaskiniowe i podziemna zawartość."
+   ],
+   "tagi": [
+    "Świat i biomy"
+   ],
+   "link": "https://modrinth.com/mod/yungs-cave-biomes",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "yungsextras",
+   "nazwa": "YUNG's Extras",
+   "opis": [
+    "Dodatkowe struktury w stylu zwykłego Minecrafta."
+   ],
+   "tagi": [
+    "Struktury"
+   ],
+   "link": "https://modrinth.com/mod/yungs-extras",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "zeta",
+   "nazwa": "Zeta",
+   "opis": [
+    "Biblioteka potrzebna modowi Quark. Sama nic nie dodaje."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/zeta",
+   "zrodlo": "Modrinth"
+  }
+ ]
+}

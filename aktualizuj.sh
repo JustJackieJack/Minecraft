@@ -9,6 +9,11 @@ PLIKI=(
   "Proxmox-02 .env /etc/mc-panel/mc.env 600"
   "Proxmox-03 .env /etc/mc-panel/mc.env 600"
   "Proxmox-02 proxmox-02/mc_wlacz.py /usr/local/sbin/mc_wlacz.py 755"
+  "Proxmox-02 proxmox-02/mc_most.py /usr/local/sbin/mc_most.py 755"
+  "Proxmox-02 proxmox-02/mc-most.service /etc/systemd/system/mc-most.service 644"
+  "Proxmox-02 proxmox-02/mc-wlacz.service /etc/systemd/system/mc-wlacz.service 644"
+  "Proxmox-02 proxmox-02/var-lib-mcpanel-in.mount /etc/systemd/system/var-lib-mcpanel-in.mount 644"
+  "Proxmox-02 proxmox-02/var-lib-mcpanel-out.mount /etc/systemd/system/var-lib-mcpanel-out.mount 644"
   "Proxmox-03 proxmox-03/mc_straznik.py /usr/local/sbin/mc_straznik.py 755"
   "Proxmox-03 proxmox-03/mc-straznik.service /etc/systemd/system/mc-straznik.service 644"
   "Proxmox-03 proxmox-03/mc-straznik.timer /etc/systemd/system/mc-straznik.timer 644"
@@ -51,7 +56,7 @@ trap sprzatanie EXIT
 zdalnie() { ssh "${SSH_OPCJE[@]}" "$@"; }
 
 echo "== Testy"
-python3 -B -m unittest testy/test_mc.py testy/test_strona.py testy/test_repo.py 2>&1 | tail -1
+python3 -B -m unittest testy/test_mc.py testy/test_strona.py testy/test_paczka.py testy/test_repo.py 2>&1 | tail -1
 
 echo "== Połączenie (dotknij YubiKeya, gdy zacznie migać)"
 zdalnie -n Proxmox-02 true
@@ -70,7 +75,9 @@ if ! zdalnie -n Proxmox-03 true; then
 fi
 
 roznice=0
-jednostki=0
+jednostki_02=0
+jednostki_03=0
+most=0
 for wpis in "${PLIKI[@]}"; do
   read -r host zrodlo cel prawa <<< "$wpis"
   lokalny=$(sha256sum "$zrodlo" | cut -d' ' -f1)
@@ -91,13 +98,25 @@ for wpis in "${PLIKI[@]}"; do
     exit 1
   fi
   echo "zaktualizowano $host:$cel"
-  case "$cel" in /etc/systemd/*) jednostki=1 ;; esac
+  case "$host:$cel" in
+    Proxmox-02:/etc/systemd/*) jednostki_02=1; most=1 ;;
+    Proxmox-03:/etc/systemd/*) jednostki_03=1 ;;
+    Proxmox-02:*) most=1 ;;   # działający łącznik trzyma stary kod i stare ustawienia
+  esac
 done
 
-if [ "$jednostki" -eq 1 ]; then
+if [ "$jednostki_02" -eq 1 ]; then
+  zdalnie -n Proxmox-02 "systemctl daemon-reload"
+fi
+if [ "$most" -eq 1 ]; then
+  zdalnie -n Proxmox-02 "systemctl try-restart mc-most.service"
+fi
+if [ "$jednostki_03" -eq 1 ]; then
   zdalnie -n Proxmox-03 "systemctl daemon-reload && systemctl try-restart mc-straznik.timer"
 fi
 
 echo "== Gotowe: $roznice plik(ów) różnych"
 stan=$(zdalnie -n Proxmox-03 "systemctl is-active mc-straznik.timer" || true)
 echo "Timer strażnika na Proxmox-03: $stan"
+stan=$(zdalnie -n Proxmox-02 "systemctl is-active mc-most.service" || true)
+echo "Łącznik na Proxmox-02: $stan"

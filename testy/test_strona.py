@@ -1,4 +1,7 @@
+import gzip
+import hashlib
 import http.client
+import importlib.util
 import json
 import os
 import pathlib
@@ -7,6 +10,7 @@ import tempfile
 import threading
 import time
 import unittest
+import zipfile
 from http.server import ThreadingHTTPServer
 
 KORZEN = pathlib.Path(__file__).parent.parent
@@ -17,8 +21,7 @@ import serwer  # noqa: E402
 
 
 USTAWIENIA = {"STRONA_ADRES_GRY": "gra.example.org",
-              "STRONA_LINK_MODY": "https://mody.example.org/",
-              "STRONA_LINK_MAPA": "https://mapa.example.org/"}
+              }
 
 
 class Strona(unittest.TestCase):
@@ -31,7 +34,8 @@ class Strona(unittest.TestCase):
         self.teraz = 1000.0
         self.panel = serwer.Panel(self.dir, zegar=lambda: self.teraz)
         pliki = serwer.wczytaj_pliki(KORZEN / "strona" / "www", USTAWIENIA)
-        self.http = ThreadingHTTPServer(("127.0.0.1", 0), serwer.utworz_handler(self.panel, pliki))
+        self.mapa = self.dir / "mapa"
+        self.http = ThreadingHTTPServer(("127.0.0.1", 0), serwer.utworz_handler(self.panel, pliki, self.mapa))
         threading.Thread(target=self.http.serve_forever, daemon=True).start()
         self.addCleanup(self.http.server_close)
         self.addCleanup(self.http.shutdown)
@@ -134,27 +138,167 @@ class Strona(unittest.TestCase):
         self.assertEqual(kod, 200)
         self.assertIn("Ci Panowie".encode(), tresc)
         self.assertIn("default-src 'none'", o.getheader("Content-Security-Policy"))
-        for adres in ("/style.css", "/app.js", "/scena.svg", "/okno.svg", "/tekstura.svg",
-                      "/font/pixelify-latin.woff2", "/font/pixelify-latin-ext.woff2"):
+        for adres in ("/style.css", "/app.js", "/tekstura.svg",
+                      "/font/jersey15-latin.woff2", "/font/jersey15-latin-ext.woff2",
+                      "/Dirt_background_JE1.webp", "/mody", "/mody.js", "/mody.json", "/komendy", "/zainstaluj", "/mapa", "/mapa.js"):
             self.assertEqual(self.zapytaj("GET", adres)[0], 200, adres)
 
     def test_nie_ma_wyjscia_poza_www(self):
-        for adres in ("/../serwer.py", "/..%2fserwer.py", "/serwer.py", "/etc/passwd", "/index.html"):
+        for adres in ("/../serwer.py", "/..%2fserwer.py", "/serwer.py", "/etc/passwd", "/index.html", "/mody.html"):
             self.assertEqual(self.zapytaj("GET", adres)[0], 404, adres)
 
     def test_ustawienia_trafiaja_na_strone(self):
         html = self.zapytaj("GET", "/")[1].decode()
-        self.assertIn('href="https://mody.example.org/"', html)
-        self.assertIn('href="https://mapa.example.org/"', html)
         self.assertIn(">gra.example.org<", html)
         self.assertNotIn("{{", html)
 
     def test_zle_ustawienia_nie_psuja_strony(self):
-        html = serwer.wstaw_ustawienia(
-            '<a href="{{LINK_MODY}}"></a><a href="{{LINK_MAPA}}"></a><code>{{ADRES_GRY}}</code>',
-            {"STRONA_ADRES_GRY": "<b>", "STRONA_LINK_MODY": "javascript:alert(1)",
-             "STRONA_LINK_MAPA": 'https://x/"y'})
-        self.assertEqual(html, '<a href="#"></a><a href="https://x/&quot;y"></a><code>&lt;b&gt;</code>')
+        html = serwer.wstaw_ustawienia("<code>{{ADRES_GRY}}</code>", {"STRONA_ADRES_GRY": "<b>"})
+        self.assertEqual(html, "<code>&lt;b&gt;</code>")
+
+    def test_pasek_na_kazdej_stronie(self):
+        for adres in ("/", "/mody", "/komendy", "/zainstaluj", "/mapa"):
+            html = self.zapytaj("GET", adres)[1].decode()
+            self.assertEqual(html.count('aria-current="page"'), 1, adres)
+            for cel in ('href="/mody"', 'href="/komendy"', 'href="/zainstaluj"', 'href="/mapa"'):
+                self.assertIn(cel, html, adres)
+            self.assertNotIn("{{", html, adres)
+
+    def test_strony_nie_uzywaja_sceny(self):
+        for adres in ("/", "/style.css"):
+            tresc = self.zapytaj("GET", adres)[1].decode()
+            self.assertNotIn("scena", tresc)
+            self.assertNotIn("okno", tresc)
+        self.assertIn("Dirt_background_JE1.webp", self.zapytaj("GET", "/style.css")[1].decode())
+
+    def test_komendy_maja_sekcje_gracza_i_admina(self):
+        html = self.zapytaj("GET", "/komendy")[1].decode()
+        gracz, admin = html.split("Dla admina")
+        self.assertIn("/cipanowie kompas", gracz)
+        self.assertIn("/skilltree reset", admin)
+        self.assertNotIn("/skilltree", gracz)
+        self.assertNotIn("/cipanowie kompas", admin)
+
+    def wgraj_mape(self):
+        kafelek = self.mapa / "maps" / "o" / "tiles" / "0" / "x0"
+        kafelek.mkdir(parents=True)
+        (self.mapa / "index.html").write_text("<p>mapa</p>")
+        (self.mapa / "settings.json").write_text("{}")
+        with gzip.open(kafelek / "z0.prbm.gz", "wb") as f:
+            f.write(b"dane")
+        (self.dir / "tajne.json").write_text("sekret")
+        return kafelek
+
+    def test_mapa_index_i_pliki(self):
+        self.wgraj_mape()
+        kod, tresc, o = self.zapytaj("GET", "/mapa-dane/")
+        self.assertEqual((kod, tresc), (200, b"<p>mapa</p>"))
+        self.assertIn("frame-ancestors 'self'", o.getheader("Content-Security-Policy"))
+        self.assertEqual(self.zapytaj("HEAD", "/mapa-dane/settings.json")[0], 200)
+
+    def test_mapa_podaje_gz_z_naglowkiem(self):
+        self.wgraj_mape()
+        kod, tresc, o = self.zapytaj("GET", "/mapa-dane/maps/o/tiles/0/x0/z0.prbm")
+        self.assertEqual((kod, o.getheader("Content-Encoding")), (200, "gzip"))
+        self.assertEqual(gzip.decompress(tresc), b"dane")
+        self.assertIn("max-age", o.getheader("Cache-Control"))
+
+    def test_brak_kafelka_to_204_a_brak_pliku_404(self):
+        self.wgraj_mape()
+        self.assertEqual(self.zapytaj("GET", "/mapa-dane/maps/o/tiles/0/x9/z9.prbm")[0], 204)
+        self.assertEqual(self.zapytaj("GET", "/mapa-dane/nie-ma.json")[0], 404)
+
+    def test_mapa_bez_wyjscia_poza_katalog(self):
+        kafelek = self.wgraj_mape()
+        os.symlink(self.dir / "tajne.json", self.mapa / "dowiazanie.json")
+        for adres in ("/mapa-dane/../tajne.json", "/mapa-dane/%2e%2e/tajne.json", "/mapa-dane/..%2ftajne.json",
+                      "/mapa-dane/maps//o", "/mapa-dane/dowiazanie.json", "/mapa-dane/maps/o/tiles/0/x0/z0.prbm.gz",
+                      "/mapa-dane/x%00.json"):
+            self.assertEqual(self.zapytaj("GET", adres)[0], 404, adres)
+        self.assertTrue((kafelek / "z0.prbm.gz").exists())
+
+    def test_strona_mapy_pozwala_na_ramke_tylko_z_tej_strony(self):
+        o = self.zapytaj("GET", "/mapa")[2]
+        csp = o.getheader("Content-Security-Policy")
+        self.assertIn("frame-src 'self'", csp)
+        self.assertIn("frame-ancestors 'none'", csp)
+
+    def test_mapa_bez_wgranych_plikow(self):
+        self.assertEqual(self.zapytaj("HEAD", "/mapa-dane/settings.json")[0], 404)
+        self.assertEqual(self.zapytaj("GET", "/mapa-dane/")[0], 404)
+
+    def test_zainstaluj_ma_linki_do_instalatora(self):
+        html = self.zapytaj("GET", "/zainstaluj")[1].decode()
+        for plik in ("windows.exe", "macos_arm", "macos_intel", "linux"):
+            self.assertIn(f'releases/latest/download/ci_panowie_instalator_{plik}"', html)
+        self.assertIn("Jak pobrać", html)
+
+
+class ListaModow(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        dane = json.loads((KORZEN / "strona" / "www" / "mody.json").read_text())
+        cls.tagi, cls.mody = dane["tagi"], dane["mody"]
+
+    def test_kazdy_mod_ma_opis_i_tagi(self):
+        self.assertGreater(len(self.mody), 100)
+        for m in self.mody:
+            self.assertTrue(m["nazwa"].strip(), m)
+            self.assertTrue(all(a.strip() for a in m["opis"]) and m["opis"], m["nazwa"])
+            self.assertTrue(m["tagi"], m["nazwa"])
+            self.assertLessEqual(set(m["tagi"]), set(self.tagi), m["nazwa"])
+            self.assertNotRegex(" ".join(m["opis"]), r"&[0-9a-fk-or]", m["nazwa"])
+
+    def test_linki_sa_https_i_tylko_nasz_mod_jest_bez_linku(self):
+        self.assertEqual([m["id"] for m in self.mody if not m["link"]], ["ci_panowie"])
+        for m in self.mody:
+            if m["link"]:
+                self.assertRegex(m["link"], r"^https://(modrinth\.com/|www\.curseforge\.com/)", m["nazwa"])
+                self.assertTrue(m["zrodlo"], m["nazwa"])
+
+    def test_nazwy_sa_unikalne_dla_podpowiedzi(self):
+        nazwy = [m["nazwa"] for m in self.mody]
+        self.assertEqual(len(nazwy), len(set(nazwy)))
+
+
+class GeneratorModow(unittest.TestCase):
+    def setUp(self):
+        spec = importlib.util.spec_from_file_location("generuj_mody", KORZEN / "strona/narzedzia/generuj_mody.py")
+        self.g = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.g)
+        t = tempfile.TemporaryDirectory()
+        self.addCleanup(t.cleanup)
+        self.dir = pathlib.Path(t.name)
+
+    def jar(self, nazwa, mod_id):
+        with zipfile.ZipFile(self.dir / nazwa, "w") as z:
+            z.writestr("META-INF/mods.toml", f'[[mods]]\nmodId="{mod_id}"\ndisplayName="Mod {mod_id}"\n')
+        return hashlib.sha1((self.dir / nazwa).read_bytes()).hexdigest()
+
+    def test_laczy_zrodla(self):
+        suma = self.jar("a.jar", "a")
+        self.jar("b.jar", "b")
+        info = {"x": {"modid": "a", "short": "Krotko", "info": ["&cTresc"], "url": "https://www.curseforge.com/z"}}
+        opisy = {"b": {"opis": "Biblioteka", "link": "https://www.curseforge.com/minecraft/search?search=b"}}
+        projekt = {"project_type": "mod", "slug": "a-mod", "title": "Mod A",
+                   "client_side": "unsupported", "server_side": "required"}
+        tagi = {"Potwory": ["a"], "Biblioteka": ["b"], "Pusty": []}
+        wynik, braki = self.g.buduj(self.dir, info, opisy, tagi, {suma: projekt})
+        self.assertEqual(braki, [])
+        a, b = wynik
+        self.assertEqual((a["nazwa"], a["link"], a["tagi"]),
+                         ("Mod A", "https://modrinth.com/mod/a-mod", ["Potwory"]))
+        self.assertEqual(a["opis"], ["Krotko.", "Tresc"])
+        self.assertEqual((b["nazwa"], b["zrodlo"], b["tagi"]),
+                         ("Mod b", "CurseForge (szukaj)", ["Biblioteka"]))
+
+    def test_zglasza_mod_bez_opisu(self):
+        self.jar("a.jar", "a")
+        self.assertEqual(self.g.buduj(self.dir, {}, {}, {"T": ["a"]}, {}), ([], ["a"]))
+
+    def test_zglasza_mod_bez_tagu(self):
+        self.jar("a.jar", "a")
+        self.assertEqual(self.g.buduj(self.dir, {}, {"a": {"opis": "x"}}, {}, {}), ([], ["a"]))
 
 
 class SrodowiskoTestowe(unittest.TestCase):
