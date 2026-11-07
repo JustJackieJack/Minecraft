@@ -1,0 +1,9 @@
+[Unit]
+Description=Straznik bezczynnosci Minecrafta i Proxmox-03
+After=pve-cluster.service pve-guests.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/mc_straznik.py
+RuntimeDirectory=mc-straznik
+RuntimeDirectoryPreserve=yes

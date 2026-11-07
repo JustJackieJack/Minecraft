@@ -1,0 +1,22 @@
+[Unit]
+Description=Strona statusu Minecrafta
+After=network.target
+
+[Service]
+User=mc-strona
+Group=mc-strona
+EnvironmentFile=-/etc/mc-strona/strona.env
+ExecStart=/usr/bin/python3 -I /opt/mc-strona/serwer.py
+Restart=always
+RestartSec=3
+UMask=0077
+MemoryMax=128M
+TasksMax=64
+
+# Bez opcji wymagajacych przestrzeni montowania (ProtectSystem itd.): moga nie ruszyc w LXC.
+# Pliki chroni konto bez praw: zapis ma tylko do /panel/in.
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ci Panowie: status serwera</title>
+  <meta name="theme-color" content="#0d0f24">
+  <link rel="preload" href="/font/pixelify-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body data-stan="ladowanie">
+  <header class="pasek">
+    <a class="logo" href="/">Ci Panowie</a>
+    <nav aria-label="Główne">
+      <a href="/" aria-current="page">Status</a>
+      <a href="{{LINK_MODY}}">Mody</a>
+      <a href="{{LINK_MAPA}}">Mapa</a>
+    </nav>
+  </header>
+
+  <div class="widok" aria-hidden="true">
+    <img src="/scena.svg" alt="">
+    <img src="/okno.svg" alt="" class="okno">
+  </div>
+
+  <main>
+    <section class="panel" aria-labelledby="stan-nazwa">
+      <p class="etykieta">Serwer Minecraft</p>
+      <div class="stan" role="status" aria-live="polite">
+        <span class="lampa" aria-hidden="true"></span>
+        <h1 id="stan-nazwa">Sprawdzam…</h1>
+      </div>
+      <p id="stan-opis" class="opis">Chwila, pytam serwer o stan.</p>
+
+      <dl id="gracze" class="gracze" hidden>
+        <dt>Graczy online</dt>
+        <dd id="gracze-liczba">0</dd>
+      </dl>
+      <p id="odliczanie" class="odliczanie" hidden></p>
+
+      <button id="wlacz" class="przycisk" type="button" hidden>Włącz serwer</button>
+      <p id="blad" class="blad" role="alert" hidden></p>
+
+      <div class="adres">
+        <span class="etykieta">Adres do gry</span>
+        <div class="adres-wiersz">
+          <code id="adres-gry">{{ADRES_GRY}}</code>
+          <button id="kopiuj" class="przycisk maly" type="button">Kopiuj</button>
+        </div>
+        <p class="uwaga">Żeby wejść na serwer, musisz mieć włączony WireGuard.</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
