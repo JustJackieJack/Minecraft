@@ -21,7 +21,7 @@ TU = pathlib.Path(__file__).parent
 START_S = 10
 ODLICZANIE_S = 60
 STOP_S = 5
-STANY = ("wylaczony", "uruchamianie", "wlaczony", "zatrzymywanie", "zablokowany", "brak_danych")
+STANY = ("wylaczony", "uruchamianie", "wlaczony", "zatrzymywanie", "zablokowany", "noc", "mapa", "brak_danych")
 
 
 class Symulator:
@@ -76,7 +76,7 @@ class Symulator:
         dzialajacy = self.stan == "wlaczony"
         dane = {"aktualizacja": self.zegar(), "stan": self.stan,
                 "gracze": self.gracze if dzialajacy else None, "max_graczy": 20 if dzialajacy else None,
-                "odliczanie_s": self.odliczanie_s()}
+                "odliczanie_s": self.odliczanie_s(), "czynny_od": "06:00", "czynny_do": "23:30"}
         tymczasowy = self.panel.status.with_suffix(".tmp")
         tymczasowy.write_text(json.dumps(dane))
         os.replace(tymczasowy, self.panel.status)

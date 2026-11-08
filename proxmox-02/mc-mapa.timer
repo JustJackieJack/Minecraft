@@ -1,0 +1,9 @@
+[Unit]
+Description=Poranny render mapy Minecrafta (w nocnej przerwie)
+
+[Timer]
+OnCalendar=*-*-* 05:00:00
+AccuracySec=1min
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,17 @@
+[Unit]
+Description=Render mapy Minecrafta, potem wylaczenie CT
+# Do prac w CT: plik /etc/mc-mapa/serwis wstrzymuje render i wylaczanie.
+ConditionPathExists=!/etc/mc-mapa/serwis
+RequiresMountsFor=/swiat /praca
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/mc-mapa/renderuj.sh
+# Po sukcesie, bledzie i przekroczeniu czasu: CT sie wylacza, a host wie, ze render sie skonczyl.
+ExecStopPost=/usr/bin/systemctl poweroff --no-block
+TimeoutStartSec=3h
+Nice=5
+
+[Install]
+WantedBy=multi-user.target

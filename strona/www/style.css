@@ -148,7 +148,8 @@ h1 {
 
 [data-stan="wlaczony"] { --lampa: var(--trawa-jasna); --lampa-swiatlo: rgb(124 201 90 / .6); }
 [data-stan="uruchamianie"], [data-stan="zatrzymywanie"] { --lampa: var(--zolty); --lampa-swiatlo: rgb(255 215 106 / .5); }
-[data-stan="zablokowany"] { --lampa: var(--czerwony); --lampa-swiatlo: rgb(224 96 79 / .5); }
+[data-stan="zablokowany"], [data-stan="noc"] { --lampa: var(--czerwony); --lampa-swiatlo: rgb(224 96 79 / .5); }
+[data-stan="mapa"] { --lampa: var(--zolty); --lampa-swiatlo: rgb(255 215 106 / .5); }
 
 [data-stan="uruchamianie"] .lampa, [data-stan="zatrzymywanie"] .lampa {
   animation: miganie 1.2s steps(2) infinite;

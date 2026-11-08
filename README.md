@@ -96,15 +96,40 @@ Serwer dostaje config z `defaultconfigs`, bez skinów i modów z `paczka/tylko_k
 
 ## Mapa
 
-Mapa jest generowana z góry na Twoim komputerze, z lokalnego świata, przez [BlueMap CLI](https://bluemap.bluecolored.de/). Wymaga Javy 21+ i ustawień `MAPA_*` oraz `MC_CT_STRONA` w `.env`.
+Mapę 3D generuje [BlueMap CLI](https://bluemap.bluecolored.de/) na Proxmox-03, raz dziennie rano, tylko po dniu, w którym serwer działał.
 
-```bash
-./mapa/renderuj.sh   # pierwszy raz może trwać kilka godzin, później tylko zmiany
-./mapa/wyslij.sh     # wysyła wynik do CT strony
+```text
+strażnik: serwer odpowiada → flaga /etc/pve/mc-panel/mapa_do_renderu
+05:00 Proxmox-02 (mc-mapa.timer → mc_wlacz.py --mapa): flaga jest, na Proxmox-03 nic nie działa → WoL, start MAPA_CT
+  hook pre-start (mc_mapa.py): snapshot dysku CT Minecrafta, tylko do odczytu → /swiat w CT renderu
+  CT renderu (bez sieci): BlueMap → /praca (= /var/lib/mc-mapa na hoście), potem sam się wyłącza
+  hook post-stop: usunięcie snapshotu, mc-mapa-eksport.service: rsync na TrueNAS, skasowanie flagi
+Proxmox-02: NFS z TrueNAS tylko do odczytu → bind mount /srv/mc-mapa w CT strony
 ```
 
-Zamknij wcześniej Minecrafta. BlueMap pracuje na kopii świata w `mapa/praca/` (poza repo) i używa pliku klienta z Twojej instalacji gry.
-Strona serwuje pliki z `/srv/mc-mapa` pod `/mapa-dane/`. Podgląd lokalny: `python3 strona/dev.py`, zakładka Mapa.
+- Render blokuje włączenie Minecrafta (strona: „Aktualizacja mapy”) i nie rusza, gdy na Proxmox-03 coś działa. Flaga zostaje wtedy na następny dzień.
+- CT renderu wyłącza się sam po renderze, błędzie albo 3 h. BlueMap zapisuje postęp, więc długi render dokończy się w kolejne poranki.
+- Strażnik nie wyłączy hosta w trakcie eksportu.
+- Plik `/etc/mc-mapa/serwis` w CT renderu wstrzymuje render i wyłączanie (prace w CT).
+
+Pliki do CT renderu (Java, BlueMap, config, plik klienta, usługa) wgrywa, przy wyłączonym CT:
+
+```bash
+./mapa/ct/wgraj.sh
+```
+
+Lokalnie dalej działa podgląd z własnego świata: `./mapa/renderuj.sh` i `python3 strona/dev.py`, zakładka Mapa.
+`mapa/wyslij.sh` jest z poprzedniego systemu (wolumen w CT strony) i nie działa z mapą na NAS.
+
+## Nocna przerwa
+
+Od `NOC_OD` do `NOC_DO` (23:30–6:00) strona nie włącza serwera i stale pokazuje, w jakich godzinach można go włączyć.
+Pilnuje tego łącznik na Proxmox-02, nie strona. Ręcznie można włączyć zawsze: `systemctl start mc-wlacz` na Proxmox-02.
+
+- Działający serwer gaśnie o 23:30, chyba że gra `NOC_WYJATEK`. Gdy wyjątek wyjdzie w nocy, pozostali mają 5 min.
+- Ostrzeżenia w grze: 30, 15, 5 i 1 min przed wyłączeniem, tylko gdy wyjątek nie gra. Tekst nie wspomina o wyjątku.
+- Serwer jest w trybie offline: wyjątek rozpoznaje się tylko po nicku.
+- Nicki pochodzą z odpowiedzi serwera na ping. Przy liście niepełnej (ponad 12 graczy) albo jej braku strażnik niczego w nocy nie wyłącza.
 
 ## Czasy
 

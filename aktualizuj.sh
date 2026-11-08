@@ -17,6 +17,11 @@ PLIKI=(
   "Proxmox-03 proxmox-03/mc_straznik.py /usr/local/sbin/mc_straznik.py 755"
   "Proxmox-03 proxmox-03/mc-straznik.service /etc/systemd/system/mc-straznik.service 644"
   "Proxmox-03 proxmox-03/mc-straznik.timer /etc/systemd/system/mc-straznik.timer 644"
+  "Proxmox-02 proxmox-02/mc-mapa.service /etc/systemd/system/mc-mapa.service 644"
+  "Proxmox-02 proxmox-02/mc-mapa.timer /etc/systemd/system/mc-mapa.timer 644"
+  "Proxmox-03 proxmox-03/mc_mapa.py /usr/local/sbin/mc_mapa.py 755"
+  "Proxmox-03 proxmox-03/mc-mapa-hook.sh /var/lib/vz/snippets/mc-mapa-hook.sh 755"
+  "Proxmox-03 proxmox-03/mc-mapa-eksport.service /etc/systemd/system/mc-mapa-eksport.service 644"
 )
 
 sprawdz=0
@@ -106,7 +111,7 @@ for wpis in "${PLIKI[@]}"; do
 done
 
 if [ "$jednostki_02" -eq 1 ]; then
-  zdalnie -n Proxmox-02 "systemctl daemon-reload"
+  zdalnie -n Proxmox-02 "systemctl daemon-reload && systemctl try-restart mc-mapa.timer"
 fi
 if [ "$most" -eq 1 ]; then
   zdalnie -n Proxmox-02 "systemctl try-restart mc-most.service"
@@ -120,3 +125,5 @@ stan=$(zdalnie -n Proxmox-03 "systemctl is-active mc-straznik.timer" || true)
 echo "Timer strażnika na Proxmox-03: $stan"
 stan=$(zdalnie -n Proxmox-02 "systemctl is-active mc-most.service" || true)
 echo "Łącznik na Proxmox-02: $stan"
+stan=$(zdalnie -n Proxmox-02 "systemctl is-active mc-mapa.timer" || true)
+echo "Timer mapy na Proxmox-02: $stan"

@@ -3,10 +3,13 @@
 
 Zasada: przy kazdej watpliwosci nic nie wylaczamy.
     --proba  pokazuje stan i decyzje, niczego nie zmienia ani nie zapisuje.
+    --komunikat TEKST  wysyla TEKST do graczy tak jak ostrzezenia (test), nic wiecej.
     Plik SERWIS wstrzymuje wszystkie odliczania.
 Ustawienia: /etc/mc-panel/mc.env (wzor: .env.template).
 Logi: journalctl -t mc-straznik (zmiany stanu i akcje, nie kazda minuta).
 Co minute zapisuje raport dla lacznika na Proxmox-02 we wspolnym /etc/pve.
+Nocna przerwa (NOC_OD-NOC_DO): serwer gasnie, chyba ze gra NOC_WYJATEK. Gracze dostaja ostrzezenia w grze.
+Gdy serwer dzialal, zaklada flage dla porannego renderu mapy (mc_wlacz.py --mapa na Proxmox-02).
 """
 import json
 import os
@@ -18,6 +21,7 @@ import time
 WEZEL = "proxmox-03"
 USTAWIENIA = "/etc/mc-panel/mc.env"
 CT = ADRES_CT = ID_SERWERA = None   # z USTAWIENIA
+NOC_OD, NOC_DO, NOC_WYJATEK = "23:30", "06:00", None
 PORT_MC = 25565
 
 BEZ_GRACZY_S = 10 * 60
@@ -25,11 +29,16 @@ PUSTY_HOST_S = 5 * 60
 SERWER_NIE_ODPOWIADA_S = 20 * 60
 LIMIT_ZATRZYMANIA_S = 10 * 60
 START_CO_S = 2 * 60     # statystyki Crafty moga sie spozniac po wyslaniu startu
+OSTRZEZENIA_MIN = (30, 15, 5, 1)
+NOC_PO_WYJSCIU_S = 5 * 60   # wyjatek wyszedl w nocy: tyle maja pozostali
+NOC_POCZATEK_S = 120        # okno na zatrzymanie zaraz po ostrzezeniu "za 1 minute"
 
 STAN = "/run/mc-straznik/stan.json"
 SERWIS = "/etc/mc-panel/serwis"
 TOKEN = "/etc/mc-panel/crafty.token"
 RAPORT = "/etc/pve/mc-panel/straznik.json"
+FLAGA_MAPY = "/etc/pve/mc-panel/mapa_do_renderu"
+USLUGA_EKSPORTU = "mc-mapa-eksport.service"
 
 WYLACZONY, NIEZNANE = "down", "unknown"
 
@@ -41,6 +50,7 @@ ODLICZANIA = {
 OPIS_AKCJI = {
     "start_mc": "wysylam start serwera do Crafty",
     "stop_mc": "zatrzymuje serwer i zapisuje swiat",
+    "stop_noc": "nocna przerwa: zatrzymuje serwer i zapisuje swiat",
     "stop_ct": "zamykam CT",
     "wylacz_host": "wylaczam Proxmox-03",
 }
@@ -90,19 +100,26 @@ try:
             raise ValueError
         d += c
     g = json.loads(d)["players"]
-    print(int(g["online"]), int(g.get("max", 0)))
+    online = int(g["online"])
+    nicki = [str(p["name"]) for p in g.get("sample") or []]
+    # Serwer pokazuje najwyzej 12 nickow: niepelna lista to brak wiedzy, a nie brak gracza.
+    print(json.dumps({"online": online, "max": int(g.get("max", 0)),
+                      "nicki": nicki if len(nicki) >= online else None}))
 except Exception:
     print("unknown")
 '''
 
 CRAFTY = r'''
 import json, ssl, sys, urllib.request
-token = sys.stdin.read().strip()
+token, _, polecenie = sys.stdin.read().partition("\n")
+token = token.strip()
 id_serwera, co = sys.argv[1], sys.argv[2]
 adres = sys.argv[3] if len(sys.argv) > 3 else "https://127.0.0.1:8443"
 statystyki = co == "stats"
+sciezka = {"stats": "/stats", "stdin": "/stdin"}.get(co, "/action/" + co)
 r = urllib.request.Request(
-    adres + "/api/v2/servers/" + id_serwera + ("/stats" if statystyki else "/action/" + co),
+    adres + "/api/v2/servers/" + id_serwera + sciezka,
+    data=polecenie.encode() if co == "stdin" else None,
     method="GET" if statystyki else "POST", headers={"Authorization": "Bearer " + token})
 with urllib.request.urlopen(r, timeout=30, context=ssl._create_unverified_context()) as o:
     tresc = o.read()
@@ -120,7 +137,7 @@ def decyduj(st, o, teraz):
 
     if not o["ct_dziala"]:
         st = {k: v for k, v in st.items() if k == "pusty_host_od"}
-        if o["inni_goscie"] or o["zadania"] or o["sesje"]:
+        if o["inni_goscie"] or o["zadania"] or o["sesje"] or o.get("eksport"):
             return {}, None
         st.setdefault("pusty_host_od", teraz)
         if teraz - st["pusty_host_od"] >= PUSTY_HOST_S:
@@ -155,6 +172,13 @@ def decyduj(st, o, teraz):
 
     st.pop("serwer_down_od", None)
     st.pop("start_od", None)
+
+    st = nocna_przerwa(st, o, teraz)
+    if "noc_stop_o" in st and teraz >= st["noc_stop_o"] and not o["zadania"]:
+        st = {k: v for k, v in st.items() if k != "noc_stop_o"}
+        st["stop_od"] = teraz
+        return st, "stop_noc"
+
     if gracze > 0:
         st.pop("bez_graczy_od", None)
         return st, None
@@ -163,6 +187,81 @@ def decyduj(st, o, teraz):
         st["stop_od"] = teraz
         return st, "stop_mc"
     return st, None
+
+
+def jest_wyjatek(o):
+    """True / False, a None, gdy lista nickow jest nieznana."""
+    nicki = o.get("nicki")
+    if nicki is None or not NOC_WYJATEK:
+        return None
+    return NOC_WYJATEK in nicki
+
+
+def nocna_przerwa(st, o, teraz):
+    """Ustala noc_stop_o: kiedy w nocy zatrzymac serwer. Przy 0 graczy zostaje zwykle odliczanie."""
+    wyjatek = jest_wyjatek(o)
+    if not o.get("noc") or wyjatek:
+        return {k: v for k, v in st.items() if k != "noc_stop_o"}
+    if "noc_stop_o" in st or wyjatek is None or o["gracze"] == 0:
+        return st
+    # Zaraz po poczatku nocy, gdy gracze dostali juz ostrzezenie "za 1 minute": od razu.
+    poczatek = teraz - o["od_nocy_s"]
+    ost = st.get("ostrzezenie") or {}
+    if (o["od_nocy_s"] < NOC_POCZATEK_S and ost.get("min") == 1
+            and abs(ost.get("cel", 0) - poczatek) < 90):
+        return dict(st, noc_stop_o=teraz)
+    return dict(st, noc_stop_o=teraz + NOC_PO_WYJSCIU_S)
+
+
+def ostrzezenie(st, o, teraz):
+    """Zwraca (stan, tekst komunikatu w grze albo None). Tylko gdy gra ktos poza wyjatkiem."""
+    gracze = o.get("gracze")
+    if (o.get("serwis") or not o.get("ct_dziala") or type(gracze) is not int or gracze == 0
+            or "stop_od" in st or jest_wyjatek(o) is not False):
+        return st, None
+    if "noc_stop_o" in st:
+        cel = st["noc_stop_o"]
+    elif not o.get("noc") and o.get("do_nocy_s") is not None:
+        cel = round(teraz + o["do_nocy_s"])
+    else:
+        return st, None
+    zostalo = cel - teraz
+    k = next((k for k in sorted(OSTRZEZENIA_MIN) if zostalo <= k * 60 + 30), None)
+    if k is None or zostalo <= 0:
+        return st, None
+    ost = st.get("ostrzezenie") or {}
+    if abs(ost.get("cel", 0) - cel) < 90 and ost.get("min", 10 ** 6) <= k:
+        return st, None
+    st = dict(st, ostrzezenie={"cel": cel, "min": k})
+    # Prog decyduje, czy wyslac; tekst podaje prawdziwy czas (np. 10 min, gdy wyjatek wyszedl pozniej).
+    n = max(1, round(zostalo / 60))
+    if n == 1:
+        return st, "Nocna przerwa: serwer wyłączy się za 1 minutę. Zapisz postęp!"
+    if "noc_stop_o" in st:
+        return st, f"Nocna przerwa: serwer wyłączy się za {n} min."
+    return st, f"Nocna przerwa: serwer wyłączy się o {NOC_OD} (za {n} min)."
+
+
+def polecenie_komunikatu(tekst):
+    return "tellraw @a " + json.dumps({"text": "[Serwer] " + tekst, "color": "gold"})
+
+
+def sekundy_godziny(tekst):
+    """'23:30' -> sekundy od polnocy; inny format to ValueError."""
+    g, znak, mi = tekst.partition(":")
+    if not (znak and g.isdigit() and mi.isdigit() and len(mi) == 2 and int(g) < 24 and int(mi) < 60):
+        raise ValueError(f"zla godzina: {tekst!r}")
+    return int(g) * 3600 + int(mi) * 60
+
+
+def pora_nocy(teraz, od=None, do=None):
+    """Zwraca (czy noc, sekundy od poczatku nocy albo do jej poczatku). Czas lokalny hosta."""
+    od, do = od or NOC_OD, do or NOC_DO
+    t = time.localtime(teraz)
+    s = t.tm_hour * 3600 + t.tm_min * 60 + t.tm_sec
+    s_od, s_do = (sekundy_godziny(x) for x in (od, do))
+    noc = (s >= s_od or s < s_do) if s_od > s_do else (s_od <= s < s_do)
+    return noc, ((s - s_od) if noc else (s_od - s)) % 86400
 
 
 def raport(st, o, akcja, teraz):
@@ -176,7 +275,7 @@ def raport(st, o, akcja, teraz):
         "gracze": gracze,
         "max_graczy": o.get("max_graczy") if gracze is not None else None,
         "koniec_odliczania": koniec,
-        "wylaczanie": "stop_od" in st or akcja in ("stop_mc", "stop_ct"),
+        "wylaczanie": "stop_od" in st or akcja in ("stop_mc", "stop_noc", "stop_ct"),
     }
 
 
@@ -204,7 +303,8 @@ def opis(o):
     return (f"serwis={'tak' if o['serwis'] else 'nie'} ct={'dziala' if o['ct_dziala'] else 'stop'} "
             f"gracze={o['gracze']} proces_mc={o['proces_mc']} "
             f"inni={','.join(o['inni_goscie']) or '-'} zadania={','.join(o['zadania']) or '-'} "
-            f"sesje={'tak' if o['sesje'] else 'nie'}")
+            f"sesje={'tak' if o['sesje'] else 'nie'} eksport={'tak' if o.get('eksport') else 'nie'} "
+            f"noc={'tak' if o.get('noc') else 'nie'} wyjatek={ {True: 'gra', False: 'nie', None: '?'}[jest_wyjatek(o)] }")
 
 
 def log(tekst, blad=False):
@@ -225,11 +325,19 @@ def pvesh_json(*args):
 
 
 def rozbierz_sonde(w):
-    """Zwraca (gracze, max_graczy). Gracze to liczba, WYLACZONY albo NIEZNANE."""
-    czesci = w.split()
-    if len(czesci) == 2 and all(c.isdigit() for c in czesci):
-        return int(czesci[0]), int(czesci[1]) or None
-    return (WYLACZONY if w == WYLACZONY else NIEZNANE), None
+    """Zwraca (gracze, max_graczy, nicki). Gracze to liczba, WYLACZONY albo NIEZNANE; nicki lista albo None."""
+    if w == WYLACZONY:
+        return WYLACZONY, None, None
+    try:
+        d = json.loads(w)
+        online, maks, nicki = d["online"], d["max"], d["nicki"]
+    except (ValueError, KeyError, TypeError):
+        return NIEZNANE, None, None
+    if type(online) is not int or type(maks) is not int or online < 0 or maks < 0:
+        return NIEZNANE, None, None
+    if not (isinstance(nicki, list) and all(isinstance(n, str) for n in nicki)):
+        nicki = None
+    return online, maks or None, nicki
 
 
 def odczytaj_gracze():
@@ -237,13 +345,14 @@ def odczytaj_gracze():
         return rozbierz_sonde(komenda("pct", "exec", str(CT), "--", "python3", "-c", SONDA,
                                       ADRES_CT, str(PORT_MC), timeout=40).strip())
     except (RuntimeError, subprocess.TimeoutExpired):
-        return NIEZNANE, None
+        return NIEZNANE, None, None
 
 
-def crafty(co):
+def crafty(co, polecenie=""):
     with open(TOKEN) as f:
-        return komenda("pct", "exec", str(CT), "--", "python3", "-c", CRAFTY, ID_SERWERA, co,
-                       wejscie=f.read()).strip()
+        token = f.read().strip()
+    return komenda("pct", "exec", str(CT), "--", "python3", "-c", CRAFTY, ID_SERWERA, co,
+                   wejscie=token + "\n" + polecenie).strip()
 
 
 def odczytaj_proces_mc():
@@ -263,7 +372,9 @@ def obserwuj():
                 ct_dziala = True
             else:
                 inni.append(z.get("name", str(z.get("vmid"))))
-    gracze, max_graczy = odczytaj_gracze() if ct_dziala else (None, None)
+    gracze, max_graczy, nicki = odczytaj_gracze() if ct_dziala else (None, None, None)
+    teraz = time.time()
+    noc, sekundy = pora_nocy(teraz)
     return {
         "serwis": os.path.exists(SERWIS),
         "ct_dziala": ct_dziala,
@@ -273,7 +384,28 @@ def obserwuj():
         "gracze": gracze,
         "max_graczy": max_graczy,
         "proces_mc": odczytaj_proces_mc() if gracze == WYLACZONY else None,
+        "nicki": nicki,
+        "noc": noc,
+        "od_nocy_s": sekundy if noc else None,
+        "do_nocy_s": None if noc else sekundy,
+        "eksport": usluga_dziala(USLUGA_EKSPORTU),
     }
+
+
+def usluga_dziala(nazwa):
+    # is-active konczy sie kodem innym niz 0, gdy usluga nie dziala: to nie blad.
+    w = subprocess.run(["systemctl", "is-active", nazwa], capture_output=True, text=True, timeout=30)
+    return w.stdout.strip() in ("activating", "active", "reloading")
+
+
+def oznacz_mape(o, sciezka=FLAGA_MAPY):
+    """Serwer odpowiada, wiec swiat moze sie zmienic: rano trzeba odswiezyc mape."""
+    if type(o.get("gracze")) is int and not os.path.exists(sciezka):
+        os.makedirs(os.path.dirname(sciezka), exist_ok=True)
+        with open(sciezka, "w") as f:
+            f.write(str(int(time.time())))
+        return True
+    return False
 
 
 def wczytaj_stan():
@@ -292,7 +424,7 @@ def zapisz_stan(st):
 
 
 def wykonaj(akcja):
-    if akcja == "stop_mc":
+    if akcja in ("stop_mc", "stop_noc"):
         crafty("stop_server")
     elif akcja == "start_mc":
         crafty("start_server")
@@ -303,7 +435,7 @@ def wykonaj(akcja):
 
 
 def wczytaj_ustawienia(sciezka=USTAWIENIA):
-    global CT, ADRES_CT, ID_SERWERA
+    global CT, ADRES_CT, ID_SERWERA, NOC_OD, NOC_DO, NOC_WYJATEK
     d = {}
     with open(sciezka) as f:
         for wiersz in f:
@@ -311,10 +443,19 @@ def wczytaj_ustawienia(sciezka=USTAWIENIA):
             if znak and not klucz.startswith("#"):
                 d[klucz] = wartosc
     CT, ADRES_CT, ID_SERWERA = int(d["MC_CT"]), d["MC_ADRES_CT"], d["MC_ID_SERWERA"]
+    NOC_OD, NOC_DO, NOC_WYJATEK = d["NOC_OD"], d["NOC_DO"], d["NOC_WYJATEK"]
+    pora_nocy(0)    # zly format godzin ma przerwac prace od razu
 
 
 def main():
     wczytaj_ustawienia()
+    if "--komunikat" in sys.argv:
+        tekst = " ".join(sys.argv[sys.argv.index("--komunikat") + 1:]).strip()
+        if not tekst:
+            raise ValueError("podaj tekst: --komunikat TEKST")
+        crafty("stdin", polecenie_komunikatu(tekst))
+        log(f"komunikat testowy: {tekst}")
+        return 0
     proba = "--proba" in sys.argv
     obs = obserwuj()
     teraz = time.time()
@@ -322,11 +463,21 @@ def main():
     stary_opis = stary.pop("opis", None)
     stary_blad_raportu = stary.pop("blad_raportu", None)
     st, akcja = decyduj(stary, obs, teraz)
+    komunikat = None
+    if not akcja:
+        st, komunikat = ostrzezenie(st, obs, teraz)
     if proba:
         print("obserwacja:", obs)
         print("stan:", st)
         print("decyzja:", akcja)
+        print("komunikat w grze:", komunikat)
         return 0
+
+    try:
+        if oznacz_mape(obs):
+            log("serwer dziala: rano odswieze mape")
+    except OSError as e:
+        log(f"blad flagi mapy: {e}", blad=True)
 
     obecny_opis = opis(obs)
     if obecny_opis != stary_opis:
@@ -343,6 +494,13 @@ def main():
         if blad_raportu != stary_blad_raportu:
             log(f"blad raportu: {e}", blad=True)
     st_zapis = dict(opis=obecny_opis, blad_raportu=blad_raportu)
+
+    if komunikat:
+        log(f"komunikat w grze: {komunikat}")
+        try:
+            crafty("stdin", polecenie_komunikatu(komunikat))
+        except (OSError, RuntimeError, subprocess.TimeoutExpired) as e:
+            log(f"blad komunikatu: {e}", blad=True)
 
     if akcja == "limit_stopu":
         log("serwer nie zatrzymal sie w limicie, ponowie probe", blad=True)

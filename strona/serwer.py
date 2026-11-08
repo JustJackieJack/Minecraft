@@ -10,13 +10,15 @@ import html
 import json
 import os
 import pathlib
+import re
 import shutil
 import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import unquote, urlsplit
 
-STANY = {"wylaczony", "uruchamianie", "wlaczony", "zatrzymywanie", "zablokowany"}
+STANY = {"wylaczony", "uruchamianie", "wlaczony", "zatrzymywanie", "zablokowany", "noc", "mapa"}
+GODZINA = re.compile(r"(?:[01]?\d|2[0-3]):[0-5]\d")
 BRAK_DANYCH = "brak_danych"
 STATUS_WAZNY_S = 120
 PO_KLIKNIECIU_S = 60
@@ -60,6 +62,13 @@ TYPY_MAPY = {
 }
 
 
+def godzina(wartosc):
+    """Napis HH:MM albo None."""
+    if isinstance(wartosc, str) and GODZINA.fullmatch(wartosc):
+        return wartosc
+    return None
+
+
 def liczba(wartosc):
     """Nieujemna liczba calkowita albo None. Odrzuca tez bool."""
     if type(wartosc) is int and 0 <= wartosc < 10 ** 7:
@@ -76,7 +85,8 @@ class Panel:
         self.ostatni_klik = None
 
     def odczytaj(self):
-        pusty = {"stan": BRAK_DANYCH, "gracze": None, "max_graczy": None, "odliczanie_s": None}
+        pusty = {"stan": BRAK_DANYCH, "gracze": None, "max_graczy": None, "odliczanie_s": None,
+                 "czynny_od": None, "czynny_do": None}
         try:
             with open(self.status, "rb") as f:
                 d = json.loads(f.read(MAKS_STATUS_B))
@@ -98,6 +108,8 @@ class Panel:
             "gracze": liczba(d.get("gracze")),
             "max_graczy": liczba(d.get("max_graczy")),
             "odliczanie_s": liczba(d.get("odliczanie_s")),
+            "czynny_od": godzina(d.get("czynny_od")),
+            "czynny_do": godzina(d.get("czynny_do")),
         }
 
     def wlacz(self):

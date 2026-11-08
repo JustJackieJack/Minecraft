@@ -72,7 +72,24 @@ class Strona(unittest.TestCase):
 
     def test_przepuszcza_tylko_znane_pola(self):
         self.status(stan="wlaczony", gracze=2, max_graczy=20, odliczanie_s=None, tajne="Inny-999")
-        self.assertEqual(self.stan(), {"stan": "wlaczony", "gracze": 2, "max_graczy": 20, "odliczanie_s": None})
+        self.assertEqual(self.stan(), {"stan": "wlaczony", "gracze": 2, "max_graczy": 20, "odliczanie_s": None,
+                                       "czynny_od": None, "czynny_do": None})
+
+    def test_godziny_pracy(self):
+        self.status(stan="noc", czynny_od="06:00", czynny_do="23:30")
+        d = self.stan()
+        self.assertEqual((d["stan"], d["czynny_od"], d["czynny_do"]), ("noc", "06:00", "23:30"))
+        for zle in ("24:00", "6", "<b>", 600, None, "06:00 "):
+            self.status(stan="wlaczony", czynny_od=zle)
+            self.assertIsNone(self.stan()["czynny_od"], zle)
+
+    def test_noc_i_mapa_nie_pozwalaja_wlaczyc(self):
+        for stan in ("noc", "mapa"):
+            self.status(stan=stan)
+            self.assertEqual(self.stan()["stan"], stan)
+            kod, _, _ = self.zapytaj("POST", "/api/wlacz")
+            self.assertEqual(kod, 409, stan)
+            self.assertFalse(self.sygnal.exists())
 
     def test_zle_liczby_sa_odrzucane(self):
         self.status(stan="wlaczony", gracze=True, max_graczy=-1, odliczanie_s="9")

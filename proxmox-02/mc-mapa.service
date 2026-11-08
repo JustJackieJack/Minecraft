@@ -1,0 +1,10 @@
+[Unit]
+Description=Poranny render mapy Minecrafta na Proxmox-03
+After=pve-cluster.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/mc_wlacz.py --mapa
+# 3 = cos dziala na Proxmox-03, 5 = trwa wlaczanie, 6 = mapa aktualna: to nie sa awarie.
+SuccessExitStatus=3 5 6
+TimeoutStartSec=700

@@ -1,0 +1,11 @@
+[Unit]
+Description=Eksport mapy Minecrafta na TrueNAS
+After=pve-cluster.service
+RequiresMountsFor=/mnt/nas/mc-mapa /var/lib/mc-mapa
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/mc_mapa.py eksport
+Nice=10
+IOSchedulingClass=idle
+TimeoutStartSec=4h

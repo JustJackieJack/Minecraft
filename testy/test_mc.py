@@ -21,12 +21,14 @@ def laduj(sciezka, nazwa):
 
 
 s = laduj("proxmox-03/mc_straznik.py", "mc_straznik")
+mp = laduj("proxmox-03/mc_mapa.py", "mc_mapa")
 w = laduj("proxmox-02/mc_wlacz.py", "mc_wlacz")
 m = laduj("proxmox-02/mc_most.py", "mc_most")
 
 
 def obs(**zm):
-    o = dict(serwis=False, ct_dziala=True, inni_goscie=[], zadania=[], sesje=False, gracze=0, proces_mc=None)
+    o = dict(serwis=False, ct_dziala=True, inni_goscie=[], zadania=[], sesje=False, gracze=0, proces_mc=None,
+             nicki=[], noc=False, od_nocy_s=None, do_nocy_s=10 ** 5, eksport=False)
     o.update(zm)
     return o
 
@@ -36,11 +38,21 @@ class Ustawienia(unittest.TestCase):
 
     def tearDown(self):
         s.CT = s.ADRES_CT = s.ID_SERWERA = None
+        s.NOC_WYJATEK = None
 
     def test_straznik_czyta_wzor(self):
         s.wczytaj_ustawienia(self.WZOR)
         self.assertEqual((s.CT, s.ADRES_CT), (100, "192.0.2.10"))
         self.assertEqual(s.ID_SERWERA, "00000000-0000-0000-0000-000000000000")
+        self.assertEqual((s.NOC_OD, s.NOC_DO, s.NOC_WYJATEK), ("23:30", "06:00", "Gracz"))
+
+    def test_lacznik_czyta_wzor(self):
+        m.wczytaj_ustawienia(self.WZOR)
+        self.assertEqual((m.CT, m.MAPA_CT, m.NOC_OD, m.NOC_DO), (100, 102, "23:30", "06:00"))
+
+    def test_mapa_czyta_wzor(self):
+        u = mp.wczytaj_ustawienia(self.WZOR)
+        self.assertEqual((u["MC_CT"], u["MAPA_CT"]), ("100", "102"))
 
     def test_wlaczanie_czyta_wzor(self):
         self.assertEqual(w.wczytaj_ustawienia(self.WZOR)["MC_CT"], "100")
@@ -130,6 +142,144 @@ class Decyzje(unittest.TestCase):
 
 
 
+class PoraNocy(unittest.TestCase):
+    def czas(self, g, mi, s_=0):
+        import time as _t
+        return _t.mktime((2026, 11, 8, g, mi, s_, 0, 0, -1))
+
+    def test_noc_przez_polnoc(self):
+        for modul in (s, m):
+            self.assertEqual(modul.pora_nocy(self.czas(23, 0), "23:30", "06:00"), (False, 1800))
+            self.assertEqual(modul.pora_nocy(self.czas(23, 30), "23:30", "06:00"), (True, 0))
+            self.assertEqual(modul.pora_nocy(self.czas(2, 0), "23:30", "06:00"), (True, 2.5 * 3600))
+            self.assertEqual(modul.pora_nocy(self.czas(6, 0), "23:30", "06:00"), (False, 17.5 * 3600))
+
+    def test_noc_w_ciagu_doby(self):
+        self.assertEqual(s.pora_nocy(self.czas(1, 0), "00:30", "06:00"), (True, 1800))
+        self.assertEqual(s.pora_nocy(self.czas(7, 0), "00:30", "06:00")[0], False)
+
+    def test_zly_format(self):
+        for zle in ("23-30", "24:00", "6:0", "ab:cd", "-1:00"):
+            for modul in (s, m):
+                with self.assertRaises(ValueError):
+                    modul.pora_nocy(0, zle, "06:00")
+
+
+class NocnaPrzerwa(unittest.TestCase):
+    def setUp(self):
+        s.NOC_WYJATEK, s.NOC_OD = "Wyjatek", "23:30"
+        self.addCleanup(setattr, s, "NOC_WYJATEK", None)
+
+    def noc(self, od_nocy=0, **zm):
+        return obs(noc=True, od_nocy_s=od_nocy, do_nocy_s=None, **zm)
+
+    def test_po_ostrzezeniu_od_razu(self):
+        st = {"ostrzezenie": {"cel": 1000, "min": 1}}
+        st, a = s.decyduj(st, self.noc(od_nocy=5, gracze=2, nicki=["A", "B"]), 1005)
+        self.assertEqual(a, "stop_noc")
+        self.assertIn("stop_od", st)
+        self.assertTrue(s.raport(st, self.noc(gracze=2), a, 1005)["wylaczanie"])
+
+    def test_bez_ostrzezenia_piec_minut(self):
+        o = self.noc(od_nocy=5, gracze=1, nicki=["A"])
+        st, a = s.decyduj({}, o, 1005)
+        self.assertEqual((st["noc_stop_o"], a), (1005 + s.NOC_PO_WYJSCIU_S, None))
+        self.assertIsNone(s.decyduj(st, o, 1005 + s.NOC_PO_WYJSCIU_S - 1)[1])
+        self.assertEqual(s.decyduj(st, o, 1005 + s.NOC_PO_WYJSCIU_S)[1], "stop_noc")
+
+    def test_wyjatek_gra(self):
+        st, a = s.decyduj({"noc_stop_o": 10}, self.noc(od_nocy=3600, gracze=2, nicki=["A", "Wyjatek"]), 5000)
+        self.assertEqual((st, a), ({}, None))
+
+    def test_wyjatek_wyszedl(self):
+        st, a = s.decyduj({}, self.noc(od_nocy=3600, gracze=1, nicki=["A"]), 5000)
+        self.assertEqual(st["noc_stop_o"], 5000 + s.NOC_PO_WYJSCIU_S)
+
+    def test_nieznane_nicki_nic_nie_wylaczaja(self):
+        st, a = s.decyduj({}, self.noc(od_nocy=5, gracze=14, nicki=None), 1005)
+        self.assertEqual((st, a), ({}, None))
+
+    def test_zero_graczy_to_zwykle_odliczanie(self):
+        st, a = s.decyduj({}, self.noc(od_nocy=5, gracze=0), 1005)
+        self.assertEqual((st, a), ({"bez_graczy_od": 1005}, None))
+
+    def test_dzien_kasuje_nocny_stop(self):
+        self.assertEqual(s.decyduj({"noc_stop_o": 10}, obs(gracze=1, nicki=["A"]), 5000), ({}, None))
+
+    def test_serwis_wstrzymuje_noc(self):
+        self.assertEqual(s.decyduj({}, self.noc(od_nocy=5, serwis=True, gracze=1, nicki=["A"]), 9), ({}, None))
+
+
+class Ostrzezenia(unittest.TestCase):
+    def setUp(self):
+        s.NOC_WYJATEK, s.NOC_OD = "Wyjatek", "23:30"
+        self.addCleanup(setattr, s, "NOC_WYJATEK", None)
+
+    def przebieg(self, start, koniec, o_dla=lambda t: None, st=None):
+        """Strażnik co minute od start do koniec (sekundy do nocy); zwraca wyslane komunikaty."""
+        st, wynik, teraz = st or {}, [], 0
+        for do_nocy in range(start, koniec, -60):
+            o = o_dla(do_nocy) or obs(gracze=2, nicki=["A", "B"], do_nocy_s=do_nocy)
+            st, k = s.ostrzezenie(st, o, teraz)
+            if k:
+                wynik.append(k)
+            teraz += 60
+        return wynik
+
+    def test_przed_noca(self):
+        wynik = self.przebieg(40 * 60 - 3, 0)
+        self.assertEqual(wynik, [
+            "Nocna przerwa: serwer wyłączy się o 23:30 (za 30 min).",
+            "Nocna przerwa: serwer wyłączy się o 23:30 (za 15 min).",
+            "Nocna przerwa: serwer wyłączy się o 23:30 (za 5 min).",
+            "Nocna przerwa: serwer wyłączy się za 1 minutę. Zapisz postęp!"])
+
+    def test_tekst_nie_wspomina_wyjatku(self):
+        for k in self.przebieg(40 * 60 - 3, 0):
+            self.assertNotIn("Wyjatek", k)
+
+    def test_cisza_gdy_gra_wyjatek_albo_nikt(self):
+        for o in (lambda t: obs(gracze=2, nicki=["Wyjatek", "B"], do_nocy_s=t),
+                  lambda t: obs(gracze=0, nicki=[], do_nocy_s=t),
+                  lambda t: obs(gracze=14, nicki=None, do_nocy_s=t)):
+            self.assertEqual(self.przebieg(40 * 60, 0, o), [])
+
+    def test_wyjatek_wyszedl_przed_noca(self):
+        o = lambda t: obs(gracze=2, nicki=["Wyjatek", "B"] if t > 10 * 60 else ["B"], do_nocy_s=t)
+        self.assertEqual(self.przebieg(40 * 60 - 3, 0, o), [
+            "Nocna przerwa: serwer wyłączy się o 23:30 (za 10 min).",
+            "Nocna przerwa: serwer wyłączy się o 23:30 (za 5 min).",
+            "Nocna przerwa: serwer wyłączy się za 1 minutę. Zapisz postęp!"])
+
+    def test_w_nocy_po_wyjsciu_wyjatku(self):
+        st, wynik = {"noc_stop_o": 300}, []
+        for teraz in range(0, 300, 60):
+            st, k = s.ostrzezenie(st, obs(gracze=1, nicki=["B"], noc=True, od_nocy_s=3600, do_nocy_s=None), teraz)
+            wynik += [k] if k else []
+        self.assertEqual(wynik, ["Nocna przerwa: serwer wyłączy się za 5 min.",
+                                 "Nocna przerwa: serwer wyłączy się za 1 minutę. Zapisz postęp!"])
+
+    def test_ostrzezenie_za_1_min_daje_stop_o_polnocy_nocy(self):
+        st, _ = s.ostrzezenie({}, obs(gracze=1, nicki=["B"], do_nocy_s=57), 943)
+        self.assertEqual(st["ostrzezenie"], {"cel": 1000, "min": 1})
+        st, a = s.decyduj(st, obs(gracze=1, nicki=["B"], noc=True, od_nocy_s=3, do_nocy_s=None), 1003)
+        self.assertEqual(a, "stop_noc")
+
+
+class FlagaMapy(unittest.TestCase):
+    def test_zaklada_raz_gdy_serwer_odpowiada(self):
+        with tempfile.TemporaryDirectory() as t:
+            f = f"{t}/mc-panel/flaga"
+            self.assertFalse(s.oznacz_mape(obs(gracze=s.WYLACZONY), f))
+            self.assertFalse(os.path.exists(f))
+            self.assertTrue(s.oznacz_mape(obs(gracze=0), f))
+            self.assertFalse(s.oznacz_mape(obs(gracze=3), f))
+
+    def test_eksport_wstrzymuje_wylaczenie_hosta(self):
+        o = obs(ct_dziala=False, gracze=None, eksport=True)
+        self.assertEqual(s.decyduj({"pusty_host_od": 0}, o, 10 ** 6), ({}, None))
+
+
 class Logi(unittest.TestCase):
     def test_start_i_przerwanie_odliczania(self):
         self.assertEqual(s.zdarzenia({}, {"bez_graczy_od": 1}, None),
@@ -178,7 +328,16 @@ class Sonda(unittest.TestCase):
     def test_duza_odpowiedz_forge(self):
         tresc = b'{"players":{"online":3,"max":20},"forgeData":"' + b"x" * 300000 + b'"}'
         d = s_vi(0) + s_vi(len(tresc)) + tresc
-        self.assertEqual(self.odpal(self.serwer(s_vi(len(d)) + d)), "3 20")
+        self.assertEqual(json.loads(self.odpal(self.serwer(s_vi(len(d)) + d))),
+                         {"online": 3, "max": 20, "nicki": None})
+
+    def test_nicki(self):
+        for gracze, oczekiwane in (('"online":2,"max":20,"sample":[{"name":"A","id":"x"},{"name":"B","id":"y"}]', ["A", "B"]),
+                                   ('"online":0,"max":20', []),
+                                   ('"online":13,"max":20,"sample":[{"name":"A","id":"x"}]', None)):
+            tresc = ('{"players":{' + gracze + '}}').encode()
+            d = s_vi(0) + s_vi(len(tresc)) + tresc
+            self.assertEqual(json.loads(self.odpal(self.serwer(s_vi(len(d)) + d)))["nicki"], oczekiwane)
 
     def test_port_zamkniety(self):
         g = socket.create_server(("127.0.0.1", 0))
@@ -192,11 +351,13 @@ class Sonda(unittest.TestCase):
 
 class OdczytSondy(unittest.TestCase):
     def test_wartosci(self):
-        self.assertEqual(s.rozbierz_sonde("3 20"), (3, 20))
-        self.assertEqual(s.rozbierz_sonde("0 0"), (0, None))
-        self.assertEqual(s.rozbierz_sonde("down"), (s.WYLACZONY, None))
-        for zle in ("unknown", "", "3", "a b", "1 2 3"):
-            self.assertEqual(s.rozbierz_sonde(zle), (s.NIEZNANE, None), zle)
+        self.assertEqual(s.rozbierz_sonde('{"online":3,"max":20,"nicki":["A","B","C"]}'), (3, 20, ["A", "B", "C"]))
+        self.assertEqual(s.rozbierz_sonde('{"online":0,"max":0,"nicki":[]}'), (0, None, []))
+        self.assertEqual(s.rozbierz_sonde('{"online":14,"max":20,"nicki":null}'), (14, 20, None))
+        self.assertEqual(s.rozbierz_sonde('{"online":1,"max":20,"nicki":[5]}'), (1, 20, None))
+        self.assertEqual(s.rozbierz_sonde("down"), (s.WYLACZONY, None, None))
+        for zle in ("unknown", "", "3 20", "[]", '{"online":true,"max":1,"nicki":[]}', '{"online":-1,"max":1,"nicki":[]}'):
+            self.assertEqual(s.rozbierz_sonde(zle), (s.NIEZNANE, None, None), zle)
 
 
 class Raport(unittest.TestCase):
@@ -255,6 +416,15 @@ class StanStrony(unittest.TestCase):
     def test_stary_raport_nie_wlacza_wylaczonego_ct(self):
         self.assertEqual(self.stan(ct=False, raport=self.raport())["stan"], "wylaczony")
 
+    def test_noc_i_mapa(self):
+        self.assertEqual(m.stan_strony(False, 0, [], None, False, self.T, noc=True)["stan"], "noc")
+        self.assertEqual(m.stan_strony(False, 0, ["x"], None, False, self.T, mapa=True)["stan"], "mapa")
+        self.assertEqual(m.stan_strony(False, 0, ["x"], None, False, self.T, noc=True, mapa=True)["stan"], "noc")
+        # Twoje reczne wlaczenie w nocy pokazuje start, a dzialajacy serwer w nocy normalny stan.
+        self.assertEqual(m.stan_strony(False, 0, [], None, True, self.T, noc=True)["stan"], "uruchamianie")
+        self.assertEqual(self.stan(raport=self.raport()), m.stan_strony(
+            True, 10000, [], self.raport(), False, self.T, noc=True))
+
     def test_zablokowany_bez_nazw(self):
         d = self.stan(ct=False, inni=["Inny-999"])
         self.assertEqual(d["stan"], "zablokowany")
@@ -304,7 +474,8 @@ class StanStrony(unittest.TestCase):
 
 class Lacznik(unittest.TestCase):
     def setUp(self):
-        self.klaster_stan = (False, 0, [])
+        self.klaster_stan = (False, 0, [], False)
+        self.noc = False
         self.klaster_blad = None
         self.sygnaly = []
         self.opublikowane = []
@@ -323,7 +494,7 @@ class Lacznik(unittest.TestCase):
                            sygnal=lambda: self.sygnaly.pop(0) if self.sygnaly else False,
                            publikuj=lambda st, t: self.opublikowane.append(st["stan"]),
                            trwa=lambda: self.trwa, wlacz=wlacz,
-                           log=lambda t, blad=False: self.logi.append(t))
+                           log=lambda t, blad=False: self.logi.append(t), noc=lambda t: self.noc)
 
     def test_publikuje_co_okres(self):
         for t in range(1000, 1021):
@@ -355,14 +526,14 @@ class Lacznik(unittest.TestCase):
         self.assertEqual(self.starty, 2)
 
     def test_blokada_odrzuca_sygnal(self):
-        self.klaster_stan = (False, 0, ["Inny-999"])
+        self.klaster_stan = (False, 0, ["Inny-999"], False)
         self.sygnaly = [True]
         self.most.krok(1000)
         self.assertEqual(self.starty, 0)
         self.assertEqual(self.opublikowane, ["zablokowany"])
 
     def test_dzialajacy_ct_odrzuca_sygnal(self):
-        self.klaster_stan = (True, 10000, [])
+        self.klaster_stan = (True, 10000, [], False)
         self.sygnaly = [True]
         self.most.krok(1000)
         self.assertEqual(self.starty, 0)
@@ -393,6 +564,24 @@ class Lacznik(unittest.TestCase):
         self.assertTrue(any("systemctl" in t for t in self.logi))
         self.most.krok(1011)
         self.assertEqual(self.opublikowane, ["wylaczony"])
+
+    def test_noc_odrzuca_sygnal(self):
+        self.noc = True
+        self.sygnaly = [True]
+        self.most.krok(1000)
+        self.assertEqual((self.starty, self.opublikowane), (0, ["noc"]))
+
+    def test_render_mapy_odrzuca_sygnal(self):
+        self.klaster_stan = (False, 0, ["MCMapa"], True)
+        self.sygnaly = [True]
+        self.most.krok(1000)
+        self.assertEqual((self.starty, self.opublikowane), (0, ["mapa"]))
+
+    def test_publikuje_godziny(self):
+        dane = []
+        self.most.publikuj = lambda st, t: dane.append(st)
+        self.most.krok(1000)
+        self.assertEqual((dane[0]["czynny_od"], dane[0]["czynny_do"]), (m.NOC_DO, m.NOC_OD))
 
     def test_jeden_wpis_w_logu_na_zmiane_stanu(self):
         for t in range(1000, 1050, 10):
@@ -472,6 +661,28 @@ class Crafty(unittest.TestCase):
             self.assertEqual(w.stdout.strip(), oczekiwane, w.stderr)
             self.assertEqual(z[0][:2], ("GET", "/api/v2/servers/ID/stats"))
 
+    def test_polecenie_w_konsoli(self):
+        zapytania = []
+
+        class H(http.server.BaseHTTPRequestHandler):
+            def do_POST(self):
+                zapytania.append((self.path, self.rfile.read(int(self.headers["Content-Length"])).decode()))
+                self.send_response(200)
+                self.end_headers()
+
+            def log_message(self, *_):
+                pass
+        g = http.server.HTTPServer(("127.0.0.1", 0), H)
+        self.addCleanup(g.server_close)
+        threading.Thread(target=g.handle_request, daemon=True).start()
+        polecenie = s.polecenie_komunikatu("za 1 minutę")
+        w = subprocess.run([sys.executable, "-c", s.CRAFTY, "ID", "stdin", f"http://127.0.0.1:{g.server_port}"],
+                           input="TAJNE\n" + polecenie, capture_output=True, text=True, timeout=30)
+        self.assertEqual(w.returncode, 0, w.stderr)
+        self.assertEqual(zapytania, [("/api/v2/servers/ID/stdin", polecenie)])
+        self.assertTrue(polecenie.startswith("tellraw @a {"))
+        self.assertEqual(json.loads(polecenie[len("tellraw @a "):])["text"], "[Serwer] za 1 minutę")
+
     def test_zle_statystyki_to_blad(self):
         self.assertNotEqual(self.odpal("stats", b'{"status":"ok"}')[0].returncode, 0)
 
@@ -528,6 +739,89 @@ class Wlaczanie(unittest.TestCase):
 
     def test_limit_czasu(self):
         self.assertEqual(self.uruchom(FalszywyProxmox([(False, False, [])])), w.CZAS)
+
+
+class WlaczanieMapy(unittest.TestCase):
+    def uruchom(self, px, flaga):
+        t = [0]
+
+        def spij(x):
+            t[0] += x
+        return w.wlacz_mape(px, flaga=flaga, zegar=lambda: t[0], spij=spij, log=lambda *_: None)
+
+    def test_bez_flagi_nic(self):
+        px = FalszywyProxmox([(True, False, [])])
+        self.assertEqual(self.uruchom(px, "/nie/ma/flagi"), w.NIC)
+        self.assertEqual((px.wol, px.starty), (0, 0))
+
+    def test_minecraft_blokuje_render(self):
+        with tempfile.NamedTemporaryFile() as f:
+            px = FalszywyProxmox([(True, False, ["crafty-16005"])])
+            self.assertEqual(self.uruchom(px, f.name), w.ZABLOKOWANE)
+            self.assertEqual(px.starty, 0)
+
+    def test_budzi_i_startuje(self):
+        with tempfile.NamedTemporaryFile() as f:
+            px = FalszywyProxmox([(False, False, []), (True, False, []), (True, True, [])])
+            self.assertEqual(self.uruchom(px, f.name), w.OK)
+            self.assertEqual((px.wol, px.starty), (1, 1))
+
+
+class HostMapy(unittest.TestCase):
+    def test_wolumen_i_lvm(self):
+        self.assertEqual(mp.wolumen_ct("arch: amd64\nrootfs: local-lvm:vm-100-disk-0,size=100G\n"),
+                         "local-lvm:vm-100-disk-0")
+        self.assertEqual(mp.grupa_lvm("/dev/pve/vm-100-disk-0\n"), ("pve", "vm-100-disk-0"))
+        for zle in ("/var/lib/vz/images/100/vm-100-disk-0.raw", "rbd:x"):
+            with self.assertRaises(RuntimeError):
+                mp.grupa_lvm(zle)
+        with self.assertRaises(RuntimeError):
+            mp.wolumen_ct("arch: amd64\n")
+
+    def test_hook_tylko_dla_ct_mapy(self):
+        with self.assertRaises(RuntimeError):
+            mp.hook({"MAPA_CT": "102", "MC_CT": "100"}, "100", "pre-start")
+        mp.hook({"MAPA_CT": "102", "MC_CT": "100"}, "102", "post-start")     # inne fazy nic nie robia
+
+    def eksport(self, t, flaga_teraz, flaga_przy_starcie):
+        sciezki = dict(WYNIK=f"{t}/wynik", FLAGA_PRZY_STARCIE=f"{t}/przy_starcie", FLAGA_MAPY=f"{t}/flaga",
+                       PRACA=t, NAS=f"{t}/nas")
+        for nazwa, wartosc in sciezki.items():
+            self.addCleanup(setattr, mp, nazwa, getattr(mp, nazwa))
+            setattr(mp, nazwa, wartosc)
+        self.addCleanup(setattr, mp, "zamontowane", mp.zamontowane)
+        self.addCleanup(setattr, mp, "komenda", mp.komenda)
+        mp.zamontowane = lambda _: True
+        wolane = []
+        mp.komenda = lambda *a, **k: wolane.append(a)
+        pathlib.Path(sciezki["WYNIK"]).write_text("1")
+        pathlib.Path(sciezki["FLAGA_MAPY"]).write_text(flaga_teraz)
+        pathlib.Path(sciezki["FLAGA_PRZY_STARCIE"]).write_text(flaga_przy_starcie)
+        mp.eksport()
+        return wolane, sciezki
+
+    def test_eksport_kasuje_flage_z_renderu(self):
+        with tempfile.TemporaryDirectory() as t:
+            wolane, p = self.eksport(t, "100", "100")
+            self.assertFalse(os.path.exists(p["FLAGA_MAPY"]))
+            self.assertFalse(os.path.exists(p["WYNIK"]))
+            rsync = wolane[0]
+            self.assertEqual(rsync[0], "rsync")
+            self.assertIn("--exclude=rstate", rsync)
+            self.assertEqual(rsync[-2:], (t + "/web/", t + "/nas/"))
+
+    def test_eksport_zostawia_nowa_flage(self):
+        with tempfile.TemporaryDirectory() as t:
+            _, p = self.eksport(t, "200", "100")
+            self.assertTrue(os.path.exists(p["FLAGA_MAPY"]))
+
+    def test_eksport_bez_renderu_nic(self):
+        with tempfile.TemporaryDirectory() as t:
+            self.addCleanup(setattr, mp, "WYNIK", mp.WYNIK)
+            mp.WYNIK = f"{t}/brak"
+            self.addCleanup(setattr, mp, "komenda", mp.komenda)
+            mp.komenda = lambda *a, **k: self.fail("nie powinno nic wolac")
+            mp.eksport()
 
 
 if __name__ == "__main__":

@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 """Budzi Proxmox-03 i uruchamia CT z Minecraftem. Uruchamiany na Proxmox-02.
 
-Odmawia startu, gdy na Proxmox-03 dziala inny gosc niz CT z Minecraftem.
-Kody wyjscia: 0 = CT dziala, 3 = zablokowane, 4 = przekroczony czas, 5 = juz trwa.
+Odmawia startu, gdy na Proxmox-03 dziala inny gosc niz CT z Minecraftem (takze render mapy).
+Nocnej przerwy nie sprawdza: pilnuje jej lacznik strony, a recznie mozna wlaczyc zawsze.
+    --mapa  zamiast Minecrafta uruchamia CT renderu mapy (MAPA_CT), tylko gdy jest flaga
+            od straznika i na Proxmox-03 nic nie dziala. Wola go mc-mapa.timer rano.
+Kody wyjscia: 0 = CT dziala, 3 = zablokowane, 4 = przekroczony czas, 5 = juz trwa, 6 = mapa aktualna.
 Ustawienia: /etc/mc-panel/mc.env (wzor: .env.template).
 Logi: journalctl -t mc-wlacz
 """
 import fcntl
 import json
+import os
 import subprocess
 import sys
 import syslog
@@ -15,13 +19,13 @@ import time
 
 WEZEL = "proxmox-03"
 USTAWIENIA = "/etc/mc-panel/mc.env"
-CT = None           # z USTAWIENIA
 LIMIT_S = 600        # backup po starcie hosta potrafi blokowac CT ponad 4 min
 CO_ILE_S = 10
 WOL_CO_S = 30        # pakiet moze przepasc, gdy host jeszcze sie wylacza
-BLOKADA = "/run/lock/mc-wlacz.lock"
+BLOKADA = "/run/lock/mc-wlacz.lock"   # wspolna dla Minecrafta i mapy
+FLAGA_MAPY = "/etc/pve/mc-panel/mapa_do_renderu"
 
-OK, ZABLOKOWANE, CZAS, JUZ_TRWA = 0, 3, 4, 5
+OK, ZABLOKOWANE, CZAS, JUZ_TRWA, NIC = 0, 3, 4, 5, 6
 
 
 def wczytaj_ustawienia(sciezka=USTAWIENIA):
@@ -48,6 +52,9 @@ def komenda(*args, timeout=180):
 
 
 class Proxmox:
+    def __init__(self, ct):
+        self.ct = ct
+
     def stan(self):
         """Zwraca (host_online, ct_dziala, nazwy innych dzialajacych gosci)."""
         zasoby = json.loads(komenda("pvesh", "get", "/cluster/resources",
@@ -59,7 +66,7 @@ class Proxmox:
             if z.get("type") == "node":
                 online = z.get("status") == "online"
             elif z.get("type") in ("lxc", "qemu") and z.get("status") == "running":
-                if z.get("vmid") == CT:
+                if z.get("vmid") == self.ct:
                     ct_dziala = True
                 else:
                     inni.append(z.get("name", str(z.get("vmid"))))
@@ -69,7 +76,7 @@ class Proxmox:
         komenda("pvenode", "wakeonlan", WEZEL)
 
     def uruchom_ct(self):
-        komenda("pvesh", "create", f"/nodes/{WEZEL}/lxc/{CT}/status/start")
+        komenda("pvesh", "create", f"/nodes/{WEZEL}/lxc/{self.ct}/status/start")
 
 
 def wlacz(px, zegar=time.monotonic, spij=time.sleep, log=log):
@@ -101,17 +108,28 @@ def wlacz(px, zegar=time.monotonic, spij=time.sleep, log=log):
     return CZAS
 
 
+def wlacz_mape(px, flaga=FLAGA_MAPY, log=log, **zm):
+    """Render tylko po dniu, w ktorym serwer dzialal. Blokuje go kazdy dzialajacy gosc, takze Minecraft."""
+    if not os.path.exists(flaga):
+        log("mapa aktualna, nic do renderu")
+        return NIC
+    return wlacz(px, log=log, **zm)
+
+
 def main():
-    global CT
-    CT = int(wczytaj_ustawienia()["MC_CT"])
+    ustawienia = wczytaj_ustawienia()
+    mapa = "--mapa" in sys.argv[1:]
     with open(BLOKADA, "w") as plik:
         try:
             fcntl.flock(plik, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError:
             log("wlaczanie juz trwa")
             return JUZ_TRWA
+        if mapa:
+            log("poranny render mapy")
+            return wlacz_mape(Proxmox(int(ustawienia["MAPA_CT"])))
         log("prosba o wlaczenie")
-        return wlacz(Proxmox())
+        return wlacz(Proxmox(int(ustawienia["MC_CT"])))
 
 
 if __name__ == "__main__":

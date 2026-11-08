@@ -6,6 +6,8 @@ const OPISY = {
   wlaczony: ["Włączony", "Możesz wchodzić do gry."],
   zatrzymywanie: ["Wyłączanie", "Serwer zapisuje świat. Za chwilę znów będzie można go włączyć."],
   zablokowany: ["Zablokowany", "Na tym komputerze działa teraz coś innego, więc Minecrafta nie da się włączyć."],
+  noc: ["Nocna przerwa", "W nocy serwera nie da się włączyć."],
+  mapa: ["Aktualizacja mapy", "Serwer odświeża mapę świata. Gdy skończy, będzie można go włączyć."],
   brak_danych: ["Brak danych", "Nie udało się sprawdzić stanu serwera. Strona spróbuje ponownie sama."],
 };
 const CO_ILE_MS = 5000;
@@ -32,6 +34,15 @@ function odswiezOdliczanie() {
   pole.hidden = false;
 }
 
+function pokazGodziny(od, doGodz) {
+  const pole = el("godziny");
+  const krotko = (g) => g.replace(/^0(\d)/, "$1");
+  if (od && doGodz) {
+    pole.textContent = `Serwer można włączyć codziennie od ${krotko(od)} do ${krotko(doGodz)}.`;
+    pole.hidden = false;
+  }
+}
+
 function pokaz(dane) {
   const stan = OPISY[dane.stan] ? dane.stan : "brak_danych";
   document.body.dataset.stan = stan;
@@ -52,6 +63,7 @@ function pokaz(dane) {
     : null;
   odswiezOdliczanie();
 
+  pokazGodziny(dane.czynny_od, dane.czynny_do);
   el("wlacz").hidden = stan !== "wylaczony";
   el("wlacz").disabled = wysylanie;
 }

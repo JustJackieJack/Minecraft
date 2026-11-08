@@ -13,6 +13,9 @@ PRYWATNE = re.compile(
     r"|(?!0{8}-)[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\b")
 
 
+JAWNE = {"NOC_OD", "NOC_DO"}   # godziny nocnej przerwy sa publiczne (tez na stronie)
+
+
 def git(*args):
     return subprocess.run(["git", *args], cwd=KORZEN, capture_output=True, text=True)
 
@@ -44,7 +47,7 @@ class Repo(unittest.TestCase):
         if not env.exists():
             self.skipTest("brak .env")
         wartosci = {w.partition("=")[2].strip() for w in env.read_text().splitlines()
-                    if w and not w.startswith("#")}
+                    if w and not w.startswith("#") and w.partition("=")[0] not in JAWNE}
         wartosci.discard("")
         for nazwa, tekst in pliki_repo():
             for w in wartosci:

@@ -5,6 +5,7 @@ Strona nie ma drogi do Proxmoxa. Rozmawiaja przez dwa katalogi zamontowane w CT 
     in/start          pusty sygnal "wlacz". Tresci nie czytamy, plik jest tylko usuwany.
     out/status.json   stan dla strony. Jedyne, co strona dostaje od hosta.
 Stan laczy dane klastra z raportem strażnika z Proxmox-03 (/etc/pve/mc-panel/straznik.json).
+W nocnej przerwie (NOC_OD-NOC_DO) stan to "noc" i sygnal nic nie wlacza. Dzialajacy CT renderu mapy to "mapa".
 Ustawienia: /etc/mc-panel/mc.env. Logi: journalctl -t mc-most
 """
 import json
@@ -16,7 +17,8 @@ import time
 
 WEZEL = "proxmox-03"
 USTAWIENIA = "/etc/mc-panel/mc.env"
-CT = None           # z USTAWIENIA
+CT = MAPA_CT = None   # z USTAWIENIA
+NOC_OD, NOC_DO = "23:30", "06:00"
 RAPORT = "/etc/pve/mc-panel/straznik.json"
 CZLONKOWIE = "/etc/pve/.members"
 SYGNAL = "/var/lib/mcpanel/in/start"
@@ -54,11 +56,29 @@ def host_wylaczony():
         return False
 
 
+def sekundy_godziny(tekst):
+    """'23:30' -> sekundy od polnocy; inny format to ValueError."""
+    g, znak, mi = tekst.partition(":")
+    if not (znak and g.isdigit() and mi.isdigit() and len(mi) == 2 and int(g) < 24 and int(mi) < 60):
+        raise ValueError(f"zla godzina: {tekst!r}")
+    return int(g) * 3600 + int(mi) * 60
+
+
+def pora_nocy(teraz, od=None, do=None):
+    """Zwraca (czy noc, sekundy od poczatku nocy albo do jej poczatku). Tak samo jak w strazniku."""
+    od, do = od or NOC_OD, do or NOC_DO
+    t = time.localtime(teraz)
+    s = t.tm_hour * 3600 + t.tm_min * 60 + t.tm_sec
+    s_od, s_do = (sekundy_godziny(x) for x in (od, do))
+    noc = (s >= s_od or s < s_do) if s_od > s_do else (s_od <= s < s_do)
+    return noc, ((s - s_od) if noc else (s_od - s)) % 86400
+
+
 def odczytaj_klaster():
-    """Zwraca (ct_dziala, czas pracy CT w sekundach, nazwy innych dzialajacych gosci)."""
+    """Zwraca (ct_dziala, czas pracy CT w sekundach, nazwy innych dzialajacych gosci, czy dziala render mapy)."""
     if host_wylaczony():
-        return False, 0, []
-    ct_dziala, praca, inni = False, 0, []
+        return False, 0, [], False
+    ct_dziala, praca, inni, mapa = False, 0, [], False
     zasoby = json.loads(komenda("pvesh", "get", "/cluster/resources", "--type", "vm",
                                 "--output-format", "json"))
     for z in zasoby:
@@ -67,7 +87,8 @@ def odczytaj_klaster():
                 ct_dziala, praca = True, z.get("uptime", 0)
             else:
                 inni.append(z.get("name", str(z.get("vmid"))))
-    return ct_dziala, praca, inni
+                mapa = mapa or z.get("vmid") == MAPA_CT
+    return ct_dziala, praca, inni, mapa
 
 
 def odczytaj_raport(sciezka=RAPORT):
@@ -79,12 +100,16 @@ def odczytaj_raport(sciezka=RAPORT):
         return None
 
 
-def stan_strony(ct_dziala, praca, inni, raport, wlaczanie, teraz):
+def stan_strony(ct_dziala, praca, inni, raport, wlaczanie, teraz, noc=False, mapa=False):
     """Sam stan i liczby, bez nazw gosci: strona nie musi wiedziec, co dziala na hoscie."""
     wynik = {"stan": "wylaczony", "gracze": None, "max_graczy": None, "odliczanie_s": None}
     if not ct_dziala:
         if wlaczanie:
             wynik["stan"] = "uruchamianie"
+        elif noc:
+            wynik["stan"] = "noc"
+        elif mapa:
+            wynik["stan"] = "mapa"
         elif inni:
             wynik["stan"] = "zablokowany"
         return wynik
@@ -138,8 +163,9 @@ def uruchom_wlaczanie():
 
 class Most:
     def __init__(self, klaster=odczytaj_klaster, raport=odczytaj_raport, sygnal=odbierz_sygnal,
-                 publikuj=opublikuj, trwa=wlaczanie_trwa, wlacz=uruchom_wlaczanie, log=log):
-        self.klaster, self.raport, self.sygnal = klaster, raport, sygnal
+                 publikuj=opublikuj, trwa=wlaczanie_trwa, wlacz=uruchom_wlaczanie, log=log,
+                 noc=lambda teraz: pora_nocy(teraz)[0]):
+        self.klaster, self.raport, self.sygnal, self.noc = klaster, raport, sygnal, noc
         self.publikuj, self.trwa, self.wlacz, self.log = publikuj, trwa, wlacz, log
         self.nastepny_status = 0
         self.sygnal_czas = None
@@ -163,8 +189,9 @@ class Most:
                 self.ostatni_blad = str(e)
 
     def odswiez(self, teraz):
-        ct_dziala, praca, inni = self.klaster()
-        status = stan_strony(ct_dziala, praca, inni, self.raport(), self.start_w_toku(teraz), teraz)
+        ct_dziala, praca, inni, mapa = self.klaster()
+        noc = self.noc(teraz)
+        status = stan_strony(ct_dziala, praca, inni, self.raport(), self.start_w_toku(teraz), teraz, noc, mapa)
 
         # Klaster odpowiedzial, wiec sygnal jest obsluzony, nawet jesli wlaczenie sie nie uda.
         sygnal_czas, self.sygnal_czas = self.sygnal_czas, None
@@ -179,12 +206,13 @@ class Most:
                 self.log("sygnal ze strony: wlaczam")
                 self.wlacz()
                 self.ostatni_start = teraz
-                status = stan_strony(ct_dziala, praca, inni, self.raport(), True, teraz)
+                status = stan_strony(ct_dziala, praca, inni, self.raport(), True, teraz, noc, mapa)
 
         if status["stan"] != self.ostatni_stan:
             self.log(f"stan: {status['stan']}")
             self.ostatni_stan = status["stan"]
-        self.publikuj(status, teraz)
+        # Godziny dla stalej informacji na stronie: serwer dziala od konca do poczatku nocy.
+        self.publikuj(dict(status, czynny_od=NOC_DO, czynny_do=NOC_OD), teraz)
 
     def start_w_toku(self, teraz):
         if self.ostatni_start is not None and teraz - self.ostatni_start < START_TRWA_S:
@@ -192,14 +220,21 @@ class Most:
         return self.trwa()
 
 
-def main():
-    global CT
-    with open(USTAWIENIA) as f:
+def wczytaj_ustawienia(sciezka=USTAWIENIA):
+    global CT, MAPA_CT, NOC_OD, NOC_DO
+    d = {}
+    with open(sciezka) as f:
         for wiersz in f:
-            if wiersz.startswith("MC_CT="):
-                CT = int(wiersz.split("=", 1)[1])
-    if CT is None:
-        raise ValueError("brak MC_CT w ustawieniach")
+            klucz, znak, wartosc = wiersz.strip().partition("=")
+            if znak and not klucz.startswith("#"):
+                d[klucz] = wartosc
+    CT, MAPA_CT = int(d["MC_CT"]), int(d["MAPA_CT"])
+    NOC_OD, NOC_DO = d["NOC_OD"], d["NOC_DO"]
+    pora_nocy(0)    # zly format godzin ma przerwac prace od razu
+
+
+def main():
+    wczytaj_ustawienia()
     odbierz_sygnal()    # klikniecie sprzed uruchomienia lacznika juz nieaktualne
     log("start")
     most = Most()

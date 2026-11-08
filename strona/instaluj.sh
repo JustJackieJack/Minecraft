@@ -44,7 +44,8 @@ main() {
   # Docelowo to punkty montowania z hosta. Na zamontowanych katalogach niczego nie zmieniamy.
   [ -d /panel/in ] || install -d -m 700 -o mc-strona -g mc-strona /panel/in
   [ -d /panel/out ] || install -d -m 755 /panel/out
-  install -d -m 755 /srv/mc-mapa   # pliki wgrywa mapa/wyslij.sh
+  # Mapa przychodzi z NAS przez host, tylko do odczytu: chmod na niej by sie nie udal.
+  [ -d /srv/mc-mapa ] || install -d -m 755 /srv/mc-mapa
 
   echo "== Ustawienia"
   local ustawienia=/etc/mc-strona/strona.env
