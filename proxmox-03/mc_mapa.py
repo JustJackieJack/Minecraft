@@ -2,18 +2,21 @@
 """Render mapy na Proxmox-03: swiat dla CT renderu i eksport na TrueNAS.
 
     mc_mapa.py hook <vmid> <faza>   hookscript CT renderu (MAPA_CT), wolany przez Proxmoxa
-    mc_mapa.py eksport              mc-mapa-eksport.service: wynik renderu na NAS
+    mc_mapa.py eksport              mc-mapa-eksport.service: sprzatanie snapshotu i wynik renderu na NAS
 
 pre-start:  CT Minecrafta musi stac. Snapshot jego dysku (thin, tylko do odczytu) -> SWIAT.
             CT renderu widzi tylko katalog serwera, bez reszty systemu CT Minecrafta.
-post-stop:  odmontowanie i usuniecie snapshotu; gdy render sie udal, start eksportu.
-eksport:    rsync PRACA/web -> NAS, potem kasuje flage straznika, jesli nie powstala w trakcie.
+post-stop:  tylko start mc-mapa-eksport.service. Proxmox wola ten hook w innej przestrzeni
+            montowan niz host: montowan snapshotu tu nie widac, wiec sprzata dopiero usluga.
+eksport:    odmontowanie i usuniecie snapshotu; po udanym renderze rsync PRACA/web -> NAS,
+            potem kasuje flage straznika, jesli nie powstala w trakcie.
 Ustawienia: /etc/mc-panel/mc.env. Logi: journalctl -t mc-mapa
 """
 import os
 import subprocess
 import sys
 import syslog
+import time
 
 USTAWIENIA = "/etc/mc-panel/mc.env"
 FLAGA_MAPY = "/etc/pve/mc-panel/mapa_do_renderu"
@@ -80,12 +83,21 @@ def zamontowane(sciezka):
     return subprocess.run(["mountpoint", "-q", sciezka]).returncode == 0
 
 
-def posprzataj(vg):
+def posprzataj(vg, proby=15, przerwa=2):
     for sciezka in (SWIAT, MONTAZ):
         if zamontowane(sciezka):
             komenda("umount", sciezka)
-    if subprocess.run(["lvs", f"{vg}/{SNAP}"], capture_output=True).returncode == 0:
-        komenda("lvremove", "-y", f"{vg}/{SNAP}")
+    if subprocess.run(["lvs", f"{vg}/{SNAP}"], capture_output=True).returncode != 0:
+        return
+    # Tuz po zatrzymaniu CT snapshot bywa jeszcze chwile zajety ("contains a filesystem in use").
+    for proba in range(proby):
+        try:
+            komenda("lvremove", "-y", f"{vg}/{SNAP}")
+            return
+        except RuntimeError:
+            if proba == proby - 1:
+                raise
+            time.sleep(przerwa)
 
 
 def przed_startem(u):
@@ -122,13 +134,16 @@ def przed_startem(u):
 
 
 def po_zatrzymaniu(u):
-    vg, _ = grupa_lvm(komenda("pvesm", "path", wolumen_ct(komenda("pct", "config", u["MC_CT"]))))
-    posprzataj(vg)
-    if os.path.exists(WYNIK):
-        log("render zakonczony, eksport na NAS")
-        komenda("systemctl", "start", "--no-block", USLUGA_EKSPORTU)
-    else:
-        log("render nieukonczony: flaga zostaje, dokonczy nastepnym razem", blad=True)
+    komenda("systemctl", "start", "--no-block", USLUGA_EKSPORTU)
+
+
+def usun_snapshot(u):
+    """Blad nie blokuje eksportu: pozostaly snapshot usunie nastepny pre-start."""
+    try:
+        vg, _ = grupa_lvm(komenda("pvesm", "path", wolumen_ct(komenda("pct", "config", u["MC_CT"]))))
+        posprzataj(vg)
+    except Exception as e:
+        log(f"sprzatanie snapshotu nieudane (usunie je nastepny start): {e}", blad=True)
 
 
 def hook(u, vmid, faza):
@@ -140,10 +155,12 @@ def hook(u, vmid, faza):
         po_zatrzymaniu(u)
 
 
-def eksport():
+def eksport(u):
+    usun_snapshot(u)
     if not os.path.exists(WYNIK):
-        log("brak udanego renderu, nic do eksportu")
+        log("render nieukonczony: flaga zostaje, dokonczy nastepnym razem", blad=True)
         return
+    log("render zakonczony, eksport na NAS")
     if not zamontowane(NAS):
         raise RuntimeError(f"{NAS} nie jest zamontowany")
     pomin = [f"--exclude={w}" for w in POMIJANE]
@@ -163,7 +180,7 @@ def main(argv):
     if len(argv) == 3 and argv[0] == "hook":
         hook(u, argv[1], argv[2])
     elif argv == ["eksport"]:
-        eksport()
+        eksport(u)
     else:
         print(__doc__, file=sys.stderr)
         return 2

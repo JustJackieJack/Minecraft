@@ -9,6 +9,7 @@ import sys
 import tempfile
 import threading
 import unittest
+from unittest import mock
 
 KORZEN = pathlib.Path(__file__).parent.parent
 
@@ -797,7 +798,9 @@ class HostMapy(unittest.TestCase):
         pathlib.Path(sciezki["WYNIK"]).write_text("1")
         pathlib.Path(sciezki["FLAGA_MAPY"]).write_text(flaga_teraz)
         pathlib.Path(sciezki["FLAGA_PRZY_STARCIE"]).write_text(flaga_przy_starcie)
-        mp.eksport()
+        self.addCleanup(setattr, mp, "usun_snapshot", mp.usun_snapshot)
+        mp.usun_snapshot = lambda u: None
+        mp.eksport({})
         return wolane, sciezki
 
     def test_eksport_kasuje_flage_z_renderu(self):
@@ -815,13 +818,70 @@ class HostMapy(unittest.TestCase):
             _, p = self.eksport(t, "200", "100")
             self.assertTrue(os.path.exists(p["FLAGA_MAPY"]))
 
+    def podmien(self, **zm):
+        for nazwa, wartosc in zm.items():
+            self.addCleanup(setattr, mp, nazwa, getattr(mp, nazwa))
+            setattr(mp, nazwa, wartosc)
+
+    def test_sprzatanie_ponawia_zajety_snapshot(self):
+        proby = []
+
+        def zajety_dwa_razy(*a, **k):
+            if a[0] == "lvremove":
+                proby.append(a)
+                if len(proby) < 3:
+                    raise RuntimeError("lvremove: contains a filesystem in use")
+            return ""
+
+        def zawsze_zajety(*a, **k):
+            proby.append(a)
+            raise RuntimeError("lvremove: contains a filesystem in use")
+
+        self.podmien(komenda=zajety_dwa_razy, zamontowane=lambda _: False)
+        with mock.patch.object(mp.subprocess, "run", return_value=mock.Mock(returncode=0)):
+            mp.posprzataj("pve", przerwa=0)
+            self.assertEqual(len(proby), 3)
+            proby.clear()
+            mp.komenda = zawsze_zajety
+            with self.assertRaises(RuntimeError):
+                mp.posprzataj("pve", proby=2, przerwa=0)
+            self.assertEqual(len(proby), 2)
+
+    def test_po_zatrzymaniu_tylko_startuje_usluge(self):
+        # Hook post-stop nie widzi montowan hosta: zadnego umount/lvremove, tylko usluga.
+        wolane = []
+        self.podmien(komenda=lambda *a, **k: wolane.append(a))
+        mp.hook({"MAPA_CT": "102", "MC_CT": "100"}, "102", "post-stop")
+        self.assertEqual(wolane, [("systemctl", "start", "--no-block", mp.USLUGA_EKSPORTU)])
+
+    def test_eksport_mimo_bledu_sprzatania(self):
+        with tempfile.TemporaryDirectory() as t:
+            wolane = []
+
+            def komenda(*a, **k):
+                wolane.append(a)
+                if a[0] == "pct":
+                    raise RuntimeError("pct: blad")
+                return ""
+            self.podmien(WYNIK=f"{t}/wynik", PRACA=t, NAS=f"{t}/nas", FLAGA_PRZY_STARCIE=f"{t}/ps",
+                         FLAGA_MAPY=f"{t}/flaga", komenda=komenda, zamontowane=lambda _: True,
+                         log=lambda *a, **k: None)
+            pathlib.Path(f"{t}/wynik").write_text("1")
+            mp.eksport({"MC_CT": "100"})
+            self.assertEqual([a[0] for a in wolane], ["pct", "rsync"])
+            self.assertFalse(os.path.exists(f"{t}/wynik"))
+
     def test_eksport_bez_renderu_nic(self):
         with tempfile.TemporaryDirectory() as t:
             self.addCleanup(setattr, mp, "WYNIK", mp.WYNIK)
             mp.WYNIK = f"{t}/brak"
             self.addCleanup(setattr, mp, "komenda", mp.komenda)
             mp.komenda = lambda *a, **k: self.fail("nie powinno nic wolac")
-            mp.eksport()
+            self.addCleanup(setattr, mp, "usun_snapshot", mp.usun_snapshot)
+            sprzatane = []
+            mp.usun_snapshot = sprzatane.append
+            mp.eksport({"MC_CT": "100"})
+            self.assertEqual(sprzatane, [{"MC_CT": "100"}])     # sprzata takze po nieudanym renderze
 
 
 if __name__ == "__main__":

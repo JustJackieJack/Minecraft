@@ -5,8 +5,9 @@
 set -euo pipefail
 cd "$(dirname "$(readlink -f "$0")")"
 
-JRE_URL=https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.13%2B9/OpenJDK21U-jre_x64_linux_hotspot_21.0.13_9.tar.gz
-JRE_SUMA=a535a1df9c6284d9618872984e026ae0352d1f7e9e0605425c0e6114f47351dd
+# BlueMap 5.29 wymaga Javy 25 (class file 69).
+JRE_URL=https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25.0.5%2B8/OpenJDK25U-jre_x64_linux_hotspot_25.0.5_8.tar.gz
+JRE_SUMA=6fac98f0c8202efc3135a9e9e42aa61963ec42d1c5cbb40caf231e7b14a24ef6
 WERSJA_BM=$(sed -n 's/^WERSJA_BM=//p' ../renderuj.sh)
 SUMA_BM=$(sed -n 's/^SUMA_BM=//p' ../renderuj.sh)
 MC=1.20.1
