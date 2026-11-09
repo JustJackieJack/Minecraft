@@ -43,6 +43,46 @@ function pokazGodziny(od, doGodz) {
   }
 }
 
+function dlugosc(s) {
+  const min = Math.floor(s / 60);
+  if (min < 60) return `${min} min`;
+  return `${Math.floor(min / 60)} h ${String(min % 60).padStart(2, "0")} min`;
+}
+
+function godzinaZ(sekundy) {
+  const d = new Date(sekundy * 1000);
+  return `${d.getHours()}:${String(d.getMinutes()).padStart(2, "0")}`;
+}
+
+function element(tag, tekst, klasa) {
+  const e = document.createElement(tag);
+  e.textContent = tekst;
+  if (klasa) e.className = klasa;
+  return e;
+}
+
+function pokazGraczy(lista) {
+  const pole = el("lista-graczy");
+  const teraz = Date.now() / 1000;
+  pole.replaceChildren(...lista.map((g) => {
+    const li = element("li", "");
+    li.append(element("span", g.nick, "nick"),
+      element("span", ` od ${godzinaZ(g.od)} (${dlugosc(Math.max(0, teraz - g.od))})`, "od"));
+    return li;
+  }));
+  pole.hidden = lista.length === 0;
+}
+
+function pokazCzasGry(lista, online) {
+  const grajacy = new Set(online.map((g) => g.nick));
+  el("czas-gry").replaceChildren(...lista.map((g) => {
+    const tr = element("tr", "");
+    tr.append(element("td", g.nick, grajacy.has(g.nick) ? "nick gra" : "nick"), element("td", dlugosc(g.s)));
+    return tr;
+  }));
+  el("czas-gry-panel").hidden = lista.length === 0;
+}
+
 function pokaz(dane) {
   const stan = OPISY[dane.stan] ? dane.stan : "brak_danych";
   document.body.dataset.stan = stan;
@@ -62,6 +102,10 @@ function pokaz(dane) {
     ? Date.now() + dane.odliczanie_s * 1000
     : null;
   odswiezOdliczanie();
+
+  const online = dziala && Array.isArray(dane.lista_graczy) ? dane.lista_graczy : [];
+  pokazGraczy(online);
+  pokazCzasGry(Array.isArray(dane.czas_gry) ? dane.czas_gry : [], online);
 
   pokazGodziny(dane.czynny_od, dane.czynny_do);
   el("wlacz").hidden = stan !== "wylaczony";

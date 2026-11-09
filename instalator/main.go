@@ -55,6 +55,8 @@ type Mod struct {
 	Sha1   string `json:"sha1"`
 	Url    string `json:"url"`
 	Strona string `json:"strona"`
+	// Opcjonalny: tylko u gracza, na zyczenie. Pytamy tylko, gdy go nie ma; zainstalowany jest aktualizowany.
+	Opcjonalny bool `json:"opcjonalny,omitempty"`
 }
 
 type Archiwum struct {
@@ -63,13 +65,20 @@ type Archiwum struct {
 	Sha256 string `json:"sha256"`
 }
 
+// Usuniety: mod, ktory byl w paczce, a zostal z niej usuniety. Rozpoznawany po modId z jara.
+type Usuniety struct {
+	Id    string `json:"id"`
+	Nazwa string `json:"nazwa"`
+}
+
 type Paczka struct {
-	Minecraft    string   `json:"minecraft"`
-	Forge        string   `json:"forge"`
-	Skiny        Archiwum `json:"skiny"`
-	Config       Archiwum `json:"config"`
-	ConfigSerwer Archiwum `json:"config_serwer"`
-	Mody         []Mod    `json:"mody"`
+	Minecraft    string     `json:"minecraft"`
+	Forge        string     `json:"forge"`
+	Skiny        Archiwum   `json:"skiny"`
+	Config       Archiwum   `json:"config"`
+	ConfigSerwer Archiwum   `json:"config_serwer"`
+	Mody         []Mod      `json:"mody"`
+	Usuniete     []Usuniety `json:"usuniete,omitempty"`
 }
 
 type Instalator struct {
@@ -81,6 +90,8 @@ type Instalator struct {
 	wy     io.Writer
 	kopia  string
 	bledy  []string
+	// usuniete: modId -> nazwa modow usunietych z paczki
+	usuniete map[string]string
 }
 
 // Wejscie czyta odpowiedzi w tle, zeby pytanie dalo sie przerwac.
@@ -349,6 +360,7 @@ type StanModow struct {
 	poprawne  int
 	brakujace []Mod
 	zamiany   []Zamiana
+	usuniete  []string
 	obce      []string
 }
 
@@ -433,7 +445,11 @@ func (in *Instalator) zbadajMody(lista []Mod) (StanModow, error) {
 			}
 		}
 		if !zamieniony {
-			stan.obce = append(stan.obce, nazwa)
+			if in.zUsunietych(sciezka) {
+				stan.usuniete = append(stan.usuniete, nazwa)
+			} else {
+				stan.obce = append(stan.obce, nazwa)
+			}
 		}
 	}
 	for _, m := range lista {
@@ -442,6 +458,41 @@ func (in *Instalator) zbadajMody(lista []Mod) (StanModow, error) {
 		}
 	}
 	return stan, nil
+}
+
+func (in *Instalator) zUsunietych(sciezka string) bool {
+	for _, id := range modIdZJara(sciezka) {
+		if _, jest := in.usuniete[id]; jest {
+			return true
+		}
+	}
+	return false
+}
+
+// usunUsuniete: mody usuniete z paczki. Domyslnie usuwane (do kopii), bo stara wersja paczki je miala.
+func (in *Instalator) usunUsuniete(ctx context.Context, usuniete []string) error {
+	if len(usuniete) == 0 {
+		return nil
+	}
+	in.log("Mody usunięte z paczki (%d):", len(usuniete))
+	for _, n := range usuniete {
+		in.log("  %s", n)
+	}
+	o, err := in.pytaj(ctx, "Usunąć je? Trafią do "+folderKopii+". [T/n]", "t")
+	if err != nil {
+		return err
+	}
+	if o == "n" {
+		in.log("Zostawiam.")
+		return nil
+	}
+	for _, n := range usuniete {
+		if err := in.doKopii("mods/" + n); err != nil {
+			return err
+		}
+		in.log("  usunięto %s", n)
+	}
+	return nil
 }
 
 func (in *Instalator) usunObce(ctx context.Context, obce []string) error {
@@ -546,22 +597,82 @@ func (in *Instalator) pobierzMody(ctx context.Context, stan StanModow) {
 	wg.Wait()
 }
 
+// zainstalowaneMody: identyfikatory i sumy SHA-1 jarow w mods.
+func (in *Instalator) zainstalowaneMody() (map[string]bool, error) {
+	wynik := map[string]bool{}
+	wpisy, err := filepath.Glob(filepath.Join(in.sciezka("mods"), "*.jar"))
+	if err != nil {
+		return nil, err
+	}
+	for _, sciezka := range wpisy {
+		suma, err := sumaSha1(sciezka)
+		if err != nil {
+			return nil, err
+		}
+		wynik[suma] = true
+		for _, id := range modIdZJara(sciezka) {
+			wynik[id] = true
+		}
+	}
+	return wynik, nil
+}
+
+// wybierzOpcjonalne pyta o mody opcjonalne, ktorych jeszcze nie ma. Bez pytan (--tak) ich nie dodaje.
+func (in *Instalator) wybierzOpcjonalne(ctx context.Context, opcjonalne []Mod) ([]Mod, error) {
+	if len(opcjonalne) == 0 {
+		return nil, nil
+	}
+	jest, err := in.zainstalowaneMody()
+	if err != nil {
+		return nil, err
+	}
+	var wybrane []Mod
+	for _, m := range opcjonalne {
+		if jest[m.Sha1] || jest[m.Id] {
+			wybrane = append(wybrane, m)
+			continue
+		}
+		o, err := in.pytaj(ctx, "Mod opcjonalny "+m.Nazwa+" (tylko u Ciebie, serwer go nie wymaga). Dodać? [t/N]", "n")
+		if err != nil {
+			return nil, err
+		}
+		if o == "t" || o == "y" {
+			wybrane = append(wybrane, m)
+		} else {
+			in.log("  pomijam %s (możesz go dodać przy następnym uruchomieniu)", m.Nazwa)
+		}
+	}
+	return wybrane, nil
+}
+
 func (in *Instalator) sekcjaMody(ctx context.Context, wszystkie []Mod, serwer bool) error {
-	var lista []Mod
+	var lista, opcjonalne []Mod
 	for _, m := range wszystkie {
-		if !serwer || m.Strona != stronaKlient {
+		switch {
+		case serwer && (m.Strona == stronaKlient || m.Opcjonalny):
+		case m.Opcjonalny:
+			opcjonalne = append(opcjonalne, m)
+		default:
 			lista = append(lista, m)
 		}
 	}
 	if err := os.MkdirAll(in.sciezka("mods"), 0o755); err != nil {
 		return err
 	}
+	wybrane, err := in.wybierzOpcjonalne(ctx, opcjonalne)
+	if err != nil {
+		return err
+	}
+	lista = append(lista, wybrane...)
 	stan, err := in.zbadajMody(lista)
 	if err != nil {
 		return err
 	}
-	in.log("Mody: poprawne %d z %d, do aktualizacji %d, brakujące %d, spoza paczki %d.",
-		stan.poprawne, len(lista), len(stan.zamiany), len(stan.brakujace), len(stan.obce))
+	in.log("Mody: poprawne %d z %d, do aktualizacji %d, brakujące %d, usunięte z paczki %d, spoza paczki %d.",
+		stan.poprawne, len(lista), len(stan.zamiany), len(stan.brakujace), len(stan.usuniete), len(stan.obce))
+	if err := in.usunUsuniete(ctx, stan.usuniete); err != nil {
+		return err
+	}
 	if err := in.usunObce(ctx, stan.obce); err != nil {
 		return err
 	}
@@ -700,6 +811,10 @@ func (in *Instalator) uruchom(serwer bool, p *Przerwania) {
 		}
 		return in.sekcjaArchiwum(ctx, "Config", "config", paczka.Config)
 	})
+	in.usuniete = map[string]string{}
+	for _, u := range paczka.Usuniete {
+		in.usuniete[u.Id] = u.Nazwa
+	}
 	in.krok("Mody", p, func(ctx context.Context) error {
 		return in.sekcjaMody(ctx, paczka.Mody, serwer)
 	})

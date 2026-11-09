@@ -73,7 +73,18 @@ class Strona(unittest.TestCase):
     def test_przepuszcza_tylko_znane_pola(self):
         self.status(stan="wlaczony", gracze=2, max_graczy=20, odliczanie_s=None, tajne="Inny-999")
         self.assertEqual(self.stan(), {"stan": "wlaczony", "gracze": 2, "max_graczy": 20, "odliczanie_s": None,
-                                       "czynny_od": None, "czynny_do": None})
+                                       "czynny_od": None, "czynny_do": None, "lista_graczy": [], "czas_gry": []})
+
+    def test_gracze_i_czas_gry(self):
+        self.status(stan="wlaczony", lista_graczy=[{"nick": "Gracz_1", "od": 900}, {"nick": "<b>x", "od": 1},
+                                                    {"nick": "Kuba", "od": "9"}, "zle"],
+                    czas_gry=[{"nick": "Kuba", "s": 3600, "tajne": 1}, {"nick": "a" * 17, "s": 5}, {"nick": "X", "s": True}])
+        d = self.stan()
+        self.assertEqual(d["lista_graczy"], [{"nick": "Gracz_1", "od": 900}])
+        self.assertEqual(d["czas_gry"], [{"nick": "Kuba", "s": 3600}])
+        self.status(stan="wylaczony", lista_graczy=[{"nick": "Kuba", "od": 900}], czas_gry=[{"nick": "Kuba", "s": 60}])
+        d = self.stan()
+        self.assertEqual((d["lista_graczy"], d["czas_gry"]), ([], [{"nick": "Kuba", "s": 60}]))
 
     def test_godziny_pracy(self):
         self.status(stan="noc", czynny_od="06:00", czynny_do="23:30")

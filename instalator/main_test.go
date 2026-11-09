@@ -333,3 +333,87 @@ func TestWyborFolderu(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestOpcjonalnyPytaIInstalujePoZgodzie(t *testing.T) {
+	s := nowaScena(t, "t\nt\n")
+	m := s.mod(t, "dh", "dh-1.jar", "1", stronaKlient)
+	m.Opcjonalny = true
+	if err := s.in.sekcjaMody(context.Background(), []Mod{m}, false); err != nil {
+		t.Fatal(err)
+	}
+	if !istnieje(filepath.Join(s.dir, "mods", "dh-1.jar")) {
+		t.Fatal("opcjonalny mod nie zostal zainstalowany mimo zgody")
+	}
+}
+
+func TestOpcjonalnyBezZgodyPominiety(t *testing.T) {
+	s := nowaScena(t, "\n")
+	m := s.mod(t, "dh", "dh-1.jar", "1", stronaKlient)
+	m.Opcjonalny = true
+	if err := s.in.sekcjaMody(context.Background(), []Mod{m}, false); err != nil {
+		t.Fatal(err)
+	}
+	if istnieje(filepath.Join(s.dir, "mods", "dh-1.jar")) || len(s.zapytania) != 0 {
+		t.Fatal("opcjonalny mod zainstalowany bez zgody")
+	}
+}
+
+func TestOpcjonalnyBezPytanNieJestDodawany(t *testing.T) {
+	s := nowaScena(t, "")
+	s.in.tak = true
+	m := s.mod(t, "dh", "dh-1.jar", "1", stronaKlient)
+	m.Opcjonalny = true
+	s.in.sekcjaMody(context.Background(), []Mod{m}, false)
+	if istnieje(filepath.Join(s.dir, "mods", "dh-1.jar")) {
+		t.Fatal("--tak dodal mod opcjonalny")
+	}
+}
+
+func TestOpcjonalnyZainstalowanyJestAktualizowanyBezPytania(t *testing.T) {
+	s := nowaScena(t, "t\n")
+	m := s.mod(t, "dh", "dh-2.jar", "2", stronaKlient)
+	m.Opcjonalny = true
+	s.zapiszJar(t, "dh-1.jar", jar(t, "dh", "1"))
+	if err := s.in.sekcjaMody(context.Background(), []Mod{m}, false); err != nil {
+		t.Fatal(err)
+	}
+	if !istnieje(filepath.Join(s.dir, "mods", "dh-2.jar")) || istnieje(filepath.Join(s.dir, "mods", "dh-1.jar")) {
+		t.Fatal("zainstalowany mod opcjonalny nie zostal zaktualizowany")
+	}
+}
+
+func TestSerwerPomijaOpcjonalne(t *testing.T) {
+	s := nowaScena(t, "t\n")
+	m := s.mod(t, "dh", "dh-1.jar", "1", "oba")
+	m.Opcjonalny = true
+	s.in.sekcjaMody(context.Background(), []Mod{m}, true)
+	if istnieje(filepath.Join(s.dir, "mods", "dh-1.jar")) {
+		t.Fatal("serwer dostal mod opcjonalny")
+	}
+}
+
+func TestUsunietyZPaczkiDomyslnieUsuwany(t *testing.T) {
+	s := nowaScena(t, "\n")
+	s.in.usuniete = map[string]string{"biomemusic": "Biome Music"}
+	s.zapiszJar(t, "biomemusic-4.1.jar", jar(t, "biomemusic", "1"))
+	s.zapiszJar(t, "moj.jar", jar(t, "moj", "1"))
+	if err := s.in.sekcjaMody(context.Background(), nil, false); err != nil {
+		t.Fatal(err)
+	}
+	if istnieje(filepath.Join(s.dir, "mods", "biomemusic-4.1.jar")) {
+		t.Fatal("mod usuniety z paczki zostal")
+	}
+	if !istnieje(filepath.Join(s.dir, "mods", "moj.jar")) {
+		t.Fatal("obcy mod usuniety bez zgody")
+	}
+}
+
+func TestUsunietyZPaczkiOdmowaZostawia(t *testing.T) {
+	s := nowaScena(t, "n\n")
+	s.in.usuniete = map[string]string{"biomemusic": "Biome Music"}
+	s.zapiszJar(t, "biomemusic-4.1.jar", jar(t, "biomemusic", "1"))
+	s.in.sekcjaMody(context.Background(), nil, false)
+	if !istnieje(filepath.Join(s.dir, "mods", "biomemusic-4.1.jar")) {
+		t.Fatal("usunieto mimo odmowy")
+	}
+}

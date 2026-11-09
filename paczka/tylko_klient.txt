@@ -20,3 +20,7 @@ justzoom_*
 BetterAdvancements-*
 CustomSkinLoader_*
 MouseTweaks-*
+CutThrough-*
+sodiumdynamiclights-*
+sodiumoptionsapi-*
+DistantHorizons-*

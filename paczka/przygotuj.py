@@ -87,6 +87,10 @@ def pobierz_plik(adres):
         return o.read()
 
 
+def wczytaj_wzorce(plik):
+    return [w for w in plik.read_text().splitlines() if w and not w.startswith("#")]
+
+
 def strona_moda(nazwa, wzorce):
     return "klient" if any(fnmatch.fnmatch(nazwa, w) for w in wzorce) else "oba"
 
@@ -158,6 +162,18 @@ def wersje_gry(folder):
     return wersje.get("net.minecraft"), wersje.get("net.minecraftforge")
 
 
+def usuniete_mody(cel, mody):
+    """Mody z poprzedniej paczki (i wczesniej usuniete), ktorych juz nie ma. Instalator proponuje ich usuniecie."""
+    try:
+        stara = json.loads((cel / "paczka.json").read_text())
+    except (OSError, ValueError):
+        return []
+    teraz = {m["id"] for m in mody}
+    wynik = {u["id"]: u["nazwa"] for u in stara.get("usuniete", [])}
+    wynik.update({m["id"]: m["nazwa"] for m in stara.get("mody", [])})
+    return [{"id": i, "nazwa": n} for i, n in sorted(wynik.items()) if i not in teraz and i != NASZ_MOD]
+
+
 def poprzednie_adresy(cel):
     """Sprawdzone wczesniej pliki z CurseForge nie sa pobierane ponownie: bywaja duze."""
     try:
@@ -167,7 +183,7 @@ def poprzednie_adresy(cel):
     return {m["sha1"]: (m["url"], m["nazwa"]) for m in mody if "forgecdn" in m["url"]}
 
 
-def lista_modow(folder, cel, curseforge, wzorce):
+def lista_modow(folder, cel, curseforge, wzorce, opcjonalne=()):
     poprzednie = poprzednie_adresy(cel)
     jary = sorted((folder / "mods").glob("*.jar"))
     sumy = {j: sha1(j.read_bytes()) for j in jary}
@@ -193,8 +209,11 @@ def lista_modow(folder, cel, curseforge, wzorce):
         else:
             braki.append(jar.name)
             continue
-        mody.append({"id": id_moda, "nazwa": tytul, "plik": jar.name, "sha1": suma, "url": adres,
-                     "strona": strona_moda(jar.name, wzorce)})
+        mod = {"id": id_moda, "nazwa": tytul, "plik": jar.name, "sha1": suma, "url": adres,
+               "strona": strona_moda(jar.name, wzorce)}
+        if any(fnmatch.fnmatch(jar.name, w) for w in opcjonalne):
+            mod["opcjonalny"] = True
+        mody.append(mod)
     for stary in (cel / "mody").glob("*.jar"):
         if stary.name not in nasze:
             stary.unlink()
@@ -212,8 +231,9 @@ def main():
     cel.mkdir(parents=True, exist_ok=True)
 
     curseforge = json.loads((TU / "curseforge.json").read_text())
-    wzorce = [w for w in (TU / "tylko_klient.txt").read_text().splitlines() if w and not w.startswith("#")]
-    mody, braki = lista_modow(folder, cel, curseforge, wzorce)
+    wzorce = wczytaj_wzorce(TU / "tylko_klient.txt")
+    opcjonalne = wczytaj_wzorce(TU / "opcjonalne.txt")
+    mody, braki = lista_modow(folder, cel, curseforge, wzorce, opcjonalne)
     if braki:
         sys.exit("Nie znalazłem adresu dla: " + ", ".join(braki) + ". Dopisz je w paczka/curseforge.json.")
 
@@ -229,14 +249,17 @@ def main():
         "config": zapisz_archiwum(cel, "config.zip", config),
         "config_serwer": zapisz_archiwum(cel, "config-serwer.zip", serwer),
         "mody": mody,
+        "usuniete": usuniete_mody(cel, mody),
     }
     (cel / "paczka.json").write_text(json.dumps(paczka, ensure_ascii=False, indent=1) + "\n")
 
     zrodla = {"Modrinth": 0, "CurseForge": 0, "repo": 0}
     for m in mody:
         zrodla["Modrinth" if "modrinth" in m["url"] else "CurseForge" if "forgecdn" in m["url"] else "repo"] += 1
-    print(f"Modów: {len(mody)} {zrodla}, tylko dla gracza: {sum(m['strona'] == 'klient' for m in mody)}")
+    print(f"Modów: {len(mody)} {zrodla}, tylko dla gracza: {sum(m['strona'] == 'klient' for m in mody)}, "
+          f"opcjonalne: {[m['plik'] for m in mody if m.get('opcjonalny')]}")
     print(f"Minecraft {minecraft}, Forge {forge}")
+    print(f"Usunięte z paczki (instalator zaproponuje usunięcie): {[u['nazwa'] for u in paczka['usuniete']]}")
     print(f"Skiny {paczka['skiny']['wersja']}, config {paczka['config']['wersja']}, serwer {paczka['config_serwer']['wersja']}")
 
     znalezione = znajdz_prywatne({**serwer, **skiny}, wartosci_prywatne())

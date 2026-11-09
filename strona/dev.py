@@ -76,7 +76,10 @@ class Symulator:
         dzialajacy = self.stan == "wlaczony"
         dane = {"aktualizacja": self.zegar(), "stan": self.stan,
                 "gracze": self.gracze if dzialajacy else None, "max_graczy": 20 if dzialajacy else None,
-                "odliczanie_s": self.odliczanie_s(), "czynny_od": "06:00", "czynny_do": "23:30"}
+                "odliczanie_s": self.odliczanie_s(), "czynny_od": "06:00", "czynny_do": "23:30",
+                "lista_graczy": [{"nick": f"Gracz_{i + 1}", "od": round(self.zegar()) - 600 * (i + 1)}
+                                 for i in range(self.gracze)] if dzialajacy else [],
+                "czas_gry": [{"nick": f"Gracz_{i + 1}", "s": 3600 * (9 - i) + 120 * i} for i in range(8)]}
         tymczasowy = self.panel.status.with_suffix(".tmp")
         tymczasowy.write_text(json.dumps(dane))
         os.replace(tymczasowy, self.panel.status)

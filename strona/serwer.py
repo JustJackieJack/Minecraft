@@ -19,6 +19,8 @@ from urllib.parse import unquote, urlsplit
 
 STANY = {"wylaczony", "uruchamianie", "wlaczony", "zatrzymywanie", "zablokowany", "noc", "mapa"}
 GODZINA = re.compile(r"(?:[01]?\d|2[0-3]):[0-5]\d")
+NICK = re.compile(r"[A-Za-z0-9_]{1,16}")
+MAKS_GRACZY = 50
 BRAK_DANYCH = "brak_danych"
 STATUS_WAZNY_S = 120
 PO_KLIKNIECIU_S = 60
@@ -76,6 +78,19 @@ def liczba(wartosc):
     return None
 
 
+def gracze(wartosc, pole):
+    """Lista {"nick", pole} z poprawnym nickiem i liczba; reszta odrzucana."""
+    if not isinstance(wartosc, list):
+        return []
+    wynik = []
+    for g in wartosc[:MAKS_GRACZY]:
+        if isinstance(g, dict) and isinstance(g.get("nick"), str) and NICK.fullmatch(g["nick"]):
+            w = g.get(pole)
+            if type(w) is int and 0 <= w < 10 ** 11:
+                wynik.append({"nick": g["nick"], pole: w})
+    return wynik
+
+
 class Panel:
     def __init__(self, katalog, zegar=time.time):
         self.status = pathlib.Path(katalog) / "out" / "status.json"
@@ -86,7 +101,7 @@ class Panel:
 
     def odczytaj(self):
         pusty = {"stan": BRAK_DANYCH, "gracze": None, "max_graczy": None, "odliczanie_s": None,
-                 "czynny_od": None, "czynny_do": None}
+                 "czynny_od": None, "czynny_do": None, "lista_graczy": [], "czas_gry": []}
         try:
             with open(self.status, "rb") as f:
                 d = json.loads(f.read(MAKS_STATUS_B))
@@ -110,6 +125,8 @@ class Panel:
             "odliczanie_s": liczba(d.get("odliczanie_s")),
             "czynny_od": godzina(d.get("czynny_od")),
             "czynny_do": godzina(d.get("czynny_do")),
+            "lista_graczy": gracze(d.get("lista_graczy"), "od") if stan == "wlaczony" else [],
+            "czas_gry": gracze(d.get("czas_gry"), "s"),
         }
 
     def wlacz(self):

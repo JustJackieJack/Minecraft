@@ -35,6 +35,7 @@
         <dt>Graczy online</dt>
         <dd id="gracze-liczba">0</dd>
       </dl>
+      <ul id="lista-graczy" class="lista-graczy" aria-label="Kto gra" hidden></ul>
       <p id="odliczanie" class="odliczanie" hidden></p>
 
       <button id="wlacz" class="przycisk" type="button" hidden>Włącz serwer</button>
@@ -48,6 +49,15 @@
         </div>
         <p class="uwaga">Żeby wejść na serwer, musisz mieć włączony WireGuard.</p>
       </div>
+    </section>
+
+    <section id="czas-gry-panel" class="panel" aria-labelledby="czas-gry-tytul" hidden>
+      <h2 id="czas-gry-tytul">Czas gry</h2>
+      <table class="czas-gry">
+        <thead><tr><th scope="col">Gracz</th><th scope="col">Łącznie</th></tr></thead>
+        <tbody id="czas-gry"></tbody>
+      </table>
+      <p class="uwaga">Liczony co minutę, od kiedy działa licznik.</p>
     </section>
   </main>
 </body>

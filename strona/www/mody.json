@@ -276,6 +276,21 @@
    "zrodlo": "Modrinth"
   },
   {
+   "id": "barteringstation",
+   "nazwa": "Bartering Station",
+   "opis": [
+    "Stacja handlu z piglinami.",
+    "Blok, do którego wrzucasz złoto, a pobliskie pigliny same z Tobą handlują – bez ręcznego rzucania sztabek.",
+    "Na później: Nether jest na razie zamknięty.",
+    "Samouczek: Przepis w JEI: wpisz @barteringstation."
+   ],
+   "tagi": [
+    "Mechaniki gry"
+   ],
+   "link": "https://modrinth.com/mod/bartering-station",
+   "zrodlo": "Modrinth"
+  },
+  {
    "id": "betteradvancements",
    "nazwa": "Better Advancements",
    "opis": [
@@ -323,18 +338,6 @@
    ],
    "link": "https://modrinth.com/mod/bettertabinfo",
    "zrodlo": "Modrinth"
-  },
-  {
-   "id": "biomemusic",
-   "nazwa": "Biome Music",
-   "opis": [
-    "Dobiera muzykę w tle do biomu, w którym jesteś."
-   ],
-   "tagi": [
-    "Grafika i dźwięk"
-   ],
-   "link": "https://www.curseforge.com/minecraft/search?search=Biome%20Music",
-   "zrodlo": "CurseForge (szukaj)"
   },
   {
    "id": "biomesoplenty",
@@ -645,6 +648,19 @@
    "zrodlo": "Modrinth"
   },
   {
+   "id": "cutthrough",
+   "nazwa": "Cut Through",
+   "opis": [
+    "Atak przez trawę.",
+    "Uderzasz moba przez trawę, kwiaty i inne niskie rośliny – roślina zostaje, a cios trafia w moba."
+   ],
+   "tagi": [
+    "Broń i walka"
+   ],
+   "link": "https://modrinth.com/mod/cut-through",
+   "zrodlo": "Modrinth"
+  },
+  {
    "id": "dataanchor",
    "nazwa": "Data Anchor",
    "opis": [
@@ -678,6 +694,22 @@
     "Struktury"
    ],
    "link": "https://modrinth.com/mod/decubed-dungeons",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "distanthorizons",
+   "nazwa": "Distant Horizons",
+   "opis": [
+    "Daleki widok terenu – opcjonalny, tylko u gracza.",
+    "Opcjonalny: instalator pyta, czy go dodać. Nie jest potrzebny do gry na serwerze.",
+    "Pokazuje uproszczony teren daleko za zwykłym zasięgiem widzenia.",
+    "Działa tylko u Ciebie: teren widzisz tam, gdzie już byłeś (serwer go nie wysyła). Obciąża kartę graficzną i dysk.",
+    "Samouczek: Ustawienia: przycisk DH w Opcje → Grafika."
+   ],
+   "tagi": [
+    "Grafika i dźwięk"
+   ],
+   "link": "https://modrinth.com/mod/distanthorizons",
    "zrodlo": "Modrinth"
   },
   {
@@ -1322,7 +1354,7 @@
    "nazwa": "Medieval Music",
    "opis": [
     "Średniowieczna muzyka w tle.",
-    "Medieval Music – 40 utworów średniowiecznej muzyki w tle; Biome Music dobiera muzykę do biomu.",
+    "Medieval Music – 40 utworów średniowiecznej muzyki w tle zamiast zwykłej muzyki Minecrafta.",
     "Do tego Ambient Sounds i Sound Physics – odgłosy otoczenia i echo w jaskiniach."
    ],
    "tagi": [
@@ -1697,6 +1729,32 @@
     "Świat i biomy"
    ],
    "link": "https://modrinth.com/mod/snow-under-trees",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "sodiumdynamiclights",
+   "nazwa": "Sodium Dynamic Lights",
+   "opis": [
+    "Dynamiczne światło bez shaderów.",
+    "Pochodnia, latarnia czy lawa w ręce oświetla teren wokół Ciebie. Świecą też upuszczone przedmioty i płonące moby.",
+    "Samouczek: Ustawienia: Opcje → Grafika (Embeddium) → zakładka Dynamic Lights."
+   ],
+   "tagi": [
+    "Grafika i dźwięk"
+   ],
+   "link": "https://modrinth.com/mod/sodium-dynamic-lights",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "sodiumoptionsapi",
+   "nazwa": "Sodium Options API",
+   "opis": [
+    "Biblioteka potrzebna modowi Sodium Dynamic Lights: dodaje jego zakładkę w ustawieniach grafiki."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/sodium-options-api",
    "zrodlo": "Modrinth"
   },
   {

@@ -365,7 +365,7 @@ class Raport(unittest.TestCase):
     def test_odliczanie_przy_zero_graczy(self):
         d = s.raport({"bez_graczy_od": 100}, obs(gracze=0, max_graczy=20), None, 200)
         self.assertEqual(d, {"czas": 200, "gracze": 0, "max_graczy": 20,
-                             "koniec_odliczania": 100 + s.BEZ_GRACZY_S, "wylaczanie": False})
+                             "koniec_odliczania": 100 + s.BEZ_GRACZY_S, "wylaczanie": False, "online": {}})
 
     def test_gracze_bez_odliczania(self):
         d = s.raport({}, obs(gracze=3, max_graczy=20), None, 200)
@@ -397,7 +397,59 @@ class Raport(unittest.TestCase):
             r = m.odczytaj_raport(sciezka)
         st = m.stan_strony(True, 1000, [], r, False, 210)
         self.assertEqual(st, {"stan": "wlaczony", "gracze": 0, "max_graczy": 20,
-                              "odliczanie_s": 100 + s.BEZ_GRACZY_S - 210})
+                              "odliczanie_s": 100 + s.BEZ_GRACZY_S - 210, "lista_graczy": []})
+
+    def test_gracze_online_przechodza_do_strony(self):
+        o = obs(gracze=2, max_graczy=20, online={"Kuba": 150, "Gracz_1": 120})
+        r = s.raport({}, o, None, 200)
+        st = m.stan_strony(True, 1000, [], r, False, 210)
+        self.assertEqual(st["lista_graczy"], [{"nick": "Gracz_1", "od": 120}, {"nick": "Kuba", "od": 150}])
+        self.assertEqual(s.raport({}, obs(gracze=0, online={"Kuba": 1}), None, 200)["online"], {})
+
+
+class CzasGry(unittest.TestCase):
+    def test_sesja_i_lacznie(self):
+        d = s.aktualizuj_graczy({}, obs(gracze=1, nicki=["Kuba"]), 1000)
+        self.assertEqual(d, {"online": {"Kuba": 1000}, "lacznie": {"Kuba": 0}, "ostatnio": 1000})
+        d = s.aktualizuj_graczy(d, obs(gracze=2, nicki=["Kuba", "Ola"]), 1060)
+        self.assertEqual(d["lacznie"], {"Kuba": 60, "Ola": 0})
+        d = s.aktualizuj_graczy(d, obs(gracze=1, nicki=["Ola"]), 1120)
+        self.assertEqual(d, {"online": {"Ola": 1060}, "lacznie": {"Kuba": 60, "Ola": 60}, "ostatnio": 1120})
+
+    def test_nieznana_lista_nic_nie_zmienia(self):
+        d = {"online": {"Kuba": 1000}, "lacznie": {"Kuba": 60}, "ostatnio": 1060}
+        for o in (obs(gracze=s.NIEZNANE, nicki=None), obs(gracze=13, nicki=None)):
+            self.assertEqual(s.aktualizuj_graczy(d, o, 1120), d)
+
+    def test_wylaczony_serwer_konczy_sesje(self):
+        d = {"online": {"Kuba": 1000}, "lacznie": {"Kuba": 60}, "ostatnio": 1060}
+        for o in (obs(ct_dziala=False, gracze=None), obs(gracze=s.WYLACZONY), obs(gracze=0)):
+            self.assertEqual(s.aktualizuj_graczy(d, o, 1120), {"online": {}, "lacznie": {"Kuba": 60}, "ostatnio": None})
+
+    def test_dluga_przerwa_sie_nie_liczy(self):
+        d = {"online": {"Kuba": 1000}, "lacznie": {"Kuba": 60}, "ostatnio": 1060}
+        d = s.aktualizuj_graczy(d, obs(gracze=1, nicki=["Kuba"]), 1060 + s.MAKS_PRZERWA_S + 1)
+        self.assertEqual(d["lacznie"], {"Kuba": 60})
+
+    def test_zly_nick_pominiety(self):
+        d = s.aktualizuj_graczy({}, obs(gracze=2, nicki=["Kuba", "<b>"]), 1000)
+        self.assertEqual(list(d["online"]), ["Kuba"])
+
+    def test_dodaj_czas(self):
+        d = s.dodaj_czas({"lacznie": {"Kuba": 60}}, ["Kuba=40", "Ola=3600"])
+        self.assertEqual(d["lacznie"], {"Kuba": 100, "Ola": 3600})
+        for zle in (["Kuba"], ["Kuba=-5"], ["<b>=5"], ["Kuba=1.5"]):
+            with self.assertRaises(ValueError):
+                s.dodaj_czas({}, zle)
+
+    def test_lacznik_czyta_plik_strażnika(self):
+        with tempfile.TemporaryDirectory() as t:
+            sciezka = f"{t}/mc-panel/gracze.json"
+            self.assertEqual(m.odczytaj_czas_gry(sciezka), [])
+            s.zapisz_raport({"online": {}, "lacznie": {"Ola": 60, "Kuba": 3600, "<b>": 9, "X": "1"}}, sciezka)
+            self.assertEqual(m.odczytaj_czas_gry(sciezka), [{"nick": "Kuba", "s": 3600}, {"nick": "Ola", "s": 60}])
+            pathlib.Path(sciezka).write_text("[]")
+            self.assertEqual(m.odczytaj_czas_gry(sciezka), [])
 
 
 class StanStrony(unittest.TestCase):
@@ -495,7 +547,8 @@ class Lacznik(unittest.TestCase):
                            sygnal=lambda: self.sygnaly.pop(0) if self.sygnaly else False,
                            publikuj=lambda st, t: self.opublikowane.append(st["stan"]),
                            trwa=lambda: self.trwa, wlacz=wlacz,
-                           log=lambda t, blad=False: self.logi.append(t), noc=lambda t: self.noc)
+                           log=lambda t, blad=False: self.logi.append(t), noc=lambda t: self.noc,
+                           czas_gry=lambda: [{"nick": "Kuba", "s": 60}])
 
     def test_publikuje_co_okres(self):
         for t in range(1000, 1021):
@@ -583,6 +636,7 @@ class Lacznik(unittest.TestCase):
         self.most.publikuj = lambda st, t: dane.append(st)
         self.most.krok(1000)
         self.assertEqual((dane[0]["czynny_od"], dane[0]["czynny_do"]), (m.NOC_DO, m.NOC_OD))
+        self.assertEqual(dane[0]["czas_gry"], [{"nick": "Kuba", "s": 60}])
 
     def test_jeden_wpis_w_logu_na_zmiane_stanu(self):
         for t in range(1000, 1050, 10):

@@ -5,11 +5,13 @@ Strona nie ma drogi do Proxmoxa. Rozmawiaja przez dwa katalogi zamontowane w CT 
     in/start          pusty sygnal "wlacz". Tresci nie czytamy, plik jest tylko usuwany.
     out/status.json   stan dla strony. Jedyne, co strona dostaje od hosta.
 Stan laczy dane klastra z raportem strażnika z Proxmox-03 (/etc/pve/mc-panel/straznik.json).
+Gracze online (nick, od kiedy) z raportu, laczny czas gry z /etc/pve/mc-panel/gracze.json (pisze strażnik).
 W nocnej przerwie (NOC_OD-NOC_DO) stan to "noc" i sygnal nic nie wlacza. Dzialajacy CT renderu mapy to "mapa".
 Ustawienia: /etc/mc-panel/mc.env. Logi: journalctl -t mc-most
 """
 import json
 import os
+import re
 import subprocess
 import sys
 import syslog
@@ -20,6 +22,9 @@ USTAWIENIA = "/etc/mc-panel/mc.env"
 CT = MAPA_CT = None   # z USTAWIENIA
 NOC_OD, NOC_DO = "23:30", "06:00"
 RAPORT = "/etc/pve/mc-panel/straznik.json"
+GRACZE = "/etc/pve/mc-panel/gracze.json"
+NICK = re.compile(r"[A-Za-z0-9_]{1,16}")
+MAKS_GRACZY_NA_LISCIE = 50
 CZLONKOWIE = "/etc/pve/.members"
 SYGNAL = "/var/lib/mcpanel/in/start"
 STATUS = "/var/lib/mcpanel/out/status.json"
@@ -100,6 +105,32 @@ def odczytaj_raport(sciezka=RAPORT):
         return None
 
 
+def czas(x):
+    return type(x) in (int, float) and 0 <= x < 10 ** 11
+
+
+def lista_online(raport):
+    """[{"nick", "od"}] wg czasu wejscia; zle wpisy pomijane."""
+    online = raport.get("online") if isinstance(raport, dict) else None
+    if not isinstance(online, dict):
+        return []
+    wynik = [{"nick": n, "od": round(od)} for n, od in online.items() if isinstance(n, str) and NICK.fullmatch(n) and czas(od)]
+    return sorted(wynik, key=lambda g: (g["od"], g["nick"].casefold()))[:MAKS_GRACZY_NA_LISCIE]
+
+
+def odczytaj_czas_gry(sciezka=GRACZE):
+    """[{"nick", "s"}] od najdluzej grajacego; brak pliku to pusta lista."""
+    try:
+        with open(sciezka) as f:
+            lacznie = json.load(f).get("lacznie")
+    except (OSError, ValueError, AttributeError):
+        return []
+    if not isinstance(lacznie, dict):
+        return []
+    wynik = [{"nick": n, "s": round(s)} for n, s in lacznie.items() if isinstance(n, str) and NICK.fullmatch(n) and czas(s)]
+    return sorted(wynik, key=lambda g: (-g["s"], g["nick"].casefold()))[:MAKS_GRACZY_NA_LISCIE]
+
+
 def stan_strony(ct_dziala, praca, inni, raport, wlaczanie, teraz, noc=False, mapa=False):
     """Sam stan i liczby, bez nazw gosci: strona nie musi wiedziec, co dziala na hoscie."""
     wynik = {"stan": "wylaczony", "gracze": None, "max_graczy": None, "odliczanie_s": None}
@@ -122,7 +153,8 @@ def stan_strony(ct_dziala, praca, inni, raport, wlaczanie, teraz, noc=False, map
     elif raport.get("wylaczanie"):
         wynik["stan"] = "zatrzymywanie"
     elif type(raport.get("gracze")) is int:
-        wynik.update(stan="wlaczony", gracze=raport["gracze"], max_graczy=raport.get("max_graczy"))
+        wynik.update(stan="wlaczony", gracze=raport["gracze"], max_graczy=raport.get("max_graczy"),
+                     lista_graczy=lista_online(raport))
         koniec = raport.get("koniec_odliczania")
         if isinstance(koniec, (int, float)):
             wynik["odliczanie_s"] = max(0, round(koniec - teraz))
@@ -164,8 +196,9 @@ def uruchom_wlaczanie():
 class Most:
     def __init__(self, klaster=odczytaj_klaster, raport=odczytaj_raport, sygnal=odbierz_sygnal,
                  publikuj=opublikuj, trwa=wlaczanie_trwa, wlacz=uruchom_wlaczanie, log=log,
-                 noc=lambda teraz: pora_nocy(teraz)[0]):
+                 noc=lambda teraz: pora_nocy(teraz)[0], czas_gry=odczytaj_czas_gry):
         self.klaster, self.raport, self.sygnal, self.noc = klaster, raport, sygnal, noc
+        self.czas_gry = czas_gry
         self.publikuj, self.trwa, self.wlacz, self.log = publikuj, trwa, wlacz, log
         self.nastepny_status = 0
         self.sygnal_czas = None
@@ -212,7 +245,7 @@ class Most:
             self.log(f"stan: {status['stan']}")
             self.ostatni_stan = status["stan"]
         # Godziny dla stalej informacji na stronie: serwer dziala od konca do poczatku nocy.
-        self.publikuj(dict(status, czynny_od=NOC_DO, czynny_do=NOC_OD), teraz)
+        self.publikuj(dict(status, czynny_od=NOC_DO, czynny_do=NOC_OD, czas_gry=self.czas_gry()), teraz)
 
     def start_w_toku(self, teraz):
         if self.ostatni_start is not None and teraz - self.ostatni_start < START_TRWA_S:

@@ -169,6 +169,16 @@ h1 {
 .gracze dt { color: var(--tekst-cichy); }
 .gracze dd { margin: 0; font-size: 39px; color: var(--trawa-jasna); }
 
+.lista-graczy { margin: 8px 0 0; padding: 0; list-style: none; }
+.lista-graczy li { margin-top: 4px; overflow-wrap: anywhere; }
+.nick { color: var(--trawa-jasna); }
+.lista-graczy .od, .czas-gry td + td { color: var(--tekst-cichy); font-variant-numeric: tabular-nums; }
+
+.czas-gry { width: 100%; margin-top: 12px; border-collapse: collapse; }
+.czas-gry th { text-align: left; color: var(--tekst-cichy); font-weight: 400; }
+.czas-gry th, .czas-gry td { padding: 4px 8px 4px 0; border-bottom: 2px solid var(--kamien-ciemny); }
+.czas-gry td.gra::after { content: " ●"; color: var(--trawa-jasna); }
+
 .odliczanie {
   margin: 14px 0 0;
   padding: 10px 12px;

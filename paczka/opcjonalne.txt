@@ -1,0 +1,3 @@
+# Mody opcjonalne dla gracza: instalator pyta, czy je dodac (bez pytan: nie dodaje). Wzorce nazw plikow.
+# Musza tez byc w tylko_klient.txt: serwer ich nie dostaje.
+DistantHorizons-*

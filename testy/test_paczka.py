@@ -41,6 +41,20 @@ class Paczka(unittest.TestCase):
         self.assertEqual(p.strona_moda("inventoryhud.forge.jar", wzorce), "klient")
         self.assertEqual(p.strona_moda("create-1.20.1.jar", wzorce), "oba")
 
+    def test_opcjonalne_sa_tylko_dla_gracza(self):
+        klient = p.wczytaj_wzorce(KORZEN / "paczka/tylko_klient.txt")
+        opcjonalne = p.wczytaj_wzorce(KORZEN / "paczka/opcjonalne.txt")
+        self.assertIn("DistantHorizons-*", opcjonalne)
+        for w in opcjonalne:
+            self.assertIn(w, klient, "mod opcjonalny trafilby na serwer")
+
+    def test_usuniete_mody(self):
+        stara = {"mody": [{"id": "a", "nazwa": "A"}, {"id": "b", "nazwa": "B"}, {"id": p.NASZ_MOD, "nazwa": "C"}],
+                 "usuniete": [{"id": "x", "nazwa": "X"}, {"id": "b", "nazwa": "B"}]}
+        (self.dir / "paczka.json").write_text(json.dumps(stara))
+        self.assertEqual(p.usuniete_mody(self.dir, [{"id": "b"}]), [{"id": "a", "nazwa": "A"}, {"id": "x", "nazwa": "X"}])
+        self.assertEqual(p.usuniete_mody(self.dir / "brak", []), [])
+
     def test_adres_curseforge(self):
         self.assertEqual(p.adres_curseforge(6863096, "a+b c.jar"),
                          "https://mediafilez.forgecdn.net/files/6863/96/a%2Bb%20c.jar")

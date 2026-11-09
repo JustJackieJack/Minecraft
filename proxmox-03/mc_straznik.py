@@ -4,15 +4,18 @@
 Zasada: przy kazdej watpliwosci nic nie wylaczamy.
     --proba  pokazuje stan i decyzje, niczego nie zmienia ani nie zapisuje.
     --komunikat TEKST  wysyla TEKST do graczy tak jak ostrzezenia (test), nic wiecej.
+    --dodaj-czas NICK=SEKUNDY ...  dopisuje czas gry (np. historia ze statystyk swiata), nic wiecej.
     Plik SERWIS wstrzymuje wszystkie odliczania.
 Ustawienia: /etc/mc-panel/mc.env (wzor: .env.template).
 Logi: journalctl -t mc-straznik (zmiany stanu i akcje, nie kazda minuta).
 Co minute zapisuje raport dla lacznika na Proxmox-02 we wspolnym /etc/pve.
 Nocna przerwa (NOC_OD-NOC_DO): serwer gasnie, chyba ze gra NOC_WYJATEK. Gracze dostaja ostrzezenia w grze.
 Gdy serwer dzialal, zaklada flage dla porannego renderu mapy (mc_wlacz.py --mapa na Proxmox-02).
+Czas gry: sesje z listy nickow (co minute), lacznie w GRACZE (wspolne /etc/pve, czyta lacznik dla strony).
 """
 import json
 import os
+import re
 import subprocess
 import sys
 import syslog
@@ -38,6 +41,9 @@ SERWIS = "/etc/mc-panel/serwis"
 TOKEN = "/etc/mc-panel/crafty.token"
 RAPORT = "/etc/pve/mc-panel/straznik.json"
 FLAGA_MAPY = "/etc/pve/mc-panel/mapa_do_renderu"
+GRACZE = "/etc/pve/mc-panel/gracze.json"
+MAKS_PRZERWA_S = 3 * 60     # dluzsza przerwa w odczytach (np. wylaczony host) nie liczy sie do czasu gry
+NICK = re.compile(r"[A-Za-z0-9_]{1,16}")
 USLUGA_EKSPORTU = "mc-mapa-eksport.service"
 
 WYLACZONY, NIEZNANE = "down", "unknown"
@@ -276,7 +282,50 @@ def raport(st, o, akcja, teraz):
         "max_graczy": o.get("max_graczy") if gracze is not None else None,
         "koniec_odliczania": koniec,
         "wylaczanie": "stop_od" in st or akcja in ("stop_mc", "stop_noc", "stop_ct"),
+        "online": (o.get("online") or {}) if gracze else {},
     }
+
+
+def aktualizuj_graczy(d, o, teraz):
+    """Sesje i laczny czas gry. d: {"online": {nick: od}, "lacznie": {nick: s}, "ostatnio": czas}.
+    Czas miedzy dwoma odczytami liczy sie graczowi obecnemu w obu. Nieznana lista nickow niczego nie zmienia."""
+    online, lacznie = dict(d.get("online") or {}), dict(d.get("lacznie") or {})
+    if not o["ct_dziala"] or o["gracze"] in (WYLACZONY, 0):
+        nicki = []
+    elif o["gracze"] == NIEZNANE or o.get("nicki") is None:
+        return {"online": online, "lacznie": lacznie, "ostatnio": d.get("ostatnio")}
+    else:
+        nicki = [n for n in o["nicki"] if NICK.fullmatch(n)]
+    ostatnio = d.get("ostatnio")
+    krok = teraz - ostatnio if isinstance(ostatnio, (int, float)) and 0 < teraz - ostatnio <= MAKS_PRZERWA_S else 0
+    for n in nicki:
+        if n in online:
+            lacznie[n] = round(lacznie.get(n, 0) + krok)
+        else:
+            online[n] = round(teraz)
+            lacznie.setdefault(n, 0)
+    online = {n: od for n, od in online.items() if n in nicki}
+    return {"online": online, "lacznie": lacznie, "ostatnio": round(teraz) if nicki else None}
+
+
+def dodaj_czas(d, pary):
+    """pary: ["NICK=SEKUNDY", ...]. Zly wpis to ValueError, zanim cokolwiek sie zmieni."""
+    lacznie = dict(d.get("lacznie") or {})
+    for para in pary:
+        nick, znak, s = para.partition("=")
+        if not (znak and NICK.fullmatch(nick) and s.isdigit()):
+            raise ValueError(f"zly wpis: {para!r} (NICK=SEKUNDY)")
+        lacznie[nick] = lacznie.get(nick, 0) + int(s)
+    return dict(d, lacznie=lacznie)
+
+
+def wczytaj_graczy(sciezka=GRACZE):
+    try:
+        with open(sciezka) as f:
+            d = json.load(f)
+        return d if isinstance(d, dict) else {}
+    except FileNotFoundError:
+        return {}
 
 
 def zapisz_raport(dane, sciezka=RAPORT):
@@ -456,6 +505,13 @@ def main():
         crafty("stdin", polecenie_komunikatu(tekst))
         log(f"komunikat testowy: {tekst}")
         return 0
+    if "--dodaj-czas" in sys.argv:
+        pary = sys.argv[sys.argv.index("--dodaj-czas") + 1:]
+        if not pary:
+            raise ValueError("podaj wpisy: --dodaj-czas NICK=SEKUNDY ...")
+        zapisz_raport(dodaj_czas(wczytaj_graczy(), pary), GRACZE)
+        log(f"dopisany czas gry: {' '.join(pary)}")
+        return 0
     proba = "--proba" in sys.argv
     obs = obserwuj()
     teraz = time.time()
@@ -472,6 +528,16 @@ def main():
         print("decyzja:", akcja)
         print("komunikat w grze:", komunikat)
         return 0
+
+    # Czas gry: blad zapisu (np. /etc/pve bez kworum) niczego nie wstrzymuje, odczyt nieudany - nic nie zmieniamy.
+    try:
+        gracze_stare = wczytaj_graczy()
+        gracze_nowe = aktualizuj_graczy(gracze_stare, obs, teraz)
+        obs["online"] = gracze_nowe["online"]
+        if gracze_nowe != gracze_stare:
+            zapisz_raport(gracze_nowe, GRACZE)
+    except (OSError, ValueError) as e:
+        log(f"blad czasu gry: {e}", blad=True)
 
     try:
         if oznacz_mape(obs):
