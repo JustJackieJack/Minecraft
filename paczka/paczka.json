@@ -8,13 +8,18 @@
  },
  "config": {
   "plik": "config.zip",
-  "wersja": "54b1c243c7a0",
-  "sha256": "54b1c243c7a04f8bec59ec4ddb356f1b9ef4083a996f0cf4a005e4f101679980"
+  "wersja": "8e990f92f906",
+  "sha256": "8e990f92f9069ff9c8f302d265e4c0b26ac456380a1603bd4d83185a17cfbde5"
+ },
+ "config_osobisty": {
+  "plik": "config-osobisty.zip",
+  "wersja": "d30b67a36178",
+  "sha256": "d30b67a36178d6f3792230e69596175f088a71673148d92f9028e8da5f396466"
  },
  "config_serwer": {
   "plik": "config-serwer.zip",
-  "wersja": "fd817d579479",
-  "sha256": "fd817d579479b52b52c85cfeebce0fa4a08a6f0cf3bdd8e9f4649500306ab13a"
+  "wersja": "ee61b5fd9f4c",
+  "sha256": "ee61b5fd9f4cc1c0d73026ce81cc25020b4ed116f452d451213a64b8983bb8f9"
  },
  "mody": [
   {

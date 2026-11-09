@@ -48,6 +48,19 @@ class Paczka(unittest.TestCase):
         for w in opcjonalne:
             self.assertIn(w, klient, "mod opcjonalny trafilby na serwer")
 
+    def test_podzial_configu(self):
+        wzorce = p.wczytaj_wzorce(KORZEN / "paczka/config_osobiste.txt")
+        config = {f"config/{n}": n for n in ("quark-common.toml", "create-client.toml", "embeddium-options.json",
+                                             "xaero/minimap/client.cfg", "voicechat/voicechat-client.properties",
+                                             "voicechat/voicechat-server.properties", "incontrol/spawn.json",
+                                             "pickupnotifier/pickupnotifier-client.toml", "jei/blacklist.json")}
+        gra, osobiste = p.podziel_config(config, wzorce)
+        self.assertEqual(sorted(osobiste), ["config/create-client.toml", "config/embeddium-options.json",
+                                            "config/pickupnotifier/pickupnotifier-client.toml",
+                                            "config/voicechat/voicechat-client.properties", "config/xaero/minimap/client.cfg"])
+        self.assertEqual(len(gra) + len(osobiste), len(config))
+        self.assertIn("config/ci_panowie-common.toml", p.podziel_config({"config/ci_panowie-common.toml": 1}, wzorce)[0])
+
     def test_usuniete_mody(self):
         stara = {"mody": [{"id": "a", "nazwa": "A"}, {"id": "b", "nazwa": "B"}, {"id": p.NASZ_MOD, "nazwa": "C"}],
                  "usuniete": [{"id": "x", "nazwa": "X"}, {"id": "b", "nazwa": "B"}]}

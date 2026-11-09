@@ -417,3 +417,78 @@ func TestUsunietyZPaczkiOdmowaZostawia(t *testing.T) {
 		t.Fatal("usunieto mimo odmowy")
 	}
 }
+
+func TestConfigGryPierwszaInstalacjaDomyslnieTak(t *testing.T) {
+	s := nowaScena(t, "\n")
+	a := archiwum(s, t, "c.zip", map[string]string{"config/a.toml": "nowe"})
+	if err := s.in.sekcjaConfiguGry(context.Background(), a); err != nil {
+		t.Fatal(err)
+	}
+	if !istnieje(filepath.Join(s.dir, "config", "a.toml")) || s.in.wczytajStan()["config"] != a.Wersja {
+		t.Fatal("pierwsza instalacja nie pobrala configu")
+	}
+}
+
+func TestConfigGryPozniejDomyslnieNie(t *testing.T) {
+	for _, tak := range []bool{false, true} {
+		s := nowaScena(t, "\n")
+		s.in.tak = tak
+		s.in.zapiszStan("config", "stara")
+		stary := filepath.Join(s.dir, "config", "a.toml")
+		os.MkdirAll(filepath.Dir(stary), 0o755)
+		os.WriteFile(stary, []byte("moje"), 0o644)
+		a := archiwum(s, t, "c.zip", map[string]string{"config/a.toml": "nowe"})
+		if err := s.in.sekcjaConfiguGry(context.Background(), a); err != nil {
+			t.Fatal(err)
+		}
+		if d, _ := os.ReadFile(stary); string(d) != "moje" || len(s.zapytania) != 0 {
+			t.Fatalf("--tak=%v: config gracza zastapiony bez zgody", tak)
+		}
+	}
+}
+
+func TestConfigGryPozniejNaZyczenie(t *testing.T) {
+	s := nowaScena(t, "t\n")
+	s.in.zapiszStan("config", "stara")
+	a := archiwum(s, t, "c.zip", map[string]string{"config/a.toml": "nowe"})
+	s.in.sekcjaConfiguGry(context.Background(), a)
+	if d, _ := os.ReadFile(filepath.Join(s.dir, "config", "a.toml")); string(d) != "nowe" {
+		t.Fatal("zgoda nie pobrala configu")
+	}
+}
+
+func TestUstawieniaGraczaTylkoBrakujace(t *testing.T) {
+	s := nowaScena(t, "")
+	moj := filepath.Join(s.dir, "config", "grafika.json")
+	os.MkdirAll(filepath.Dir(moj), 0o755)
+	os.WriteFile(moj, []byte("moje"), 0o644)
+	a := archiwum(s, t, "o.zip", map[string]string{"config/grafika.json": "paczka", "config/nowy-mod-client.toml": "x"})
+	if err := s.in.sekcjaUstawienGracza(context.Background(), a); err != nil {
+		t.Fatal(err)
+	}
+	if d, _ := os.ReadFile(moj); string(d) != "moje" {
+		t.Fatal("nadpisano ustawienia gracza")
+	}
+	if !istnieje(filepath.Join(s.dir, "config", "nowy-mod-client.toml")) || s.in.wczytajStan()["config_osobisty"] != a.Wersja {
+		t.Fatal("brakujacy plik nie zostal dodany")
+	}
+	s.zapytania = nil
+	s.in.sekcjaUstawienGracza(context.Background(), a)
+	if len(s.zapytania) != 0 {
+		t.Fatal("ta sama wersja pobrana ponownie")
+	}
+	if err := s.in.sekcjaUstawienGracza(context.Background(), Archiwum{}); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestSerwerNieDostajeUstawienGracza(t *testing.T) {
+	s := nowaScena(t, "")
+	s.in.tak = true
+	s.paczka = &Paczka{ConfigSerwer: archiwum(s, t, "cs.zip", map[string]string{"config/serwer": "x"}),
+		ConfigOsobisty: archiwum(s, t, "o.zip", map[string]string{"config/grafika.json": "x"})}
+	s.in.uruchom(true, &Przerwania{})
+	if istnieje(filepath.Join(s.dir, "config", "grafika.json")) {
+		t.Fatal("serwer dostal ustawienia gracza")
+	}
+}

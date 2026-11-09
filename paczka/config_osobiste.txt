@@ -1,0 +1,31 @@
+# Ustawienia gracza: sciezki w config/ (wzorce fnmatch). Instalator dopisuje je tylko, gdy gracz ich nie ma,
+# nigdy nie nadpisuje. Reszta config/ to "config gry" (przy aktualizacji domyslnie nie). Serwer dostaje wszystko.
+*-client.toml
+*-client.json
+*-client.jsonc
+*/*-client.toml
+fml.toml
+embeddium-options.json
+embeddium-fingerprint.json
+oculus.properties
+betterclouds-v1.json
+entityculling.json
+immediatelyfast.json
+skinlayers.json
+clientsort.json
+MouseTweaks.cfg
+xaerohud.txt
+xaeropatreon.txt
+xaeroplus.txt
+xaero/*
+jei/client/*
+voicechat/voicechat-client.properties
+voicechat/player-volumes.properties
+voicechat/category-volumes.properties
+voicechat/username-cache.json
+sound_physics_remastered/*
+justzoom/*
+fps_overlay/*
+InventoryHUD/*
+better_tab/*
+craft_config/*

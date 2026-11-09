@@ -3,7 +3,8 @@
 
     python3 ~/WebstormProjects/Minecraft/paczka/przygotuj.py
 
-Tworzy obok siebie paczka.json, skiny.zip, config.zip, config-serwer.zip i mody/ z naszym modem.
+Tworzy obok siebie paczka.json, skiny.zip, config.zip (config gry), config-osobisty.zip (ustawienia gracza wg
+config_osobiste.txt), config-serwer.zip i mody/ z naszym modem.
 Pozostale mody sa tylko linkami do Modrinth, a gdy ich tam nie ma, do CurseForge.
 """
 import argparse
@@ -89,6 +90,15 @@ def pobierz_plik(adres):
 
 def wczytaj_wzorce(plik):
     return [w for w in plik.read_text().splitlines() if w and not w.startswith("#")]
+
+
+def podziel_config(config, wzorce):
+    """Zwraca (config gry, ustawienia gracza). Wzorce dotycza sciezki wewnatrz config/."""
+    gra, osobiste = {}, {}
+    for nazwa, plik in config.items():
+        wzgledna = nazwa.split("/", 1)[1]
+        (osobiste if any(fnmatch.fnmatch(wzgledna, w) for w in wzorce) else gra)[nazwa] = plik
+    return gra, osobiste
 
 
 def strona_moda(nazwa, wzorce):
@@ -238,6 +248,7 @@ def main():
         sys.exit("Nie znalazłem adresu dla: " + ", ".join(braki) + ". Dopisz je w paczka/curseforge.json.")
 
     config = pliki_folderu(folder / "config", "config", POMIJANY_CONFIG)
+    config_gry, config_osobisty = podziel_config(config, wczytaj_wzorce(TU / "config_osobiste.txt"))
     serwer = dict(config, **pliki_folderu(folder / "defaultconfigs", "defaultconfigs"))
     skiny = pliki_folderu(folder / "CustomSkinLoader" / "Skiny", "CustomSkinLoader/Skiny")
     skiny["CustomSkinLoader/CustomSkinLoader.json"] = folder / "CustomSkinLoader" / "CustomSkinLoader.json"
@@ -246,7 +257,8 @@ def main():
     paczka = {
         "minecraft": minecraft, "forge": forge,
         "skiny": zapisz_archiwum(cel, "skiny.zip", skiny),
-        "config": zapisz_archiwum(cel, "config.zip", config),
+        "config": zapisz_archiwum(cel, "config.zip", config_gry),
+        "config_osobisty": zapisz_archiwum(cel, "config-osobisty.zip", config_osobisty),
         "config_serwer": zapisz_archiwum(cel, "config-serwer.zip", serwer),
         "mody": mody,
         "usuniete": usuniete_mody(cel, mody),
@@ -260,7 +272,8 @@ def main():
           f"opcjonalne: {[m['plik'] for m in mody if m.get('opcjonalny')]}")
     print(f"Minecraft {minecraft}, Forge {forge}")
     print(f"Usunięte z paczki (instalator zaproponuje usunięcie): {[u['nazwa'] for u in paczka['usuniete']]}")
-    print(f"Skiny {paczka['skiny']['wersja']}, config {paczka['config']['wersja']}, serwer {paczka['config_serwer']['wersja']}")
+    print(f"Skiny {paczka['skiny']['wersja']}, config gry {paczka['config']['wersja']} ({len(config_gry)} plików), "
+          f"ustawienia gracza {paczka['config_osobisty']['wersja']} ({len(config_osobisty)}), serwer {paczka['config_serwer']['wersja']}")
 
     znalezione = znajdz_prywatne({**serwer, **skiny}, wartosci_prywatne())
     if znalezione:

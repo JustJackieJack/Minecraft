@@ -1,8 +1,10 @@
 // Instalator paczki Ci_Panowie. Uruchamiany w folderze minecraft (tam, gdzie jest folder mods).
 //
 //	instalator             skiny, config i mody dla gracza
+//	                       config gry: przy pierwszej instalacji tak, potem domyslnie nie (zastapilby ustawienia gracza);
+//	                       ustawienia gracza (grafika, minimapa, czat glosowy...): tylko brakujace pliki, bez pytania
 //	instalator --serwer    config i mody dla serwera, bez skinow i modow tylko dla gracza
-//	instalator --tak       bez pytan
+//	instalator --tak       bez pytan: domyslna odpowiedz na kazde pytanie
 //	instalator --folder X  inny folder niz biezacy
 //
 // Niczego nie usuwa na stale: zastepowane i odrzucone pliki trafiaja do .ci_panowie_kopia.
@@ -72,13 +74,15 @@ type Usuniety struct {
 }
 
 type Paczka struct {
-	Minecraft    string     `json:"minecraft"`
-	Forge        string     `json:"forge"`
-	Skiny        Archiwum   `json:"skiny"`
-	Config       Archiwum   `json:"config"`
-	ConfigSerwer Archiwum   `json:"config_serwer"`
-	Mody         []Mod      `json:"mody"`
-	Usuniete     []Usuniety `json:"usuniete,omitempty"`
+	Minecraft    string   `json:"minecraft"`
+	Forge        string   `json:"forge"`
+	Skiny        Archiwum `json:"skiny"`
+	Config       Archiwum `json:"config"`
+	ConfigSerwer Archiwum `json:"config_serwer"`
+	// Ustawienia gracza: dopisywane tylko, gdy pliku nie ma. Pusty Plik = brak archiwum.
+	ConfigOsobisty Archiwum   `json:"config_osobisty"`
+	Mody           []Mod      `json:"mody"`
+	Usuniete       []Usuniety `json:"usuniete,omitempty"`
 }
 
 type Instalator struct {
@@ -127,6 +131,16 @@ func (in *Instalator) pytaj(ctx context.Context, pytanie, przyTak string) (strin
 		fmt.Fprintln(in.wy)
 		return "", ctx.Err()
 	}
+}
+
+// potwierdzDomyslnie: Enter i --tak daja odpowiedz domyslna.
+func (in *Instalator) potwierdzDomyslnie(ctx context.Context, pytanie string, domyslnie bool) (bool, error) {
+	if !domyslnie {
+		o, err := in.pytaj(ctx, pytanie+" [t/N]", "n")
+		return o == "t" || o == "y", err
+	}
+	o, err := in.pytaj(ctx, pytanie+" [T/n]", "t")
+	return o != "n", err
 }
 
 func (in *Instalator) potwierdz(ctx context.Context, pytanie string) (bool, error) {
@@ -261,7 +275,12 @@ func bezpiecznaSciezka(nazwa string) bool {
 	return filepath.IsLocal(filepath.FromSlash(nazwa)) && !strings.Contains(nazwa, `\`) && len(czesci) > 1 && dozwoloneFoldery[czesci[0]]
 }
 
-func (in *Instalator) rozpakujPlik(plik *zip.File) (zmieniony bool, err error) {
+func (in *Instalator) rozpakujPlik(plik *zip.File, tylkoBrakujace bool) (zmieniony bool, err error) {
+	if tylkoBrakujace {
+		if _, err := os.Lstat(in.sciezka(plik.Name)); err == nil {
+			return false, nil
+		}
+	}
 	r, err := plik.Open()
 	if err != nil {
 		return false, err
@@ -286,7 +305,7 @@ func (in *Instalator) rozpakujPlik(plik *zip.File) (zmieniony bool, err error) {
 	return true, os.WriteFile(cel, dane, 0o644)
 }
 
-func (in *Instalator) rozpakuj(archiwum string) (int, error) {
+func (in *Instalator) rozpakuj(archiwum string, tylkoBrakujace bool) (int, error) {
 	z, err := zip.OpenReader(archiwum)
 	if err != nil {
 		return 0, err
@@ -306,7 +325,7 @@ func (in *Instalator) rozpakuj(archiwum string) (int, error) {
 		if f.FileInfo().IsDir() {
 			continue
 		}
-		zmieniony, err := in.rozpakujPlik(f)
+		zmieniony, err := in.rozpakujPlik(f, tylkoBrakujace)
 		if err != nil {
 			return zmienione, err
 		}
@@ -333,6 +352,55 @@ func (in *Instalator) sekcjaArchiwum(ctx context.Context, nazwa, klucz string, a
 		}
 		return err
 	}
+	return in.zainstalujArchiwum(ctx, nazwa, klucz, a, false)
+}
+
+// sekcjaConfiguGry: config gry u gracza. Pierwsza instalacja domyslnie tak, pozniej domyslnie nie:
+// zasady gry liczy serwer, a nowy config zastapilby zmiany gracza w configach modow.
+func (in *Instalator) sekcjaConfiguGry(ctx context.Context, a Archiwum) error {
+	obecna, byl := in.wczytajStan()["config"]
+	if obecna == a.Wersja {
+		in.log("Config gry: aktualny (wersja %s).", a.Wersja)
+		return nil
+	}
+	if !byl {
+		in.log("Config gry: pierwsza instalacja (wersja %s).", a.Wersja)
+		tak, err := in.potwierdzDomyslnie(ctx, "Pobrać?", true)
+		if err != nil || !tak {
+			if err == nil {
+				in.log("Pomijam.")
+			}
+			return err
+		}
+		return in.zainstalujArchiwum(ctx, "Config gry", "config", a, false)
+	}
+	in.log("Config gry: jest nowa wersja (u Ciebie %s, w paczce %s).", obecna, a.Wersja)
+	in.log("Do gry na serwerze nie jest potrzebna: zasady ustawia serwer. Zmienione przez Ciebie configi modów")
+	in.log("zostałyby zastąpione (stare pliki trafią do %s).", folderKopii)
+	tak, err := in.potwierdzDomyslnie(ctx, "Pobrać mimo to?", false)
+	if err != nil || !tak {
+		if err == nil {
+			in.log("Zostawiam Twój config.")
+		}
+		return err
+	}
+	return in.zainstalujArchiwum(ctx, "Config gry", "config", a, false)
+}
+
+// sekcjaUstawienGracza: grafika, minimapa, czat glosowy itp. Dopisuje tylko brakujace pliki, bez pytania.
+func (in *Instalator) sekcjaUstawienGracza(ctx context.Context, a Archiwum) error {
+	if a.Plik == "" {
+		return nil
+	}
+	if in.wczytajStan()["config_osobisty"] == a.Wersja {
+		in.log("Ustawienia gracza: aktualne.")
+		return nil
+	}
+	in.log("Ustawienia gracza: dodaję tylko brakujące pliki, Twoich ustawień nie zmieniam.")
+	return in.zainstalujArchiwum(ctx, "Ustawienia gracza", "config_osobisty", a, true)
+}
+
+func (in *Instalator) zainstalujArchiwum(ctx context.Context, nazwa, klucz string, a Archiwum, tylkoBrakujace bool) error {
 	adres, err := in.adresPliku(a.Plik)
 	if err != nil {
 		return err
@@ -342,11 +410,15 @@ func (in *Instalator) sekcjaArchiwum(ctx context.Context, nazwa, klucz string, a
 		return err
 	}
 	defer os.Remove(tymczasowy)
-	zmienione, err := in.rozpakuj(tymczasowy)
+	zmienione, err := in.rozpakuj(tymczasowy, tylkoBrakujace)
 	if err != nil {
 		return err
 	}
-	in.log("%s: zmienionych plików: %d.", nazwa, zmienione)
+	if tylkoBrakujace {
+		in.log("%s: dodanych plików: %d.", nazwa, zmienione)
+	} else {
+		in.log("%s: zmienionych plików: %d.", nazwa, zmienione)
+	}
 	return in.zapiszStan(klucz, a.Wersja)
 }
 
@@ -809,8 +881,13 @@ func (in *Instalator) uruchom(serwer bool, p *Przerwania) {
 		if serwer {
 			return in.sekcjaArchiwum(ctx, "Config serwera", "config_serwer", paczka.ConfigSerwer)
 		}
-		return in.sekcjaArchiwum(ctx, "Config", "config", paczka.Config)
+		return in.sekcjaConfiguGry(ctx, paczka.Config)
 	})
+	if !serwer {
+		in.krok("Ustawienia gracza", p, func(ctx context.Context) error {
+			return in.sekcjaUstawienGracza(ctx, paczka.ConfigOsobisty)
+		})
+	}
 	in.usuniete = map[string]string{}
 	for _, u := range paczka.Usuniete {
 		in.usuniete[u.Id] = u.Nazwa
