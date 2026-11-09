@@ -95,7 +95,7 @@ class Strona(unittest.TestCase):
             self.assertIsNone(self.stan()["czynny_od"], zle)
 
     def test_noc_i_mapa_nie_pozwalaja_wlaczyc(self):
-        for stan in ("noc", "mapa"):
+        for stan in ("noc", "mapa", "serwis"):
             self.status(stan=stan)
             self.assertEqual(self.stan()["stan"], stan)
             kod, _, _ = self.zapytaj("POST", "/api/wlacz")

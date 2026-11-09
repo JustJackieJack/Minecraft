@@ -21,7 +21,7 @@ TU = pathlib.Path(__file__).parent
 START_S = 10
 ODLICZANIE_S = 60
 STOP_S = 5
-STANY = ("wylaczony", "uruchamianie", "wlaczony", "zatrzymywanie", "zablokowany", "noc", "mapa", "brak_danych")
+STANY = ("wylaczony", "uruchamianie", "wlaczony", "zatrzymywanie", "zablokowany", "noc", "mapa", "serwis", "brak_danych")
 
 
 class Symulator:
@@ -73,7 +73,7 @@ class Symulator:
         if self.stan == "brak_danych":
             self.panel.status.unlink(missing_ok=True)
             return
-        dzialajacy = self.stan == "wlaczony"
+        dzialajacy = self.stan in ("wlaczony", "serwis")
         dane = {"aktualizacja": self.zegar(), "stan": self.stan,
                 "gracze": self.gracze if dzialajacy else None, "max_graczy": 20 if dzialajacy else None,
                 "odliczanie_s": self.odliczanie_s(), "czynny_od": "06:00", "czynny_do": "23:30",

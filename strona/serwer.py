@@ -17,7 +17,7 @@ import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import unquote, urlsplit
 
-STANY = {"wylaczony", "uruchamianie", "wlaczony", "zatrzymywanie", "zablokowany", "noc", "mapa"}
+STANY = {"wylaczony", "uruchamianie", "wlaczony", "zatrzymywanie", "zablokowany", "noc", "mapa", "serwis"}
 GODZINA = re.compile(r"(?:[01]?\d|2[0-3]):[0-5]\d")
 NICK = re.compile(r"[A-Za-z0-9_]{1,16}")
 MAKS_GRACZY = 50
@@ -125,7 +125,7 @@ class Panel:
             "odliczanie_s": liczba(d.get("odliczanie_s")),
             "czynny_od": godzina(d.get("czynny_od")),
             "czynny_do": godzina(d.get("czynny_do")),
-            "lista_graczy": gracze(d.get("lista_graczy"), "od") if stan == "wlaczony" else [],
+            "lista_graczy": gracze(d.get("lista_graczy"), "od") if stan in ("wlaczony", "serwis") else [],
             "czas_gry": gracze(d.get("czas_gry"), "s"),
         }
 

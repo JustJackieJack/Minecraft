@@ -7,6 +7,7 @@ Strona nie ma drogi do Proxmoxa. Rozmawiaja przez dwa katalogi zamontowane w CT 
 Stan laczy dane klastra z raportem strażnika z Proxmox-03 (/etc/pve/mc-panel/straznik.json).
 Gracze online (nick, od kiedy) z raportu, laczny czas gry z /etc/pve/mc-panel/gracze.json (pisze strażnik).
 W nocnej przerwie (NOC_OD-NOC_DO) stan to "noc" i sygnal nic nie wlacza. Dzialajacy CT renderu mapy to "mapa".
+Tryb serwisowy na Proxmox-03 (swiezy raport z "serwis") to stan "serwis": sygnal nic nie wlacza.
 Ustawienia: /etc/mc-panel/mc.env. Logi: journalctl -t mc-most
 """
 import json
@@ -134,9 +135,13 @@ def odczytaj_czas_gry(sciezka=GRACZE):
 def stan_strony(ct_dziala, praca, inni, raport, wlaczanie, teraz, noc=False, mapa=False):
     """Sam stan i liczby, bez nazw gosci: strona nie musi wiedziec, co dziala na hoscie."""
     wynik = {"stan": "wylaczony", "gracze": None, "max_graczy": None, "odliczanie_s": None}
+    serwis = (raport is not None and teraz - raport["czas"] <= RAPORT_WAZNY_S
+              and raport.get("serwis") is True)
     if not ct_dziala:
         if wlaczanie:
             wynik["stan"] = "uruchamianie"
+        elif serwis:
+            wynik["stan"] = "serwis"
         elif noc:
             wynik["stan"] = "noc"
         elif mapa:
@@ -160,6 +165,8 @@ def stan_strony(ct_dziala, praca, inni, raport, wlaczanie, teraz, noc=False, map
             wynik["odliczanie_s"] = max(0, round(koniec - teraz))
     else:
         wynik["stan"] = "uruchamianie"
+    if serwis:
+        wynik.update(stan="serwis", odliczanie_s=None)
     return wynik
 
 

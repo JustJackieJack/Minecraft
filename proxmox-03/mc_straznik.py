@@ -283,6 +283,7 @@ def raport(st, o, akcja, teraz):
         "koniec_odliczania": koniec,
         "wylaczanie": "stop_od" in st or akcja in ("stop_mc", "stop_noc", "stop_ct"),
         "online": (o.get("online") or {}) if gracze else {},
+        "serwis": bool(o.get("serwis")),
     }
 
 

@@ -365,7 +365,8 @@ class Raport(unittest.TestCase):
     def test_odliczanie_przy_zero_graczy(self):
         d = s.raport({"bez_graczy_od": 100}, obs(gracze=0, max_graczy=20), None, 200)
         self.assertEqual(d, {"czas": 200, "gracze": 0, "max_graczy": 20,
-                             "koniec_odliczania": 100 + s.BEZ_GRACZY_S, "wylaczanie": False, "online": {}})
+                             "koniec_odliczania": 100 + s.BEZ_GRACZY_S, "wylaczanie": False, "online": {},
+                             "serwis": False})
 
     def test_gracze_bez_odliczania(self):
         d = s.raport({}, obs(gracze=3, max_graczy=20), None, 200)
@@ -477,6 +478,17 @@ class StanStrony(unittest.TestCase):
         self.assertEqual(m.stan_strony(False, 0, [], None, True, self.T, noc=True)["stan"], "uruchamianie")
         self.assertEqual(self.stan(raport=self.raport()), m.stan_strony(
             True, 10000, [], self.raport(), False, self.T, noc=True))
+
+    def test_serwis(self):
+        # Tryb serwisowy ze swiezego raportu: przy wylaczonym i dzialajacym CT, bez odliczania.
+        self.assertEqual(self.stan(ct=False, raport=self.raport(serwis=True))["stan"], "serwis")
+        d = self.stan(raport=self.raport(serwis=True, gracze=0, koniec_odliczania=self.T + 90))
+        self.assertEqual((d["stan"], d["gracze"], d["odliczanie_s"]), ("serwis", 0, None))
+        self.assertEqual(self.stan(raport=self.raport(serwis=True, gracze=None))["stan"], "serwis")
+        # Stary raport z trybem serwisowym nie blokuje strony.
+        self.assertEqual(self.stan(ct=False, raport=self.raport(wiek=m.RAPORT_WAZNY_S + 1, serwis=True))["stan"], "wylaczony")
+        self.assertEqual(self.stan(ct=False, raport=self.raport(serwis=True), wlaczanie=True)["stan"], "uruchamianie")
+        self.assertTrue(s.raport({}, obs(serwis=True), None, 5)["serwis"])
 
     def test_zablokowany_bez_nazw(self):
         d = self.stan(ct=False, inni=["Inny-999"])

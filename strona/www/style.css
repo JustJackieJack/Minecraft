@@ -32,14 +32,13 @@
 
 * { box-sizing: border-box; }
 
-html { background: var(--ziemia); }
+/* Tekstura na html: tlo obejmuje cala strone, takze margines pod ostatnim panelem. */
+html { background: var(--ziemia) url("/Dirt_background_JE1.webp"); image-rendering: pixelated; }
 
 body {
   margin: 0;
   min-height: 100vh;
   color: var(--tekst);
-  background: var(--ziemia) url("/Dirt_background_JE1.webp");
-  image-rendering: pixelated;
   font-synthesis: none;
   font: 400 23px/1.45 "Jersey 15", ui-monospace, monospace;
 }
@@ -149,7 +148,7 @@ h1 {
 [data-stan="wlaczony"] { --lampa: var(--trawa-jasna); --lampa-swiatlo: rgb(124 201 90 / .6); }
 [data-stan="uruchamianie"], [data-stan="zatrzymywanie"] { --lampa: var(--zolty); --lampa-swiatlo: rgb(255 215 106 / .5); }
 [data-stan="zablokowany"], [data-stan="noc"] { --lampa: var(--czerwony); --lampa-swiatlo: rgb(224 96 79 / .5); }
-[data-stan="mapa"] { --lampa: var(--zolty); --lampa-swiatlo: rgb(255 215 106 / .5); }
+[data-stan="mapa"], [data-stan="serwis"] { --lampa: var(--zolty); --lampa-swiatlo: rgb(255 215 106 / .5); }
 
 [data-stan="uruchamianie"] .lampa, [data-stan="zatrzymywanie"] .lampa {
   animation: miganie 1.2s steps(2) infinite;
@@ -200,7 +199,14 @@ h2 { margin: 0; font-size: 39px; text-shadow: 2px 2px 0 #000; }
   gap: 16px;
   margin-top: 20px;
 }
-.systemy .przycisk { margin: 0; text-align: center; text-decoration: none; }
+.systemy .przycisk {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  text-align: center;
+  text-decoration: none;
+}
 
 .kroki { margin: 14px 0 0; padding-left: 28px; }
 .kroki li { margin-top: 6px; }
@@ -355,9 +361,16 @@ code {
 
 .uwaga { margin: 10px 0 0; color: var(--tekst-cichy); font-size: 22px; }
 
+/* Telefon: logo nad menu, menu w jednym rzedzie na cala szerokosc. */
+@media (max-width: 640px) {
+  .pasek { flex-direction: column; align-items: stretch; gap: 6px; padding: 8px 12px 10px; }
+  .logo { font-size: 28px; text-align: center; }
+  nav { display: grid; grid-template-columns: repeat(5, auto); justify-content: space-between; gap: 2px; }
+  nav a { padding: 4px 6px 6px; font-size: clamp(16px, 5vw, 24px); text-align: center; }
+}
+
 @media (max-width: 480px) {
   .panel { padding: 20px 16px; }
-  nav a { padding: 6px 10px; font-size: 23px; }
   .filtry { gap: 10px; }
   .filtr { padding: 5px 9px; font-size: 20px; }
 }

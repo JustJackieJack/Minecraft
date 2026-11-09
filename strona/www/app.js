@@ -8,6 +8,7 @@ const OPISY = {
   zablokowany: ["Zablokowany", "Na tym komputerze działa teraz coś innego, więc Minecrafta nie da się włączyć."],
   noc: ["Nocna przerwa", "W nocy serwera nie da się włączyć."],
   mapa: ["Aktualizacja mapy", "Serwer odświeża mapę świata. Gdy skończy, będzie można go włączyć."],
+  serwis: ["Prace serwisowe", "Trwają prace przy serwerze. Na razie nie da się go włączyć ani wyłączyć ze strony."],
   brak_danych: ["Brak danych", "Nie udało się sprawdzić stanu serwera. Strona spróbuje ponownie sama."],
 };
 const CO_ILE_MS = 5000;
@@ -80,7 +81,8 @@ function pokazCzasGry(lista, online) {
     tr.append(element("td", g.nick, grajacy.has(g.nick) ? "nick gra" : "nick"), element("td", dlugosc(g.s)));
     return tr;
   }));
-  el("czas-gry-panel").hidden = lista.length === 0;
+  el("czas-gry-pusto").hidden = lista.length > 0;
+  el("czas-gry").closest("table").hidden = lista.length === 0;
 }
 
 function pokaz(dane) {
@@ -90,7 +92,7 @@ function pokaz(dane) {
   el("stan-opis").textContent = OPISY[stan][1];
   document.title = `${OPISY[stan][0]}: Ci Panowie`;
 
-  const dziala = stan === "wlaczony";
+  const dziala = stan === "wlaczony" || stan === "serwis";
   el("gracze").hidden = !(dziala && dane.gracze !== null);
   if (dane.gracze !== null) {
     el("gracze-liczba").textContent = dane.max_graczy === null
