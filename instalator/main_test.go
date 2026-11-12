@@ -13,6 +13,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -490,5 +491,20 @@ func TestSerwerNieDostajeUstawienGracza(t *testing.T) {
 	s.in.uruchom(true, &Przerwania{})
 	if istnieje(filepath.Join(s.dir, "config", "grafika.json")) {
 		t.Fatal("serwer dostal ustawienia gracza")
+	}
+}
+
+func TestPobranyModJestCzytelnyDlaInnych(t *testing.T) {
+	s := nowaScena(t, "t\n")
+	m := s.mod(t, "a", "a-1.jar", "1", "oba")
+	if err := s.in.sekcjaMody(context.Background(), []Mod{m}, true); err != nil {
+		t.Fatal(err)
+	}
+	info, err := os.Stat(filepath.Join(s.dir, "mods", "a-1.jar"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if runtime.GOOS != "windows" && info.Mode().Perm()&0o044 != 0o044 {
+		t.Fatalf("mod ma uprawnienia %v, serwer innego uzytkownika go nie odczyta", info.Mode().Perm())
 	}
 }

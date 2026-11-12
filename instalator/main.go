@@ -194,6 +194,12 @@ func (in *Instalator) pobierz(ctx context.Context, adres, oczekiwana string, now
 		if err != nil {
 			return "", err
 		}
+		// CreateTemp tworzy plik 0600; po przeniesieniu do mods/ serwer innego uzytkownika by go nie odczytal.
+		if err := f.Chmod(0o644); err != nil {
+			f.Close()
+			os.Remove(f.Name())
+			return "", err
+		}
 		s := nowySkrot()
 		err = in.pobierzRaz(ctx, adres, io.MultiWriter(f, s))
 		f.Close()
@@ -860,7 +866,7 @@ func (in *Instalator) uruchom(serwer bool, p *Przerwania) {
 	if serwer {
 		in.krok("Tryb serwera", p, func(ctx context.Context) error {
 			if os.Geteuid() == 0 {
-				in.log("UWAGA: działasz jako root, a nowe pliki będą należały do roota. Uruchom jako właściciel serwera.")
+				in.log("UWAGA: działasz jako root. Na końcu nowe pliki dostaną właściciela folderu serwera, ale lepiej uruchamiać jako on.")
 			}
 			tak, err := in.potwierdz(ctx, "Serwer musi być zatrzymany. Kontynuować?")
 			// Przerwanie tutaj to tez odmowa: nie zmieniamy plikow dzialajacego serwera.
@@ -896,6 +902,15 @@ func (in *Instalator) uruchom(serwer bool, p *Przerwania) {
 		return in.sekcjaMody(ctx, paczka.Mody, serwer)
 	})
 	os.RemoveAll(in.sciezka(folderTemp))
+	if serwer {
+		in.krok("Właściciel plików", p, func(ctx context.Context) error {
+			n, err := przywrocWlasciciela(in.folder)
+			if n > 0 {
+				in.log("Pliki zmienione jako root oddane właścicielowi folderu serwera: %d.", n)
+			}
+			return err
+		})
+	}
 }
 
 func main() {
