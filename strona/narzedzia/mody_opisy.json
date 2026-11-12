@@ -120,7 +120,5 @@
   "placebo": {"opis": "Biblioteka potrzebna Apotheosis i Apothic Attributes."},
   "patchouli": {"opis": "Księgi-poradniki w grze, np. Chronicle of Shadows z Apotheosis."},
   "create_dragons_plus": {"opis": "Biblioteka dodatków do Create, potrzebna Create: Enchantment Industry."},
-  "apotheosisarrowcompat": {"opis": "Strzały z Quarka, Cataclysm i Supplementaries na stole strzelarskim Apotheosis."},
-  "apothic_category_compat": {"opis": "Broń z innych modów (Spartan, Cataclysm, Alex's Caves...) dostaje w Apotheosis afiksy i gniazda na klejnoty."},
-  "spartanapothiccompat": {"opis": "Afiksy i klejnoty Apotheosis także na broni do rzucania ze Spartan Weaponry (noże, oszczepy, bumerangi)."}
+  "apotheosisarrowcompat": {"opis": "Strzały z Quarka, Cataclysm i Supplementaries na stole strzelarskim Apotheosis."}
 }

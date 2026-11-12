@@ -8,18 +8,18 @@
  },
  "config": {
   "plik": "config.zip",
-  "wersja": "677af932c5e8",
-  "sha256": "677af932c5e8ec69367125eb860b9a8e22cbd4673b514faac45e011b37956f69"
+  "wersja": "6f0ebbf24204",
+  "sha256": "6f0ebbf24204308c3c70a8001de4af84adebc71fb609fe1b37617150e1bfd62e"
  },
  "config_osobisty": {
   "plik": "config-osobisty.zip",
-  "wersja": "f2608fe72ad3",
-  "sha256": "f2608fe72ad33e8f43b32fd7b05b0dbd83fc62450fb1c9fa849c49e34141eaf1"
+  "wersja": "836e694dd194",
+  "sha256": "836e694dd1942919acea8f817f0be763dc2042d57073406692c759e570e98a33"
  },
  "config_serwer": {
   "plik": "config-serwer.zip",
-  "wersja": "50aeeb4063a0",
-  "sha256": "50aeeb4063a0fe170454efe661321ea11ff239c8937bcd4382ba286e5d20409e"
+  "wersja": "0f5b8bdfebb4",
+  "sha256": "0f5b8bdfebb4405b34614680266bafa8748391e655dfe12db0e9a1964eb0adf8"
  },
  "mody": [
   {
@@ -129,9 +129,9 @@
   {
    "id": "ci_panowie",
    "nazwa": "Ci_Panowie",
-   "plik": "Ci_Panowie-1.20.1-1.17.1.jar",
-   "sha1": "627aba1c997d8d73afff9072791fe8393e00eb83",
-   "url": "mody/Ci_Panowie-1.20.1-1.17.1.jar",
+   "plik": "Ci_Panowie-1.20.1-1.17.2.jar",
+   "sha1": "2bc97e021464581e94c7f795ffb86c1450f94a3d",
+   "url": "mody/Ci_Panowie-1.20.1-1.17.2.jar",
    "strona": "oba"
   },
   {
@@ -652,14 +652,6 @@
    "plik": "apotheosisarrowcompat.jar",
    "sha1": "634f9ea696c413b15e715ebb8ac6b0722593e5e4",
    "url": "https://cdn.modrinth.com/data/no8YLgL5/versions/WxQxc1bI/apotheosisarrowcompat.jar",
-   "strona": "oba"
-  },
-  {
-   "id": "apothic_category_compat",
-   "nazwa": "Apothic Category Compat",
-   "plik": "apothic_category_compat-2.1.0.jar",
-   "sha1": "9b015ff2c1722a15ead2748723e36d9ef3c81a24",
-   "url": "https://cdn.modrinth.com/data/Uonyc6M4/versions/35w4Gcta/apothic_category_compat-2.1.0.jar",
    "strona": "oba"
   },
   {
@@ -1351,14 +1343,6 @@
    "strona": "oba"
   },
   {
-   "id": "spartanapothiccompat",
-   "nazwa": "SpartanApothicCompat",
-   "plik": "spartanapothiccompat-1.0.0-all.jar",
-   "sha1": "ff03406be3f09b03f5d97eec163bebf816d08093",
-   "url": "https://cdn.modrinth.com/data/ANkzZOBm/versions/v2z8ZbMo/spartanapothiccompat-1.0.0-all.jar",
-   "strona": "oba"
-  },
-  {
    "id": "spears",
    "nazwa": "Backported Spears",
    "plik": "spear-backport-forge-1.4.7-1.20.1.jar",
@@ -1505,6 +1489,10 @@
  ],
  "usuniete": [
   {
+   "id": "apothic_category_compat",
+   "nazwa": "Apothic Category Compat"
+  },
+  {
    "id": "biomemusic",
    "nazwa": "Biome Music"
   },
@@ -1519,6 +1507,10 @@
   {
    "id": "fps_overlay",
    "nazwa": "FPS Overlay"
+  },
+  {
+   "id": "spartanapothiccompat",
+   "nazwa": "SpartanApothicCompat"
   }
  ]
 }

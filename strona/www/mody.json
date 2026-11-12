@@ -139,11 +139,10 @@
    "id": "apotheosis",
    "nazwa": "Apotheosis",
    "opis": [
-    "Nowe zaklinanie, spawnery, klejnoty i bossowie.",
+    "Nowe zaklinanie, spawnery i mikstury.",
     "Zaklinanie: moc stołu zależy od regałów wokół – Eterna (maks. poziom, do 100), Quanta (losowość), Arcana (rzadkie i kilka zaklęć naraz). Zaklęcia ponad vanillowe maksimum, kowadło bez „Too Expensive”, biblioteka zaklęć przechowuje książki.",
     "Regały: kamienne → morskie (pryzmaryn) → głębinowe (deepslate, sculk). Piekielne wymagają Netheru, który jest zamknięty – idź ścieżką morską i głębinową.",
     "Spawnery wykopiesz kilofem z Silk Touch, a ulepszysz klikając przedmiotem: cukier (szybciej), oko pająka (więcej mobów), latarnia dusz (w świetle), komparator (redstone). Kwarc w drugiej ręce cofa zmianę. Jajkiem spawnu zmienisz moba w spawnerze tylko na zwykłego moba z Minecrafta.",
-    "Przygoda: sprzęt z afiksami (od common do ancient), klejnoty w gniazdach, stoły do szlifowania, przekuwania i rozbiórki. Bossowie i miniboss'owie w świecie dają najlepszy łup.",
     "Nowe mikstury i amulety mikstur (stały efekt, działają tylko w slotach Curios), lepszy wędrowny handlarz i stół strzelarski z własnymi recepturami strzał. Strzał wybuchowych u nas nie ma.",
     "Samouczek: Księga Chronicle of Shadows opisuje wszystko z liczbami – przepis w JEI."
    ],
@@ -174,25 +173,13 @@
    "opis": [
     "Nowe statystyki: krytyki, kradzież życia, strzały.",
     "Dodaje statystyki: szansa (bazowo 5%) i siła krytyka (×1,5) – także dla strzał, kradzież życia, przebicie pancerza, obrażenia i prędkość strzał, szybkość naciągu, unik.",
-    "Swoje statystyki zobaczysz w ekwipunku (przycisk obok postaci). Afiksy i klejnoty Apotheosis zwiększają właśnie je."
+    "Swoje statystyki zobaczysz w ekwipunku (przycisk obok postaci)."
    ],
    "tagi": [
     "Broń i walka",
     "Mechaniki gry"
    ],
    "link": "https://modrinth.com/mod/apothic-attributes",
-   "zrodlo": "Modrinth"
-  },
-  {
-   "id": "apothic_category_compat",
-   "nazwa": "Apothic Category Compat",
-   "opis": [
-    "Broń z innych modów (Spartan, Cataclysm, Alex's Caves...) dostaje w Apotheosis afiksy i gniazda na klejnoty."
-   ],
-   "tagi": [
-    "Biblioteka"
-   ],
-   "link": "https://modrinth.com/mod/apothic-category-compat",
    "zrodlo": "Modrinth"
   },
   {
@@ -1649,6 +1636,7 @@
     "Ogromne drzewko (ok. 590 umiejętności) z bonusami pasywnymi – coś jak w Path of Exile.",
     "Drzewko otwierasz przyciskiem w ekwipunku. Punkty kupujesz w drzewku, płacąc punktami XP.",
     "U nas: 5 darmowych punktów na start, potem 1. kupiony punkt kosztuje 1 poziom, 2. – 2 poziomy... aż do 30 poziomów; dalej każdy po 30 poziomów. Brak limitu punktów.",
+    "Klejnoty PST wypadają rzadko z rud (bez Silk Touch). Wkładasz je na stole kowalskim w gniazda: po 1 w hełmie, napierśniku, butach, broni, tarczy, pierścieniu i naszyjniku.",
     "Umiejętności odblokowujesz od punktu startowego, po połączeniach – planuj ścieżkę!",
     "Reset drzewka: Zwój amnezji (Amnesia Scroll) – wypada z Ender Dragona, zabiera 20% poziomów.",
     "Samouczek: Najedź myszką na umiejętność w drzewku, aby zobaczyć bonus."
@@ -1927,18 +1915,6 @@
     "Broń i walka"
    ],
    "link": "https://modrinth.com/mod/spartan-weaponry",
-   "zrodlo": "Modrinth"
-  },
-  {
-   "id": "spartanapothiccompat",
-   "nazwa": "SpartanApothicCompat",
-   "opis": [
-    "Afiksy i klejnoty Apotheosis także na broni do rzucania ze Spartan Weaponry (noże, oszczepy, bumerangi)."
-   ],
-   "tagi": [
-    "Biblioteka"
-   ],
-   "link": "https://modrinth.com/mod/spartanapothiccompat",
    "zrodlo": "Modrinth"
   },
   {
