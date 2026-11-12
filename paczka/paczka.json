@@ -8,18 +8,18 @@
  },
  "config": {
   "plik": "config.zip",
-  "wersja": "8e990f92f906",
-  "sha256": "8e990f92f9069ff9c8f302d265e4c0b26ac456380a1603bd4d83185a17cfbde5"
+  "wersja": "677af932c5e8",
+  "sha256": "677af932c5e8ec69367125eb860b9a8e22cbd4673b514faac45e011b37956f69"
  },
  "config_osobisty": {
   "plik": "config-osobisty.zip",
-  "wersja": "d30b67a36178",
-  "sha256": "d30b67a36178d6f3792230e69596175f088a71673148d92f9028e8da5f396466"
+  "wersja": "f2608fe72ad3",
+  "sha256": "f2608fe72ad33e8f43b32fd7b05b0dbd83fc62450fb1c9fa849c49e34141eaf1"
  },
  "config_serwer": {
   "plik": "config-serwer.zip",
-  "wersja": "ee61b5fd9f4c",
-  "sha256": "ee61b5fd9f4cc1c0d73026ce81cc25020b4ed116f452d451213a64b8983bb8f9"
+  "wersja": "50aeeb4063a0",
+  "sha256": "50aeeb4063a0fe170454efe661321ea11ff239c8937bcd4382ba286e5d20409e"
  },
  "mody": [
   {
@@ -45,6 +45,22 @@
    "sha1": "61f0bcbfd404de4aeb0627b5b83a72d069fb1825",
    "url": "https://cdn.modrinth.com/data/fM515JnW/versions/YOYpWGZg/AmbientSounds_FORGE_v6.3.11_mc1.20.1.jar",
    "strona": "klient"
+  },
+  {
+   "id": "apotheosis",
+   "nazwa": "Apotheosis",
+   "plik": "Apotheosis-1.20.1-7.4.8.jar",
+   "sha1": "e508c4724a24f0c80836818fcdd3df6424b1fc40",
+   "url": "https://cdn.modrinth.com/data/rqFWfVlz/versions/tT3CLYvK/Apotheosis-1.20.1-7.4.8.jar",
+   "strona": "oba"
+  },
+  {
+   "id": "attributeslib",
+   "nazwa": "Apothic Attributes",
+   "plik": "ApothicAttributes-1.20.1-1.3.7.jar",
+   "sha1": "1dc0744d17f0861fe6b067798d39abce9d8e0e86",
+   "url": "https://cdn.modrinth.com/data/DGaH8Rh0/versions/fwL9CWGd/ApothicAttributes-1.20.1-1.3.7.jar",
+   "strona": "oba"
   },
   {
    "id": "atlaslib",
@@ -95,6 +111,14 @@
    "strona": "oba"
   },
   {
+   "id": "bookshelf",
+   "nazwa": "Bookshelf",
+   "plik": "Bookshelf-Forge-1.20.1-20.2.15.jar",
+   "sha1": "9df4908f606c6dc62a358b3e04e3fdedba59a12c",
+   "url": "https://cdn.modrinth.com/data/uy4Cnpcm/versions/7eS5OIHj/Bookshelf-Forge-1.20.1-20.2.15.jar",
+   "strona": "oba"
+  },
+  {
    "id": "chunky",
    "nazwa": "Chunky",
    "plik": "Chunky-1.3.146.jar",
@@ -105,9 +129,9 @@
   {
    "id": "ci_panowie",
    "nazwa": "Ci_Panowie",
-   "plik": "Ci_Panowie-1.20.1-1.14.0.jar",
-   "sha1": "9e387662f065103c6302f9c9b50fb3addd548dfe",
-   "url": "mody/Ci_Panowie-1.20.1-1.14.0.jar",
+   "plik": "Ci_Panowie-1.20.1-1.17.0.jar",
+   "sha1": "f5116736a283ab51f20b50edde1ea8ef4f59c88e",
+   "url": "mody/Ci_Panowie-1.20.1-1.17.0.jar",
    "strona": "oba"
   },
   {
@@ -132,6 +156,14 @@
    "plik": "Corgilib-Forge-1.20.1-4.0.3.6.jar",
    "sha1": "dc26327631fa34c25139e2d3c95b3274e8978336",
    "url": "https://cdn.modrinth.com/data/ziOp6EO8/versions/OtJzHtsl/Corgilib-Forge-1.20.1-4.0.3.6.jar",
+   "strona": "oba"
+  },
+  {
+   "id": "create_dragons_plus",
+   "nazwa": "Create: Dragons Plus",
+   "plik": "CreateDragonsPlus-1.11.9.jar",
+   "sha1": "cb249347ad15914619a81371b4cfa35f74f575ed",
+   "url": "https://cdn.modrinth.com/data/dzb1a5WV/versions/eMalpJtP/CreateDragonsPlus-1.11.9.jar",
    "strona": "oba"
   },
   {
@@ -167,15 +199,6 @@
    "strona": "oba"
   },
   {
-   "id": "distanthorizons",
-   "nazwa": "Distant Horizons",
-   "plik": "DistantHorizons-3.3.3-1.20.1-fabric-forge.jar",
-   "sha1": "5447c4716571bfdba817c85278a9ce0d411573ec",
-   "url": "https://cdn.modrinth.com/data/uCdwusMi/versions/6UnEfsRQ/DistantHorizons-3.3.3-1.20.1-fabric-forge.jar",
-   "strona": "klient",
-   "opcjonalny": true
-  },
-  {
    "id": "doggytalents",
    "nazwa": "Doggy Talents Next",
    "plik": "DoggyTalentsNext-1.20.1-1.19.1.jar",
@@ -197,6 +220,22 @@
    "plik": "DungeonsArise-1.20.x-2.1.58-release.jar",
    "sha1": "30b4520e4fab40a6bb6153a2c72e34bcb721f0a5",
    "url": "https://cdn.modrinth.com/data/8DfbfASn/versions/6hQpx5Tc/DungeonsArise-1.20.x-2.1.58-release.jar",
+   "strona": "oba"
+  },
+  {
+   "id": "enchdesc",
+   "nazwa": "Enchantment Descriptions",
+   "plik": "EnchantmentDescriptions-Forge-1.20.1-17.1.21.jar",
+   "sha1": "0328a8350cf0a6d1c44265367a077649088b354b",
+   "url": "https://cdn.modrinth.com/data/UVtY3ZAC/versions/OPgBRfTQ/EnchantmentDescriptions-Forge-1.20.1-17.1.21.jar",
+   "strona": "oba"
+  },
+  {
+   "id": "enderlead",
+   "nazwa": "Ender Lead",
+   "plik": "Enderlead-1.20.1-1.0.1.jar",
+   "sha1": "2574056c0bbed0501f8c73b9505aa83cebc6002b",
+   "url": "https://cdn.modrinth.com/data/X0AnfftQ/versions/yvPbegIW/Enderlead-1.20.1-1.0.1.jar",
    "strona": "oba"
   },
   {
@@ -222,14 +261,6 @@
    "sha1": "5fb28be29200a41b034e423d87823eb19ad651cd",
    "url": "https://cdn.modrinth.com/data/HSfsxuTo/versions/CuBdAr31/Explorify%20v1.6.5.mod.jar",
    "strona": "oba"
-  },
-  {
-   "id": "fps_overlay",
-   "nazwa": "FPS Overlay",
-   "plik": "FpsOverlay-forge-5.2.jar",
-   "sha1": "f5214f60f676e294dfe5be6793ba82de04b17b8d",
-   "url": "https://cdn.modrinth.com/data/j0IQ4hjv/versions/Pb17EN5p/FpsOverlay-forge-5.2.jar",
-   "strona": "klient"
   },
   {
    "id": "watching",
@@ -328,6 +359,14 @@
    "strona": "oba"
   },
   {
+   "id": "patchouli",
+   "nazwa": "Patchouli",
+   "plik": "Patchouli-1.20.1-85-FORGE.jar",
+   "sha1": "d4614507d6e4c7cb464bba5eca891978272062ef",
+   "url": "https://cdn.modrinth.com/data/nU0bVIaL/versions/94dtOLgZ/Patchouli-1.20.1-85-FORGE.jar",
+   "strona": "oba"
+  },
+  {
    "id": "pickupnotifier",
    "nazwa": "Pick Up Notifier",
    "plik": "PickUpNotifier-v8.0.0-1.20.1-Forge.jar",
@@ -341,6 +380,14 @@
    "plik": "Ping-Wheel-1.12.1-forge-1.20.1.jar",
    "sha1": "54a5964c89ed073a2856d22799ceb174febd9329",
    "url": "https://cdn.modrinth.com/data/QQXAdCzh/versions/OIvI752z/Ping-Wheel-1.12.1-forge-1.20.1.jar",
+   "strona": "oba"
+  },
+  {
+   "id": "placebo",
+   "nazwa": "Placebo",
+   "plik": "Placebo-1.20.1-8.6.3.jar",
+   "sha1": "e85f53de2e582a79ce25ff1df1e7b5b5fc08440f",
+   "url": "https://cdn.modrinth.com/data/tCkE8p2N/versions/6SkuAGoz/Placebo-1.20.1-8.6.3.jar",
    "strona": "oba"
   },
   {
@@ -600,6 +647,22 @@
    "strona": "oba"
   },
   {
+   "id": "apotheosisarrowcompat",
+   "nazwa": "Apotheosis Arrow Compatibility",
+   "plik": "apotheosisarrowcompat.jar",
+   "sha1": "634f9ea696c413b15e715ebb8ac6b0722593e5e4",
+   "url": "https://cdn.modrinth.com/data/no8YLgL5/versions/WxQxc1bI/apotheosisarrowcompat.jar",
+   "strona": "oba"
+  },
+  {
+   "id": "apothic_category_compat",
+   "nazwa": "Apothic Category Compat",
+   "plik": "apothic_category_compat-2.1.0.jar",
+   "sha1": "9b015ff2c1722a15ead2748723e36d9ef3c81a24",
+   "url": "https://cdn.modrinth.com/data/Uonyc6M4/versions/35w4Gcta/apothic_category_compat-2.1.0.jar",
+   "strona": "oba"
+  },
+  {
    "id": "appleskin",
    "nazwa": "AppleSkin",
    "plik": "appleskin-forge-mc1.20.1-2.5.1.jar",
@@ -720,14 +783,6 @@
    "strona": "oba"
   },
   {
-   "id": "champions",
-   "nazwa": "Champions-Unofficial",
-   "plik": "champions-forge-20.1.1.6.jar",
-   "sha1": "31a9703c9d8e2f028d1572a72c8229e0d46eb146",
-   "url": "https://cdn.modrinth.com/data/VJZc5cJx/versions/GwhzlxlG/champions-forge-20.1.1.6.jar",
-   "strona": "oba"
-  },
-  {
    "id": "citadel",
    "nazwa": "Citadel",
    "plik": "citadel-2.6.3-1.20.1.jar",
@@ -765,6 +820,14 @@
    "plik": "create-1.20.1-6.0.8.jar",
    "sha1": "b13d912b9247a38d66d11598c121442585a1c1e9",
    "url": "https://cdn.modrinth.com/data/LNytGWDc/versions/8amzvn9x/create-1.20.1-6.0.8.jar",
+   "strona": "oba"
+  },
+  {
+   "id": "create_enchantment_industry",
+   "nazwa": "Create: Enchantment Industry",
+   "plik": "create-enchantment-industry-2.5.4b.jar",
+   "sha1": "87612feace11044eb257e4dedb443ce66b57b4d5",
+   "url": "https://cdn.modrinth.com/data/JWGBpFUP/versions/fs3kihCQ/create-enchantment-industry-2.5.4b.jar",
    "strona": "oba"
   },
   {
@@ -893,6 +956,14 @@
    "plik": "endermanoverhaul-forge-1.20.1-1.0.4.jar",
    "sha1": "636a2b20a5973fcb80016370865cb4251e029b6a",
    "url": "https://cdn.modrinth.com/data/Lq6ojcWv/versions/yjxych8u/endermanoverhaul-forge-1.20.1-1.0.4.jar",
+   "strona": "oba"
+  },
+  {
+   "id": "enderpouch",
+   "nazwa": "Ender Pouch",
+   "plik": "enderpouch-1.0.0-forge-1.20.1.jar",
+   "sha1": "85b3190b7064cc0710e1d028b2eab7400c35c6e7",
+   "url": "https://cdn.modrinth.com/data/WGxUpbxu/versions/vH1bEHhh/enderpouch-1.0.0-forge-1.20.1.jar",
    "strona": "oba"
   },
   {
@@ -1280,6 +1351,14 @@
    "strona": "oba"
   },
   {
+   "id": "spartanapothiccompat",
+   "nazwa": "SpartanApothicCompat",
+   "plik": "spartanapothiccompat-1.0.0-all.jar",
+   "sha1": "ff03406be3f09b03f5d97eec163bebf816d08093",
+   "url": "https://cdn.modrinth.com/data/ANkzZOBm/versions/v2z8ZbMo/spartanapothiccompat-1.0.0-all.jar",
+   "strona": "oba"
+  },
+  {
    "id": "spears",
    "nazwa": "Backported Spears",
    "plik": "spear-backport-forge-1.4.7-1.20.1.jar",
@@ -1293,6 +1372,14 @@
    "plik": "stalwart-dungeons-1.20.1-1.2.8.jar",
    "sha1": "da49b50013deee55861e81664096818357d563ac",
    "url": "https://cdn.modrinth.com/data/BCLngNKp/versions/vgD645b7/stalwart-dungeons-1.20.1-1.2.8.jar",
+   "strona": "oba"
+  },
+  {
+   "id": "staylapis",
+   "nazwa": "StayLapis",
+   "plik": "staylapis-forge-1.20.1-1.1.0.jar",
+   "sha1": "08a2850b675ce50e85c65ddd340434c77abc4c37",
+   "url": "https://cdn.modrinth.com/data/nDhVDl3C/versions/i4jUunkx/staylapis-forge-1.20.1-1.1.0.jar",
    "strona": "oba"
   },
   {
@@ -1420,6 +1507,18 @@
   {
    "id": "biomemusic",
    "nazwa": "Biome Music"
+  },
+  {
+   "id": "champions",
+   "nazwa": "Champions-Unofficial"
+  },
+  {
+   "id": "distanthorizons",
+   "nazwa": "Distant Horizons"
+  },
+  {
+   "id": "fps_overlay",
+   "nazwa": "FPS Overlay"
   }
  ]
 }

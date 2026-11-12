@@ -184,6 +184,27 @@ class Strona(unittest.TestCase):
         html = serwer.wstaw_ustawienia("<code>{{ADRES_GRY}}</code>", {"STRONA_ADRES_GRY": "<b>"})
         self.assertEqual(html, "<code>&lt;b&gt;</code>")
 
+    def test_zmiany_z_plikow(self):
+        with tempfile.TemporaryDirectory() as d:
+            k = pathlib.Path(d)
+            (k / "1.9.0.md").write_text("data: 2026-01-02\n- pierwszy\n  ciag dalszy\n- drugi\n", encoding="utf-8")
+            (k / "1.10.0.md").write_text("- nowszy\n", encoding="utf-8")
+            (k / "notatki.md").write_text("- zla nazwa\n", encoding="utf-8")
+            (k / "2.0.0.md").write_text("bez punktow\n", encoding="utf-8")
+            zmiany = serwer.wczytaj_zmiany(k)
+        self.assertEqual([z["wersja"] for z in zmiany], ["1.10.0", "1.9.0"])
+        self.assertIsNone(zmiany[0]["data"])
+        self.assertEqual(zmiany[1], {"wersja": "1.9.0", "data": "2026-01-02", "punkty": ["pierwszy ciag dalszy", "drugi"]})
+
+    def test_zmiany_na_stronie(self):
+        kod, tresc, _ = self.zapytaj("GET", "/zmiany.json")
+        self.assertEqual(kod, 200)
+        zmiany = json.loads(tresc)
+        self.assertTrue(zmiany and all(z["punkty"] for z in zmiany))
+        wersje = [serwer.wersja_klucz(z["wersja"]) for z in zmiany]
+        self.assertEqual(wersje, sorted(wersje, reverse=True))
+        self.assertEqual(self.zapytaj("GET", "/zmiany/1.17.0.md")[0], 404)
+
     def test_pasek_na_kazdej_stronie(self):
         for adres in ("/", "/mody", "/komendy", "/zainstaluj", "/mapa"):
             html = self.zapytaj("GET", adres)[1].decode()

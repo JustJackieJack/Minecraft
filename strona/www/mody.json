@@ -136,6 +136,66 @@
    "zrodlo": "Modrinth"
   },
   {
+   "id": "apotheosis",
+   "nazwa": "Apotheosis",
+   "opis": [
+    "Nowe zaklinanie, spawnery, klejnoty i bossowie.",
+    "Zaklinanie: moc stołu zależy od regałów wokół – Eterna (maks. poziom, do 100), Quanta (losowość), Arcana (rzadkie i kilka zaklęć naraz). Zaklęcia ponad vanillowe maksimum, kowadło bez „Too Expensive”, biblioteka zaklęć przechowuje książki.",
+    "Regały: kamienne → morskie (pryzmaryn) → głębinowe (deepslate, sculk). Piekielne wymagają Netheru, który jest zamknięty – idź ścieżką morską i głębinową.",
+    "Spawnery wykopiesz kilofem z Silk Touch, a ulepszysz klikając przedmiotem: cukier (szybciej), oko pająka (więcej mobów), latarnia dusz (w świetle), komparator (redstone). Kwarc w drugiej ręce cofa zmianę. Jajkiem spawnu zmienisz moba w spawnerze tylko na zwykłego moba z Minecrafta.",
+    "Przygoda: sprzęt z afiksami (od common do ancient), klejnoty w gniazdach, stoły do szlifowania, przekuwania i rozbiórki. Bossowie i miniboss'owie w świecie dają najlepszy łup.",
+    "Nowe mikstury i amulety mikstur (stały efekt, działają tylko w slotach Curios), lepszy wędrowny handlarz i stół strzelarski z własnymi recepturami strzał. Strzał wybuchowych u nas nie ma.",
+    "Samouczek: Księga Chronicle of Shadows opisuje wszystko z liczbami – przepis w JEI."
+   ],
+   "tagi": [
+    "Bossowie",
+    "Magia",
+    "Przedmioty",
+    "Mechaniki gry"
+   ],
+   "link": "https://modrinth.com/mod/apotheosis",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "apotheosisarrowcompat",
+   "nazwa": "Apotheosis Arrow Compatibility",
+   "opis": [
+    "Strzały z Quarka, Cataclysm i Supplementaries na stole strzelarskim Apotheosis."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/apotheosis-arrow-compatibility",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "attributeslib",
+   "nazwa": "Apothic Attributes",
+   "opis": [
+    "Nowe statystyki: krytyki, kradzież życia, strzały.",
+    "Dodaje statystyki: szansa (bazowo 5%) i siła krytyka (×1,5) – także dla strzał, kradzież życia, przebicie pancerza, obrażenia i prędkość strzał, szybkość naciągu, unik.",
+    "Swoje statystyki zobaczysz w ekwipunku (przycisk obok postaci). Afiksy i klejnoty Apotheosis zwiększają właśnie je."
+   ],
+   "tagi": [
+    "Broń i walka",
+    "Mechaniki gry"
+   ],
+   "link": "https://modrinth.com/mod/apothic-attributes",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "apothic_category_compat",
+   "nazwa": "Apothic Category Compat",
+   "opis": [
+    "Broń z innych modów (Spartan, Cataclysm, Alex's Caves...) dostaje w Apotheosis afiksy i gniazda na klejnoty."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/apothic-category-compat",
+   "zrodlo": "Modrinth"
+  },
+  {
    "id": "appleskin",
    "nazwa": "AppleSkin",
    "opis": [
@@ -355,6 +415,18 @@
    "zrodlo": "Modrinth"
   },
   {
+   "id": "bookshelf",
+   "nazwa": "Bookshelf",
+   "opis": [
+    "Biblioteka potrzebna modowi Enchantment Descriptions."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/bookshelf-lib",
+   "zrodlo": "Modrinth"
+  },
+  {
    "id": "born_in_chaos_v1",
    "nazwa": "Born in Chaos",
    "opis": [
@@ -420,23 +492,6 @@
    "zrodlo": "Modrinth"
   },
   {
-   "id": "champions",
-   "nazwa": "Champions-Unofficial",
-   "opis": [
-    "Silniejsze moby z lepszym łupem.",
-    "Co jakiś czas wrogi mob pojawia się jako champion rangi 1–5: kolorowa poświata, pasek z rangą i specjalne zdolności (ogień, paraliż, przyciąganie, odbijanie ciosów...).",
-    "Łup (tylko gdy zabije go gracz): kryształy magii za każdą rangę, od rangi 2 księga lub zwój zaklęcia (Novice → Master), od rangi 3 szansa na artefakt, ranga 5 daje też wielki kryształ.",
-    "Rangi: 1 – co ~40. mob, 2 – co ~100., 5 – co ~500. W pobliżu aktywnego beacona championy się nie pojawiają.",
-    "Sprawdź championa: /champions info <cel>."
-   ],
-   "tagi": [
-    "Potwory",
-    "Mechaniki gry"
-   ],
-   "link": "https://modrinth.com/mod/champions-unofficial",
-   "zrodlo": "Modrinth"
-  },
-  {
    "id": "chunky",
    "nazwa": "Chunky",
    "opis": [
@@ -452,7 +507,7 @@
    "id": "ci_panowie",
    "nazwa": "Ci_Panowie",
    "opis": [
-    "Nasz własny mod: plan księżyców, wyspa, kupowanie claimów, komendy /cipanowie i pauza serwera bez graczy. W grze: /cipanowie help."
+    "Nasz własny mod: plan księżyców, wyspa, kupowanie claimów, mocniejsze łuki i kusze Spartan, więcej strzał z receptur, łup z bossów Apotheosis, bezpieczna Ender Lead, noc po śnie połowy graczy, komendy /cipanowie i pauza serwera bez graczy. W grze: /cipanowie help."
    ],
    "tagi": [
     "Mechaniki gry"
@@ -557,6 +612,34 @@
     "Technika"
    ],
    "link": "https://modrinth.com/mod/create",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "create_dragons_plus",
+   "nazwa": "Create: Dragons Plus",
+   "opis": [
+    "Biblioteka dodatków do Create, potrzebna Create: Enchantment Industry."
+   ],
+   "tagi": [
+    "Technika",
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/create-dragons-plus",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "create_enchantment_industry",
+   "nazwa": "Create: Enchantment Industry",
+   "opis": [
+    "Zaklinanie i doświadczenie w maszynach Create.",
+    "Doświadczenie jako płyn: zbierasz je z kul XP, przechowujesz w zbiornikach i rurach.",
+    "Maszyny do automatycznego zaklinania i kopiowania książek. Współpracuje z Apotheosis."
+   ],
+   "tagi": [
+    "Magia",
+    "Technika"
+   ],
+   "link": "https://modrinth.com/mod/create-enchantment-industry",
    "zrodlo": "Modrinth"
   },
   {
@@ -697,22 +780,6 @@
    "zrodlo": "Modrinth"
   },
   {
-   "id": "distanthorizons",
-   "nazwa": "Distant Horizons",
-   "opis": [
-    "Daleki widok terenu – opcjonalny, tylko u gracza.",
-    "Opcjonalny: instalator pyta, czy go dodać. Nie jest potrzebny do gry na serwerze.",
-    "Pokazuje uproszczony teren daleko za zwykłym zasięgiem widzenia.",
-    "Działa tylko u Ciebie: teren widzisz tam, gdzie już byłeś (serwer go nie wysyła). Obciąża kartę graficzną i dysk.",
-    "Samouczek: Ustawienia: przycisk DH w Opcje → Grafika."
-   ],
-   "tagi": [
-    "Grafika i dźwięk"
-   ],
-   "link": "https://modrinth.com/mod/distanthorizons",
-   "zrodlo": "Modrinth"
-  },
-  {
    "id": "doggytalents",
    "nazwa": "Doggy Talents Next",
    "opis": [
@@ -837,6 +904,47 @@
    "zrodlo": "Modrinth"
   },
   {
+   "id": "enchdesc",
+   "nazwa": "Enchantment Descriptions",
+   "opis": [
+    "Opis zaklęcia po najechaniu na książkę.",
+    "Najedź na zaklętą książkę lub przedmiot – pod każdym zaklęciem pojawi się krótki opis, co robi. Działa też dla zaklęć z modów (np. Apotheosis). Część opisów jest po angielsku."
+   ],
+   "tagi": [
+    "Interfejs"
+   ],
+   "link": "https://modrinth.com/mod/enchantment-descriptions",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "enderlead",
+   "nazwa": "Ender Lead",
+   "opis": [
+    "Smycz, która chowa moba do przedmiotu.",
+    "Lewy klik pustą smyczą na moba – mob trafia do smyczy. PPM na blok – wypuszczasz go tam.",
+    "U nas łapie tylko zwykłe moby: nie graczy, nie bossów, nie wieloczęściowe moby i nie cudze zwierzęta (swoje tak)."
+   ],
+   "tagi": [
+    "Zwierzęta",
+    "Przedmioty"
+   ],
+   "link": "https://modrinth.com/mod/ender-lead",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "enderpouch",
+   "nazwa": "Ender Pouch",
+   "opis": [
+    "Skrzynia Endu w kieszeni.",
+    "PPM sakiewką w głównej ręce otwiera Twoją skrzynię Endu z dowolnego miejsca. Receptura: 7 skóry, nić i skrzynia Endu."
+   ],
+   "tagi": [
+    "Przedmioty"
+   ],
+   "link": "https://modrinth.com/mod/ender-pouch",
+   "zrodlo": "Modrinth"
+  },
+  {
    "id": "endermanoverhaul",
    "nazwa": "Enderman Overhaul",
    "opis": [
@@ -951,18 +1059,6 @@
     "Biblioteka"
    ],
    "link": "https://modrinth.com/mod/forgified-fabric-api",
-   "zrodlo": "Modrinth"
-  },
-  {
-   "id": "fps_overlay",
-   "nazwa": "FPS Overlay",
-   "opis": [
-    "Pokazuje na ekranie FPS i inne dane o działaniu gry."
-   ],
-   "tagi": [
-    "Interfejs"
-   ],
-   "link": "https://modrinth.com/mod/fps-overlay",
    "zrodlo": "Modrinth"
   },
   {
@@ -1564,6 +1660,19 @@
    "zrodlo": "CurseForge"
   },
   {
+   "id": "patchouli",
+   "nazwa": "Patchouli",
+   "opis": [
+    "Księgi-poradniki w grze, np. Chronicle of Shadows z Apotheosis."
+   ],
+   "tagi": [
+    "Interfejs",
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/patchouli",
+   "zrodlo": "Modrinth"
+  },
+  {
    "id": "pickupnotifier",
    "nazwa": "Pick Up Notifier",
    "opis": [
@@ -1587,6 +1696,18 @@
     "Gra z innymi"
    ],
    "link": "https://modrinth.com/mod/ping-wheel",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "placebo",
+   "nazwa": "Placebo",
+   "opis": [
+    "Biblioteka potrzebna Apotheosis i Apothic Attributes."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/placebo",
    "zrodlo": "Modrinth"
   },
   {
@@ -1798,12 +1919,26 @@
    "nazwa": "Spartan Weaponry",
    "opis": [
     "Nowe rodzaje broni i tarcz.",
-    "Katany, rapiery, halabardy, włócznie, młoty, kusze, bumerangi i wiele tarcz – każda broń ma inne cechy (zasięg, szybkość, obrażenia)."
+    "Katany, rapiery, halabardy, włócznie, młoty, kusze, bumerangi i wiele tarcz – każda broń ma inne cechy (zasięg, szybkość, obrażenia).",
+    "U nas materiał łuku i kuszy ma znaczenie: długi łuk / ciężka kusza z żelaza ×1,3, z diamentu ×1,6, z netherytu ×2 obrażeń (opis na przedmiocie). Zwykły łuk i kusza bez zmian.",
+    "Strzały i bełty: 8 sztuk z receptury (na stole strzelarskim więcej). Droższe strzały mocniej biją: żelazna 9–14, diamentowa 12–19, netherytowa 15–23 z pełnego naciągu zwykłego łuku."
    ],
    "tagi": [
     "Broń i walka"
    ],
    "link": "https://modrinth.com/mod/spartan-weaponry",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "spartanapothiccompat",
+   "nazwa": "SpartanApothicCompat",
+   "opis": [
+    "Afiksy i klejnoty Apotheosis także na broni do rzucania ze Spartan Weaponry (noże, oszczepy, bumerangi)."
+   ],
+   "tagi": [
+    "Biblioteka"
+   ],
+   "link": "https://modrinth.com/mod/spartanapothiccompat",
    "zrodlo": "Modrinth"
   },
   {
@@ -1816,6 +1951,19 @@
     "Struktury"
    ],
    "link": "https://modrinth.com/mod/stalwart-dungeons",
+   "zrodlo": "Modrinth"
+  },
+  {
+   "id": "staylapis",
+   "nazwa": "StayLapis",
+   "opis": [
+    "Lapis zostaje w stole zaklęć.",
+    "Lapis włożony do stołu zaklęć zostaje w nim po zamknięciu – nie trzeba go dokładać za każdym razem."
+   ],
+   "tagi": [
+    "Mechaniki gry"
+   ],
+   "link": "https://modrinth.com/mod/staylapis",
    "zrodlo": "Modrinth"
   },
   {
@@ -1906,7 +2054,7 @@
    "nazwa": "The Hordes",
    "opis": [
     "Nocne hordy zombie.",
-    "Co 10 dni w nocy przychodzi horda zombie, która poluje na graczy – kilka fal przez ok. 5 minut.",
+    "Co 30 dni w nocy przychodzi horda zombie, która poluje na graczy – kilka fal przez ok. 5 minut.",
     "Zaczyna się od 10 mobów na falę, z każdą hordą trochę więcej (do 40 mobów z hordy naraz). Miej schronienie i dobry sprzęt."
    ],
    "tagi": [

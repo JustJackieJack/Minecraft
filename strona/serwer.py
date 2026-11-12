@@ -153,9 +153,41 @@ def wstaw_ustawienia(tresc, ustawienia):
     return tresc
 
 
+def wersja_klucz(wersja):
+    return tuple(int(c) for c in wersja.split("."))
+
+
+def wczytaj_zmiany(katalog):
+    """Lista zmian z plikow zmiany/<wersja>.md (jeden plik = jedna aktualizacja, wersja = wersja moda Ci_Panowie).
+
+    Format: opcjonalny pierwszy wiersz "data: RRRR-MM-DD", potem punkty "- tekst" (kolejne wiersze bez "- "
+    dopisuja sie do poprzedniego punktu). Najnowsza wersja pierwsza; plik o zlej nazwie albo bez punktow jest pomijany.
+    """
+    wynik = []
+    for plik in pathlib.Path(katalog).glob("*.md"):
+        if not re.fullmatch(r"\d+(\.\d+)*", plik.stem):
+            continue
+        data, punkty = None, []
+        for wiersz in plik.read_text(encoding="utf-8").splitlines():
+            wiersz = wiersz.strip()
+            if not wiersz:
+                continue
+            znaleziona = re.fullmatch(r"data:\s*(\d{4}-\d{2}-\d{2})", wiersz)
+            if znaleziona and data is None and not punkty:
+                data = znaleziona.group(1)
+            elif wiersz.startswith("- "):
+                punkty.append(wiersz[2:].strip())
+            elif punkty:
+                punkty[-1] += " " + wiersz
+        if punkty:
+            wynik.append({"wersja": plik.stem, "data": data, "punkty": punkty})
+    return sorted(wynik, key=lambda z: wersja_klucz(z["wersja"]), reverse=True)
+
+
 def wczytaj_pliki(www, ustawienia):
     www = pathlib.Path(www)
-    pliki = {}
+    pliki = {"/zmiany.json": (json.dumps(wczytaj_zmiany(www / "zmiany"), ensure_ascii=False).encode(),
+                              TYPY[".json"])}
     for plik in www.rglob("*"):
         if plik.is_file() and plik.suffix in TYPY:
             tresc = plik.read_bytes()

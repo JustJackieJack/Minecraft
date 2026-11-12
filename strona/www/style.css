@@ -178,6 +178,13 @@ h1 {
 .czas-gry th, .czas-gry td { padding: 4px 8px 4px 0; border-bottom: 2px solid var(--kamien-ciemny); }
 .czas-gry td.gra::after { content: " ●"; color: var(--trawa-jasna); }
 
+.zmiany { margin-top: 8px; }
+.zmiana + .zmiana { margin-top: 18px; padding-top: 14px; border-top: 2px solid var(--kamien-ciemny); }
+.zmiana h3 { margin: 0; font-size: 29px; }
+.zmiana ul { margin: 6px 0 0; padding-left: 22px; }
+.zmiana li { margin-top: 4px; overflow-wrap: anywhere; }
+#zmiany-wiecej { margin-top: 16px; }
+
 .odliczanie {
   margin: 14px 0 0;
   padding: 10px 12px;

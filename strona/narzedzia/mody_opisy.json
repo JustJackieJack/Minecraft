@@ -1,6 +1,6 @@
 {
   "_opis": "Opisy modow, ktorych nie ma w info.json moda Ci_Panowie.",
-  "ci_panowie": {"opis": "Nasz własny mod: plan księżyców, wyspa, kupowanie claimów, komendy /cipanowie i pauza serwera bez graczy. W grze: /cipanowie help."},
+  "ci_panowie": {"opis": "Nasz własny mod: plan księżyców, wyspa, kupowanie claimów, mocniejsze łuki i kusze Spartan, więcej strzał z receptur, łup z bossów Apotheosis, bezpieczna Ender Lead, noc po śnie połowy graczy, komendy /cipanowie i pauza serwera bez graczy. W grze: /cipanowie help."},
   "aiimprovements": {"opis": "Odciąża serwer, upraszczając sztuczną inteligencję prostych mobów."},
   "ambientenvironment": {"opis": "Dodaje światu więcej klimatu i drobnych szczegółów otoczenia."},
   "ambientsounds": {"opis": "Dodaje odgłosy otoczenia: wiatr, ptaki, świerszcze i szum jaskiń."},
@@ -115,5 +115,12 @@
   "xaeroworldmap": {"opis": "Pełnoekranowa mapa odkrytej części świata. Otwierasz ją klawiszem M."},
   "mousetweaks": {"opis": "Wygodniejsze przenoszenie przedmiotów myszą w ekwipunku i skrzyniach, także przeciąganiem i kółkiem."},
   "medievalmusic": {"nazwa": "Medieval Music"},
-  "yet_another_config_lib_v3": {"opis": "Biblioteka do ustawień innych modów."}
+  "yet_another_config_lib_v3": {"opis": "Biblioteka do ustawień innych modów."},
+  "bookshelf": {"opis": "Biblioteka potrzebna modowi Enchantment Descriptions."},
+  "placebo": {"opis": "Biblioteka potrzebna Apotheosis i Apothic Attributes."},
+  "patchouli": {"opis": "Księgi-poradniki w grze, np. Chronicle of Shadows z Apotheosis."},
+  "create_dragons_plus": {"opis": "Biblioteka dodatków do Create, potrzebna Create: Enchantment Industry."},
+  "apotheosisarrowcompat": {"opis": "Strzały z Quarka, Cataclysm i Supplementaries na stole strzelarskim Apotheosis."},
+  "apothic_category_compat": {"opis": "Broń z innych modów (Spartan, Cataclysm, Alex's Caves...) dostaje w Apotheosis afiksy i gniazda na klejnoty."},
+  "spartanapothiccompat": {"opis": "Afiksy i klejnoty Apotheosis także na broni do rzucania ze Spartan Weaponry (noże, oszczepy, bumerangi)."}
 }

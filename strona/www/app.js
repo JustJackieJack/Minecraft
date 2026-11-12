@@ -151,8 +151,43 @@ async function kopiuj() {
   setTimeout(() => { przycisk.textContent = "Kopiuj"; }, 2000);
 }
 
+const ZMIANY_NA_START = 3;
+
+function data(tekst) {
+  const [r, m, d] = tekst.split("-");
+  return `${Number(d)}.${m}.${r}`;
+}
+
+function pokazZmiany(lista, wszystkie) {
+  const widoczne = wszystkie ? lista : lista.slice(0, ZMIANY_NA_START);
+  el("zmiany").replaceChildren(...widoczne.map((z) => {
+    const wpis = element("article", "", "zmiana");
+    const tytul = z.data ? `Wersja ${z.wersja} · ${data(z.data)}` : `Wersja ${z.wersja}`;
+    const ul = element("ul", "");
+    ul.append(...z.punkty.map((p) => element("li", p)));
+    wpis.append(element("h3", tytul), ul);
+    return wpis;
+  }));
+  el("zmiany-wiecej").hidden = wszystkie || lista.length <= ZMIANY_NA_START;
+  el("zmiany-panel").hidden = lista.length === 0;
+}
+
+async function pobierzZmiany() {
+  try {
+    const odp = await fetch("/zmiany.json");
+    if (!odp.ok) return;
+    const lista = await odp.json();
+    if (!Array.isArray(lista)) return;
+    pokazZmiany(lista, false);
+    el("zmiany-wiecej").addEventListener("click", () => pokazZmiany(lista, true), { once: true });
+  } catch {
+    // bez listy zmian strona dziala dalej
+  }
+}
+
 el("wlacz").addEventListener("click", wlacz);
 el("kopiuj").addEventListener("click", kopiuj);
 pobierz();
+pobierzZmiany();
 setInterval(pobierz, CO_ILE_MS);
 setInterval(odswiezOdliczanie, 1000);

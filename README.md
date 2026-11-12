@@ -45,6 +45,18 @@ Przy pierwszej instalacji powstaje `/etc/mc-strona/strona.env` ze wzoru. Wpisz t
 systemctl restart mc-strona
 ```
 
+### Zmiany na serwerze
+
+Panel „Zmiany na serwerze” pod czasem gry pokazuje pliki `strona/www/zmiany/<wersja>.md`: jeden plik to jedna aktualizacja, a wersja to wersja moda Ci_Panowie (np. `1.17.0.md`). Format:
+
+```
+data: 2026-11-12
+- pierwszy punkt
+- drugi punkt
+```
+
+Serwer strony składa z nich `/zmiany.json` przy starcie (najnowsza pierwsza, na start widać trzy). Nowy plik trafia na stronę po `instaluj.sh`.
+
 ### Środowisko testowe
 
 Prawdziwy serwer strony i udawany host, bez Proxmoxa i bez Crafty:
