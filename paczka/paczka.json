@@ -8,18 +8,18 @@
  },
  "config": {
   "plik": "config.zip",
-  "wersja": "6f0ebbf24204",
-  "sha256": "6f0ebbf24204308c3c70a8001de4af84adebc71fb609fe1b37617150e1bfd62e"
+  "wersja": "8a8bfae58512",
+  "sha256": "8a8bfae58512594ea8f7859105dd6a028f3f0ffca38a8b4b77b4842bd15123f8"
  },
  "config_osobisty": {
   "plik": "config-osobisty.zip",
-  "wersja": "836e694dd194",
-  "sha256": "836e694dd1942919acea8f817f0be763dc2042d57073406692c759e570e98a33"
+  "wersja": "cab21dc5ed11",
+  "sha256": "cab21dc5ed111ea4f3012eb143e80994dee61de0c94f77d7905636e76774962f"
  },
  "config_serwer": {
   "plik": "config-serwer.zip",
-  "wersja": "0f5b8bdfebb4",
-  "sha256": "0f5b8bdfebb4405b34614680266bafa8748391e655dfe12db0e9a1964eb0adf8"
+  "wersja": "916c2c4ceabb",
+  "sha256": "916c2c4ceabb5ce3bc8a245734288842167be1fee99d112603251e08add1fae8"
  },
  "mody": [
   {
@@ -129,9 +129,9 @@
   {
    "id": "ci_panowie",
    "nazwa": "Ci_Panowie",
-   "plik": "Ci_Panowie-1.20.1-1.17.2.jar",
-   "sha1": "2bc97e021464581e94c7f795ffb86c1450f94a3d",
-   "url": "mody/Ci_Panowie-1.20.1-1.17.2.jar",
+   "plik": "Ci_Panowie-1.20.1-1.18.0.jar",
+   "sha1": "27420ab1a3df3abaa7cd3bc1413633b7db2ff04b",
+   "url": "mody/Ci_Panowie-1.20.1-1.18.0.jar",
    "strona": "oba"
   },
   {
@@ -260,14 +260,6 @@
    "plik": "Explorify v1.6.5.mod.jar",
    "sha1": "5fb28be29200a41b034e423d87823eb19ad651cd",
    "url": "https://cdn.modrinth.com/data/HSfsxuTo/versions/CuBdAr31/Explorify%20v1.6.5.mod.jar",
-   "strona": "oba"
-  },
-  {
-   "id": "watching",
-   "nazwa": "From The Fog",
-   "plik": "From-The-Fog-1.20-v1.9.2-Forge-Fabric.jar",
-   "sha1": "8508868b645b4c8bcdfef1437f0278173eaadbbb",
-   "url": "https://cdn.modrinth.com/data/p1WH6sHr/versions/JTd3TFcc/From-The-Fog-1.20-v1.9.2-Forge-Fabric.jar",
    "strona": "oba"
   },
   {
@@ -1511,6 +1503,10 @@
   {
    "id": "spartanapothiccompat",
    "nazwa": "SpartanApothicCompat"
+  },
+  {
+   "id": "watching",
+   "nazwa": "From The Fog"
   }
  ]
 }
