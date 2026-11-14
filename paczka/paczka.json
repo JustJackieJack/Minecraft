@@ -8,18 +8,18 @@
  },
  "config": {
   "plik": "config.zip",
-  "wersja": "916047bc26d2",
-  "sha256": "916047bc26d23a5619f1cef3ab78208ddd93cc6d975560792e296254a21e49cf"
+  "wersja": "dd5b921f866e",
+  "sha256": "dd5b921f866e312e5ca430e3845b0b46d7e7b2433292a55daeb58d3ce4850811"
  },
  "config_osobisty": {
   "plik": "config-osobisty.zip",
-  "wersja": "d5e49392fa08",
-  "sha256": "d5e49392fa08228cd917221c1afa6d3fcbba577cf52929ad698b2c0ec7ce8d7e"
+  "wersja": "90eadf43e987",
+  "sha256": "90eadf43e987a4fb7f313d3ede94ea0748fc346b07de44b60878c1694d9b266b"
  },
  "config_serwer": {
   "plik": "config-serwer.zip",
-  "wersja": "a5353e74ca13",
-  "sha256": "a5353e74ca132984de82fb94a6dabe191d45db0219c624e6dfea138b6d60dde6"
+  "wersja": "d74fe4fcb017",
+  "sha256": "d74fe4fcb0170a25341747a20998c410cb1a48f858b3ee4f0f9fb7692a2927dc"
  },
  "mody": [
   {
@@ -129,9 +129,9 @@
   {
    "id": "ci_panowie",
    "nazwa": "Ci_Panowie",
-   "plik": "Ci_Panowie-1.20.1-1.18.1.jar",
-   "sha1": "3887e1765d05e11bc3100ffb7c273138eb24c129",
-   "url": "mody/Ci_Panowie-1.20.1-1.18.1.jar",
+   "plik": "Ci_Panowie-1.20.1-1.18.2.jar",
+   "sha1": "860e3567103ec20a2cabb383486443e7891ed499",
+   "url": "mody/Ci_Panowie-1.20.1-1.18.2.jar",
    "strona": "oba"
   },
   {
