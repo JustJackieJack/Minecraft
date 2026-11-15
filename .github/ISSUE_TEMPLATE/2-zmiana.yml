@@ -1,0 +1,57 @@
+name: 💡 Pomysł / zmiana
+description: Nowy mod, zmiana ustawień serwera, poprawka na stronie albo w instalatorze.
+title: "[Pomysł] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Masz pomysł? Opisz go — przegadamy w komentarzach.
+        Chcesz od razu coś zmienić w kodzie: zrób fork i pull request, a tu podlinkuj.
+
+  - type: dropdown
+    id: czego
+    attributes:
+      label: Czego dotyczy?
+      options:
+        - Nowy mod (albo usunięcie moda)
+        - Ustawienia serwera / zasady gry
+        - Strona
+        - Instalator modów / paczka
+        - Mapa 3D
+        - Inne
+    validations:
+      required: true
+
+  - type: textarea
+    id: co
+    attributes:
+      label: Co zmienić?
+      placeholder: "Dodać mod X, który …"
+    validations:
+      required: true
+
+  - type: textarea
+    id: dlaczego
+    attributes:
+      label: Po co?
+      description: Co to da graczom? Jaki problem rozwiązuje?
+    validations:
+      required: true
+
+  - type: input
+    id: link
+    attributes:
+      label: Link (mod, przykład, inspiracja)
+      description: Przy modzie — strona na Modrinth albo CurseForge. Serwer działa na 1.20.1 (Forge).
+      placeholder: "https://modrinth.com/mod/…"
+    validations:
+      required: false
+
+  - type: textarea
+    id: uwagi
+    attributes:
+      label: Coś jeszcze?
+      description: Ryzyka, konflikty z innymi modami, czy trzeba coś usunąć ze świata…
+    validations:
+      required: false

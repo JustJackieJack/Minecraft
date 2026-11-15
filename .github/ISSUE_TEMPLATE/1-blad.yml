@@ -1,0 +1,80 @@
+name: 🐞 Błąd
+description: Coś nie działa na serwerze, stronie, w instalatorze albo na mapie.
+title: "[Błąd] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Dzięki za zgłoszenie! Im dokładniej opiszesz, tym szybciej to naprawię.
+        **Nie wklejaj tu haseł ani prywatnych danych** — zgłoszenia są publiczne.
+
+  - type: dropdown
+    id: gdzie
+    attributes:
+      label: Gdzie jest problem?
+      options:
+        - Serwer (gra, lagi, wyrzuca, nie mogę wejść)
+        - Strona (przycisk, stan serwera, lista graczy)
+        - Instalator modów / paczka
+        - Mapa 3D
+        - Inne
+    validations:
+      required: true
+
+  - type: textarea
+    id: co
+    attributes:
+      label: Co się stało?
+      description: Co robiłeś i co się wydarzyło zamiast tego, czego się spodziewałeś.
+      placeholder: "Kliknąłem „Włącz”, po 5 minutach dalej „Uruchamianie”…"
+    validations:
+      required: true
+
+  - type: textarea
+    id: kroki
+    attributes:
+      label: Jak to powtórzyć?
+      description: Kroki po kolei, jeśli wiesz. Jeśli zdarzyło się raz — napisz to.
+      placeholder: |
+        1. Wchodzę na serwer
+        2. Idę do …
+        3. Gra się zawiesza
+    validations:
+      required: false
+
+  - type: input
+    id: kiedy
+    attributes:
+      label: Kiedy?
+      description: Data i mniej więcej godzina — po tym szukam w logach.
+      placeholder: "2026-11-15 ok. 21:30"
+    validations:
+      required: true
+
+  - type: input
+    id: nick
+    attributes:
+      label: Nick w grze
+      placeholder: "Steve"
+    validations:
+      required: false
+
+  - type: input
+    id: wersja
+    attributes:
+      label: Wersja paczki
+      description: Widać ją na stronie w liście zmian albo w instalatorze. Nie wiesz — zostaw puste.
+      placeholder: "np. 1.18.2"
+    validations:
+      required: false
+
+  - type: textarea
+    id: zalaczniki
+    attributes:
+      label: Zrzut ekranu / log
+      description: |
+        Przeciągnij tu obrazek albo plik. Log gry: folder instancji → `logs/latest.log`,
+        przy crashu: `crash-reports/` (najnowszy plik).
+    validations:
+      required: false
