@@ -18,8 +18,8 @@
  },
  "config_serwer": {
   "plik": "config-serwer.zip",
-  "wersja": "79d149fdb946",
-  "sha256": "79d149fdb94638adcd29275ede3d034341975890ce34c5dd4b54e07aadd96c10"
+  "wersja": "58b8d0acacef",
+  "sha256": "58b8d0acacefeab3b9e32085acd1332920fb8a2e414a2fcf018deb6aa4a1512e"
  },
  "mody": [
   {
@@ -129,9 +129,9 @@
   {
    "id": "ci_panowie",
    "nazwa": "Ci_Panowie",
-   "plik": "Ci_Panowie-1.20.1-1.19.0.jar",
-   "sha1": "576f207234e299bc9b2a03000c5a097347ef168f",
-   "url": "mody/Ci_Panowie-1.20.1-1.19.0.jar",
+   "plik": "Ci_Panowie-1.20.1-1.19.1.jar",
+   "sha1": "87b13f234ee759f75c4faf7bed74272dfd666348",
+   "url": "mody/Ci_Panowie-1.20.1-1.19.1.jar",
    "strona": "oba"
   },
   {
