@@ -767,6 +767,22 @@
    "zrodlo": "Modrinth"
   },
   {
+   "id": "distanthorizons",
+   "nazwa": "Distant Horizons",
+   "opis": [
+    "Daleki widok terenu – opcjonalny, tylko u gracza.",
+    "Opcjonalny: instalator pyta, czy go dodać. Nie jest potrzebny do gry na serwerze.",
+    "Pokazuje uproszczony teren daleko za zwykłym zasięgiem widzenia.",
+    "Działa tylko u Ciebie: teren widzisz tam, gdzie już byłeś (serwer go nie wysyła). Obciąża kartę graficzną i dysk.",
+    "Samouczek: Ustawienia: przycisk DH w Opcje → Grafika."
+   ],
+   "tagi": [
+    "Grafika i dźwięk"
+   ],
+   "link": "https://modrinth.com/mod/distanthorizons",
+   "zrodlo": "Modrinth"
+  },
+  {
    "id": "doggytalents",
    "nazwa": "Doggy Talents Next",
    "opis": [
